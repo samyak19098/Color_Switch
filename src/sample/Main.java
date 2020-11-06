@@ -8,7 +8,6 @@ import javafx.scene.Scene;
 import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
 import javafx.animation.PathTransition.OrientationType;
-import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.paint.Color;
@@ -20,6 +19,25 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import java.text.SimpleDateFormat;
 import javafx.scene.shape.*;
+import javafx.geometry.HPos;
+import javafx.scene.control.Button;
+import javafx.geometry.VPos;
+import javafx.scene.Node;
+import javafx.scene.Group;
+import javafx.scene.Scene;
+import javafx.scene.Scene;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
+import javafx.scene.paint.Color;
+import javafx.scene.web.WebEngine;
+import javafx.scene.web.WebView;
+import javafx.stage.Stage;
+import javafx.event.*;
+import javafx.scene.control.Label;
+import javafx.util.*;
+import javafx.beans.*;
+import javafx.scene.input.KeyEvent;
 
 public class Main extends Application {
 
@@ -162,7 +180,7 @@ public class Main extends Application {
 //        t4.setCycleCount(Animation.INDEFINITE);
 //        t4.getKeyFrames().add(new KeyFrame(Duration.millis((3000)), new KeyValue(rotate4.angleProperty(), 360)));
 //        t4.play();
-
+        Ball b=new Ball(Color.PINK,new Circle(600.0f,600.0f,20.0f ,Color.PINK));
         Group root = new Group();
         RingObstacle ringObstacle = new RingObstacle("Ring", 1500, 0, 50,20, 300, 300, true);
         ringObstacle.draw();
@@ -184,12 +202,29 @@ public class Main extends Application {
         squareObstacle.rotateSquare();
         squareObstacle.showOnScreen(root);
 
-        Scene scene = new Scene(root,1200,900, Color.BLACK);
+        Scene scene = new Scene(root,1200,800, Color.BLACK);
+        b.showOnScreen(root);
+
+        moveBallOnKeyPress(scene, b );
         primaryStage.setScene(scene);
         primaryStage.setTitle("Path Transition Example");
         primaryStage.show();
     }
+    private void moveBallOnKeyPress(Scene scene, final Ball b) {
+        scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            @Override public void handle(KeyEvent event) {
+                switch (event.getCode()) {
+                    case UP:
 
+                        b.MoveBall();
+
+                        break;
+
+
+                }
+            }
+        });
+    }
 
     public static void main(String[] args) {
         launch(args);
