@@ -166,4 +166,12 @@ public class RingObstacle extends Obstacle{
         return quarters;
     }
 
+    public ArrayList<Timeline> getTimelines() {
+        return timelines;
+    }
+
+    public ArrayList<Rotate> getRotate_list() {
+        return rotate_list;
+    }
+
 }
