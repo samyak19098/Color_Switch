@@ -45,7 +45,7 @@ public class SquareObstacle extends Obstacle {
     }
 
     @Override
-    public void showOnScreen(Group g) {
+    public void shownOnScreen(Group g) {
         for(int i = 0 ; i < sides.size(); i++){
             g.getChildren().add(sides.get(i));
         }
@@ -148,5 +148,13 @@ public class SquareObstacle extends Obstacle {
         path_to_add.getElements().addAll(start_position, horizontal4,vertical1,horizontal2, vertical3);
         path_to_add.setFill(c);
         return path_to_add;
+    }
+    @Override
+    public boolean collisionCheck(Ball b)  {
+        return true;
+    }
+    @Override
+    public void movedown(Ball b) {
+
     }
 }

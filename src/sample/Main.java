@@ -38,8 +38,12 @@ import javafx.scene.control.Label;
 import javafx.util.*;
 import javafx.beans.*;
 import javafx.scene.input.KeyEvent;
+import java.util.*;
 
 public class Main extends Application {
+    private static  double screenwidth=1200;
+    private static double screenheight=800;
+    private final int movedistance = 100;//distance moved in one move
 
     @Override
     public void start(Stage primaryStage) throws Exception{
@@ -180,47 +184,72 @@ public class Main extends Application {
 //        t4.setCycleCount(Animation.INDEFINITE);
 //        t4.getKeyFrames().add(new KeyFrame(Duration.millis((3000)), new KeyValue(rotate4.angleProperty(), 360)));
 //        t4.play();
-        Ball b=new Ball(Color.PINK,new Circle(600.0f,600.0f,20.0f ,Color.PINK));
+        GameMain gm=new GameMain();
+        GameState g =new GameState();
+        gm.setCurrentGameState(g);
+
+
         Group root = new Group();
-        RingObstacle ringObstacle = new RingObstacle("Ring", 1500, 0, 50,20, 300, 300, true);
-        ringObstacle.draw();
-//        root.getChildren().add(ringObstacle.getQuarters().get(0));
-        ringObstacle.WayOfMovement();
 
-        RingObstacle ringObstacle2 = new RingObstacle("Ring", 1500, 0, 70,20, 300, 300, false);
-        ringObstacle2.draw();
-//        root.getChildren().add(ringObstacle.getQuarters().get(0));
-        ringObstacle2.WayOfMovement();
-        ringObstacle.rotateRing();
-        ringObstacle2.rotateRing();
-        ringObstacle.showOnScreen(root);
-        ringObstacle2.showOnScreen(root);
 
-        SquareObstacle squareObstacle = new SquareObstacle("Square", 1500, 0, 500, 500, 60, 20, true);
-        squareObstacle.draw();
-        squareObstacle.WayOfMovement();
-        squareObstacle.rotateSquare();
-        squareObstacle.showOnScreen(root);
+        Scene scene = new Scene(root,screenwidth,screenheight, Color.BLACK);
+        g.shownOnScreen(root);
+        Timer timer = new Timer();
 
-        Scene scene = new Scene(root,1200,800, Color.BLACK);
-        b.showOnScreen(root);
 
-        moveBallOnKeyPress(scene, b );
+        timer.schedule(gm , 500, 100);
+
+        //timer checks collions after every 1s
+        // to stop the timer ,use down arrow key
+        moveBallOnKeyPress(scene, gm.getCurrentGameState(),timer);
+
         primaryStage.setScene(scene);
         primaryStage.setTitle("Path Transition Example");
         primaryStage.show();
+//        gm.getCurrentGameState().sceneObstacles.get(0).pauseRing();
+//        long startTime = System.nanoTime();
+//
+//        long endTime  ;
+//        while(true){
+//            endTime   = System.nanoTime();
+//            if(endTime -startTime>1000000000){
+//                g.debug();
+//                startTime = System.nanoTime();
+//            }
+//
+//        }
     }
-    private void moveBallOnKeyPress(Scene scene, final Ball b) {
+    private void moveBallOnKeyPress(Scene scene,  GameState g,Timer timer) {
         scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override public void handle(KeyEvent event) {
                 switch (event.getCode()) {
                     case UP:
-
-                        b.MoveBall();
-
+                        //g.debug();
+                        if((600.0f+g.CurrentBall.getBallShape().getTranslateY()-movedistance)> (screenheight/2))
+                        g.CurrentBall.MoveBall();
+                        else {
+                            g.CurrentBall.getTranslateTransition().stop();
+                            //g.CurrentBall.translateTransition.setByY(0);
+                            //g.CurrentBall.translateTransition.setCycleCount(1);
+                            //g.CurrentBall.translateTransition.setDuration(Duration.millis(0));
+                            for (Obstacle o : g.sceneObstacles)
+                                o.movedown(g.CurrentBall );
+//                            for(Star o:  g.sceneStars)
+//                              o.movedown();
+                            //for (ColorSwitcher o : g.sceneColorSwitcher)
+                              //  o.movedown(g.CurrentBall.getBallShape(),g.CurrentBall.translateTransition );
+                            //g.CurrentBall.translateTransition.play();
+                        }
                         break;
 
-
+                    case DOWN://todo move to exit from game button button
+                        System.out.println("downkey");
+                        timer.cancel();
+                        timer.purge();
+                        break;
+                    default:
+                        System.out.println("defaultkey");
+                        break;
                 }
             }
         });

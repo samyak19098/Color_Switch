@@ -1,5 +1,7 @@
 package sample;
 import javafx.animation.*;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.transform.Rotate;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
@@ -11,7 +13,7 @@ import java.util.ArrayList;
 
 import javafx.scene.shape.*;
 
-public class RingObstacle extends Obstacle{
+public class RingObstacle extends Obstacle {
 
     /*
     radius - radius of the ring obstacle
@@ -27,9 +29,33 @@ public class RingObstacle extends Obstacle{
     private ArrayList<Rotate> rotate_list = new ArrayList<Rotate>();
     private boolean directionClockwise;
 
-    RingObstacle(String type, double speed, int orientation, double radius, double width, double centre_x, double centre_y, boolean direction){
-        super(type,speed,orientation);
-        this.setPosition(new Position(centre_x,centre_y));
+    public void movedown(Ball b) {
+        for (int i = 0; i < 4; i++) {
+            tlist.get(i).setToY(Double.NaN);
+            tlist.get(i).setByY(movedistance);
+
+            //Setting the cycle count for the transition
+            tlist.get(i).setCycleCount(1);
+            tlist.get(i).setDuration(Duration.millis(movtime));
+            //Setting auto reverse value to false
+            // translateTransition.setAutoReverse(false);
+            System.out.println("move down");
+            tlist.get(i).setOnFinished(new EventHandler<ActionEvent>() {//todo: dont create eventhandler  everytime
+                @Override
+                public void handle(ActionEvent t) {
+                    b.atend();
+                }
+            });
+            //Playing the animation
+
+            tlist.get(i).play();
+        }
+        collisionCheck(b);
+    }
+
+    RingObstacle(String type, double speed, int orientation, double radius, double width, double centre_x, double centre_y, boolean direction) {
+        super(type, speed, orientation);
+        this.setPosition(new Position(centre_x, centre_y));
         this.radius = radius;
         this.width = width;
         this.directionClockwise = direction;
@@ -37,28 +63,27 @@ public class RingObstacle extends Obstacle{
 
     @Override
     protected void WayOfMovement() {
-        for(int i = 0 ; i < timelines.size(); i++){
+        for (int i = 0; i < timelines.size(); i++) {
             timelines.get(i).setCycleCount(Animation.INDEFINITE);
             int angle_to_cover;
-            if(directionClockwise == true){
+            if (directionClockwise == true) {
                 angle_to_cover = 360;
-            }
-            else{
+            } else {
                 angle_to_cover = -360;
             }
             timelines.get(i).getKeyFrames().add(new KeyFrame(Duration.millis((this.getObstacleSpeed())), new KeyValue(rotate_list.get(i).angleProperty(), angle_to_cover)));
         }
     }
 
-    public void rotateRing(){
-        for(int i = 0 ; i < timelines.size(); i++){
+    public void rotateRing() {
+        for (int i = 0; i < timelines.size(); i++) {
             timelines.get(i).play();
         }
     }
 
     @Override
-    public void showOnScreen(Group g) {
-        for(int i = 0 ; i < quarters.size(); i++){
+    public void shownOnScreen(Group g) {
+        for (int i = 0; i < quarters.size(); i++) {
             g.getChildren().add(quarters.get(i));
         }
     }
@@ -73,17 +98,22 @@ public class RingObstacle extends Obstacle{
         Path quarter4 = makeQuarter(4);
 
         //adding them to the list of quarters
-        quarters.add(quarter1);quarters.add(quarter2);quarters.add(quarter3);quarters.add(quarter4);
+        quarters.add(quarter1);
+        quarters.add(quarter2);
+        quarters.add(quarter3);
+        quarters.add(quarter4);
 
         /* Making the timelines for each quarter and also the corresponding rotate object ;  the pivots of rotate object are set to the centre coordinates of the obstacle */
-        for(int i = 0; i < quarters.size(); i++){
+        for (int i = 0; i < quarters.size(); i++) {
             Rotate r = new Rotate();
             r.setPivotX(this.getPosition().get_x());
             r.setPivotY(this.getPosition().get_y());
             timelines.add(new Timeline());
             rotate_list.add(r);
             quarters.get(i).getTransforms().add(r);
+            tlist.get(i).setNode(quarters.get(i));
         }
+
 
     }
 
@@ -91,13 +121,13 @@ public class RingObstacle extends Obstacle{
     This function returns a Path type object which represents a particular quarter of the Ring as specified by the quarter number in th argument
      quarter_numbers are as follows : Quarter (12 to 3) - 1 , (3 - 6) - 2, (6 - 9) - 3, (9 - 12)- 4
     */
-    public Path makeQuarter(int quarter_number){
+    public Path makeQuarter(int quarter_number) {
 
         Position obstacleCentre = this.getPosition();
         ArcTo innerArc = new ArcTo();
         ArcTo outerArc = new ArcTo();
         Path path_to_add = new Path();
-        double startX,startY,HLineX,VLineY,outerArcX,outerArcY,innerArcX,innerArcY;
+        double startX, startY, HLineX, VLineY, outerArcX, outerArcY, innerArcX, innerArcY;
         Color c;
         if (quarter_number == 1) {
             startX = obstacleCentre.get_x();
@@ -145,7 +175,7 @@ public class RingObstacle extends Obstacle{
             c = Color.YELLOW;
         }
 
-        MoveTo start_position = new MoveTo(startX,startY);
+        MoveTo start_position = new MoveTo(startX, startY);
         innerArc.setX(innerArcX);
         innerArc.setY(innerArcY);
         outerArc.setX(outerArcX);
@@ -156,7 +186,7 @@ public class RingObstacle extends Obstacle{
         outerArc.setRadiusY(radius + width);
         VLineTo vertical_line = new VLineTo(VLineY);
         HLineTo horizontal_line = new HLineTo(HLineX);
-        path_to_add.getElements().addAll(start_position,innerArc,horizontal_line,outerArc,vertical_line);
+        path_to_add.getElements().addAll(start_position, innerArc, horizontal_line, outerArc, vertical_line);
         path_to_add.setFill(c);
 
         return path_to_add;
@@ -164,6 +194,83 @@ public class RingObstacle extends Obstacle{
 
     public ArrayList<Path> getQuarters() {
         return quarters;
+    }
+    public void pauseRing(){
+        for(int i=0;i<timelines.size();i++){
+            timelines.get(i).pause();
+        }
+        for(int i=0;i<rotate_list.size();i++){
+            System.out.println("angle of ring "+(i));
+            System.out.println(":"+rotate_list.get(i).getAngle());
+        }
+
+    }
+    public boolean collisionCheck(Ball b) {
+        //returns true  if collision occurs
+        //otherwise false
+        int i = -1;
+        //System.out.println("will do");
+//        System.out.println("b.getShape().getTranslateX():" + b.getBallShape().getTranslateX());
+//        System.out.println("b.getShape().getTranslateY():" + b.getBallShape().getTranslateY());
+//        System.out.println("b.getPosition().get_x():" + b.getPosition().get_x());
+//        System.out.println("b.getPosition().get_y():" + b.getPosition().get_y());
+//        System.out.println("b.getPosition().getRadius():" + b.getRadius());
+
+        //matching color
+        for (i = 0; i < 4; i++) {
+            if (b.getColor() == quarters.get(i).getFill()) {
+                break;
+            }
+        }
+//        System.out.println("i:" + i);
+//        System.out.println(b.getColor() == quarters.get(i).getFill());
+        double ang = rotate_list.get(i).getAngle();
+//        System.out.println("ang:" + ang);
+        //cal=distance b/w centers
+        double cal = b.getPosition().get_y() + b.getBallShape().getTranslateY() - position.get_y() - quarters.get(i).getTranslateY();
+//        System.out.println("quarters.get(i).getTranslateY():" + quarters.get(i).getTranslateY());
+//        System.out.println("cal:" + cal);
+        ang -= (i * 90);
+//        System.out.println("ang2:" + ang);
+        //So that angle is b/w 0 and 360
+        ang = adjust(ang);
+//        System.out.println("ang3:" + ang);
+        if (cal > 0) {//when ball is near bottom of obstacle
+//            System.out.println("(radius - b.getRadius()) <= (cal):" +( (radius - b.getRadius()) <= (cal)));
+//            System.out.println("(radius + b.getRadius()) >= (cal):" +( (radius + b.getRadius()) >= (cal)));
+//            System.out.println("1:" + ((radius - b.getRadius()) <= (cal)));
+//            System.out.println("2:" + (cal <= (radius + b.getRadius()+width)));
+//            System.out.println("2.1:" +cal);
+//                    System.out.println("2.2:" +(radius + b.getRadius()+width));
+            if (((radius - b.getRadius()) <= (cal)) && (cal <= (radius + b.getRadius()+width))) {
+
+                if (((90) <= ang) && (ang < 180))
+                    return false;//same color
+                else
+                    return true;//different color
+            }
+        }
+        if (cal < 0) {//when ball is near top of obstacle
+            if (((radius - b.getRadius()) <= (-cal)) && ((-cal) <= (radius + b.getRadius()+width))) {
+//                System.out.println("3:" + ((radius - b.getRadius()) <= (-cal)));
+//                System.out.println("4:" + ((-cal) <= (radius + b.getRadius())));
+                if ((270 <= ang) && (ang < 360))
+                    return false;
+                else
+                    return true;
+            }
+        }
+        //System.out.println("b.getShape().getTranslateY():"+b.getBallShape().getr());
+
+        return false;
+    }
+    public static double adjust(double ang){
+        while(!(0<=ang && ang <360)){
+            ang+=360;
+        }
+        return ang;
+
+
     }
 
 }
