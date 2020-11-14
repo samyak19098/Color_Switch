@@ -30,6 +30,11 @@ public class ConcentricObstacle extends Obstacle{
     }
 
     @Override
+    protected void movedown(Ball b) {
+
+    }
+
+    @Override
     protected void WayOfMovement() {
         for(int i = 0 ; i < rings.get(0).getTimelines().size(); i++){
             rings.get(0).getTimelines().get(i).setCycleCount(Animation.INDEFINITE);
@@ -50,15 +55,17 @@ public class ConcentricObstacle extends Obstacle{
     }
 
     @Override
-    public void showOnScreen(Group g) {
-        rings.get(0).showOnScreen(g);
-        rings.get(1).showOnScreen(g);
+    public void shownOnScreen(Group g) {
+
     }
 
     public void rotateConcentric(){
         rings.get(0).rotateRing();
         rings.get(1).rotateRing();
     }
+
+
+
     @Override
     public void draw() {
 
@@ -74,5 +81,10 @@ public class ConcentricObstacle extends Obstacle{
         rings.add(ring1);
         rings.add(ring2);
 
+    }
+
+    @Override
+    public boolean collisionCheck(Ball b) {
+        return false;
     }
 }

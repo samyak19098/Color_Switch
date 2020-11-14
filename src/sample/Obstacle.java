@@ -9,6 +9,28 @@ public abstract class Obstacle extends GameObject{
     private double ObstacleSpeed;
     private int Orientation;
     protected ArrayList<TranslateTransition> tlist;
+
+    public void pauseRing(){
+        System.out.println("");
+    }
+    Obstacle(String type, double speed, int orientation){
+        this.ObstacleType = type;
+        this.ObstacleSpeed = speed;
+        this.Orientation = orientation;
+        this.tlist=new ArrayList<TranslateTransition>();
+        for(int i=0;i<4;i++){
+            tlist.add(new TranslateTransition());
+            tlist.get(i).setDuration(Duration.millis(250));
+        }
+
+
+
+    }
+    protected abstract void movedown(Ball b);
+
+
+    protected abstract void WayOfMovement();
+
     public String getObstacleType() {
         return this.ObstacleType;
     }
@@ -32,28 +54,6 @@ public abstract class Obstacle extends GameObject{
     public void setOrientation(int orientation) {
         this.Orientation = orientation;
     }
-
-
-    public void pauseRing(){
-        System.out.println("");
-    }
-    Obstacle(String type, double speed, int orientation){
-        this.ObstacleType = type;
-        this.ObstacleSpeed = speed;
-        this.Orientation = orientation;
-        this.tlist=new ArrayList<TranslateTransition>();
-        for(int i=0;i<4;i++){
-            tlist.add(new TranslateTransition());
-            tlist.get(i).setDuration(Duration.millis(250));
-        }
-
-
-
-    }
-    protected abstract void movedown(Ball b);
-
-
-    protected abstract void WayOfMovement();
 
 
 }

@@ -1,6 +1,7 @@
 package sample;
 //https://gist.github.com/jewelsea/4569878
 import javafx.animation.TranslateTransition;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
@@ -15,18 +16,10 @@ public class Ball extends GameObject {
     private Color BallColor;
     private Shape BallShape;
     private double radius;
-
-
-    public TranslateTransition getTranslateTransition() {
-        return translateTransition;
-    }
-
-//    private Trail BallTrail;
+//    private Trail BallTrail;todo
     private TranslateTransition translateTransition;
 
-    public Shape getBallShape() {
-        return BallShape;
-    }
+
 
     public Ball(Color c, Shape s) {
 
@@ -50,52 +43,60 @@ public class Ball extends GameObject {
 
     }
 
-    public void setShape(Shape s) {
-        BallShape = s;
 
-    }
 
     public void MoveBall() {
-        translateTransition.stop();
-        translateTransition.setToY(Double.NaN);
-        translateTransition.setByY(- movedistance);
+        Platform.runLater(() -> {
+            translateTransition.stop();
+            translateTransition.setToY(Double.NaN);
+            translateTransition.setByY(-movedistance);
 
-        //Setting the cycle count for the transition
-        translateTransition.setCycleCount(1);
-        translateTransition.setDuration(Duration.millis(movtime));
-        //Setting auto reverse value to false
-        // translateTransition.setAutoReverse(false);
-//        System.out.println("move up");
+            //Setting the cycle count for the transition
+            translateTransition.setCycleCount(1);
+            translateTransition.setDuration(Duration.millis(movtime));
+            //Setting auto reverse value to false
+            // translateTransition.setAutoReverse(false);
+            System.out.println("move up");
 
-        //Playing the animation
-        translateTransition.setOnFinished(new EventHandler<ActionEvent>() {//todo: dont create eventhandler  everytime
-            @Override public void handle(ActionEvent t ) {
-                atend( );
-            }
+            //Playing the animation
+            translateTransition.setOnFinished(new EventHandler<ActionEvent>() {//todo: dont create eventhandler  everytime
+                @Override
+                public void handle(ActionEvent t) {
+                    atend();
+                }
+            });
+            translateTransition.play();
         });
-        translateTransition.play();
     }
     public void atend(){
-        double a=  BallShape.getTranslateX();
+        Platform.runLater(() -> {
+            double a = BallShape.getTranslateX();
+            System.out.println("move ball down ");
 //        System.out.println("circle.getTranslateX():"+BallShape.getTranslateX());
 //        System.out.println("circle.getTranslateY():"+BallShape.getTranslateY());
 //        System.out.println("circle.getCenterY():"+circle.getCenterY());
 //        System.out.println("circle.getCenterX():"+circle.getCenterX());
-        translateTransition.setToY(0.0);
-        translateTransition.setCycleCount(1);
-        translateTransition.setDuration(Duration.millis(movtime));
-        translateTransition.play();
-        translateTransition.setOnFinished(null);
+            translateTransition.setToY(0.0);
+            translateTransition.setCycleCount(1);
+            translateTransition.setDuration(Duration.millis(movtime));
+            translateTransition.play();
+            translateTransition.setOnFinished(null);
+        });
 
     }
 
     @Override
     public void shownOnScreen(Group g) {
-
+        Platform.runLater(() -> {
             g.getChildren().add(BallShape);
+        });
 
     }
-
+    @Override
+    public  boolean collisionCheck(Ball b){
+        System.out.println("error");
+        return true;
+    }
     public void draw() {
 
     }
@@ -110,17 +111,22 @@ public class Ball extends GameObject {
 
     public void setColor(Color c) {
         BallColor = c;
-        BallShape.setFill(c);
+        Platform.runLater(() -> {
+            BallShape.setFill(c);
+        });
 
     }
-    @Override
-    public  boolean collisionCheck(Ball b){
-        System.out.println("error");
-        return true;
+    public TranslateTransition getTranslateTransition() {
+        return translateTransition;
     }
+
     public  double getRadius() {
         return radius;
     }
-
-
+    public Shape getBallShape() {
+        return BallShape;
+    }
+    public void setShape(Shape s) {
+        BallShape = s;
+    }
 }

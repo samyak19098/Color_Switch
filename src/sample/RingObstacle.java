@@ -1,5 +1,6 @@
 package sample;
 import javafx.animation.*;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.transform.Rotate;
@@ -30,27 +31,29 @@ public class RingObstacle extends Obstacle {
     private boolean directionClockwise;
 
     public void movedown(Ball b) {
-        for (int i = 0; i < 4; i++) {
-            tlist.get(i).setToY(Double.NaN);
-            tlist.get(i).setByY(movedistance);
+        Platform.runLater(() -> {
+                    for (int i = 0; i < 4; i++) {
+                        tlist.get(i).setToY(Double.NaN);
+                        tlist.get(i).setByY(movedistance);
 
-            //Setting the cycle count for the transition
-            tlist.get(i).setCycleCount(1);
-            tlist.get(i).setDuration(Duration.millis(movtime));
-            //Setting auto reverse value to false
-            // translateTransition.setAutoReverse(false);
-            System.out.println("move down");
-            tlist.get(i).setOnFinished(new EventHandler<ActionEvent>() {//todo: dont create eventhandler  everytime
-                @Override
-                public void handle(ActionEvent t) {
-                    b.atend();
-                }
-            });
-            //Playing the animation
+                        //Setting the cycle count for the transition
+                        tlist.get(i).setCycleCount(1);
+                        tlist.get(i).setDuration(Duration.millis(movtime));
+                        //Setting auto reverse value to false
+                        // translateTransition.setAutoReverse(false);
+                        System.out.println("move down");
+                        tlist.get(i).setOnFinished(new EventHandler<ActionEvent>() {//todo: dont create eventhandler  everytime
+                            @Override
+                            public void handle(ActionEvent t) {
+                                b.atend();
+                            }
+                        });
+                        //Playing the animation
 
-            tlist.get(i).play();
-        }
-        collisionCheck(b);
+                        tlist.get(i).play();
+                    }
+                });
+//        collisionCheck(b);
     }
 
     RingObstacle(String type, double speed, int orientation, double radius, double width, double centre_x, double centre_y, boolean direction) {

@@ -1,4 +1,7 @@
 package sample;
+//https://www.geeksforgeeks.org/javafx-background-class/
+
+
 
 import javafx.animation.*;
 import javafx.application.Application;
@@ -10,6 +13,7 @@ import javafx.stage.Stage;
 import javafx.animation.PathTransition.OrientationType;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.geometry.Pos;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.CubicCurveTo;
 import javafx.scene.shape.MoveTo;
@@ -24,8 +28,10 @@ import javafx.scene.control.Button;
 import javafx.geometry.VPos;
 import javafx.scene.Node;
 import javafx.scene.Group;
+import javafx.scene.paint.Color;
 import javafx.scene.Scene;
 import javafx.scene.Scene;
+import javafx.scene.image.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
@@ -44,7 +50,7 @@ public class Main extends Application {
     private static  double screenwidth=1200;
     private static double screenheight=800;
     private final int movedistance = 100;//distance moved in one move
-
+    private final int movtime=250;
     @Override
     public void start(Stage primaryStage) throws Exception{
 
@@ -184,12 +190,16 @@ public class Main extends Application {
 //        t4.setCycleCount(Animation.INDEFINITE);
 //        t4.getKeyFrames().add(new KeyFrame(Duration.millis((3000)), new KeyValue(rotate4.angleProperty(), 360)));
 //        t4.play();
-        GameMain gm=new GameMain();
-        GameState g =new GameState();
+
+        Group root = new Group();
+        GameMain gm=new GameMain(root);
+        Star s=new Star(600,300);
+        GameState g =new GameState(s);
         gm.setCurrentGameState(g);
 
 
-        Group root = new Group();
+
+
 
 
         Scene scene = new Scene(root,screenwidth,screenheight, Color.BLACK);
@@ -201,7 +211,7 @@ public class Main extends Application {
 
         //timer checks collions after every 1s
         // to stop the timer ,use down arrow key
-        moveBallOnKeyPress(scene, gm.getCurrentGameState(),timer);
+        moveBallOnKeyPress(scene, gm ,timer,s);
 
         primaryStage.setScene(scene);
         primaryStage.setTitle("Path Transition Example");
@@ -219,23 +229,34 @@ public class Main extends Application {
 //
 //        }
     }
-    private void moveBallOnKeyPress(Scene scene,  GameState g,Timer timer) {
+    private void moveBallOnKeyPress(Scene scene,  GameMain gm,Timer timer,Star s) {
         scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override public void handle(KeyEvent event) {
                 switch (event.getCode()) {
                     case UP:
                         //g.debug();
-                        if((600.0f+g.CurrentBall.getBallShape().getTranslateY()-movedistance)> (screenheight/2))
-                        g.CurrentBall.MoveBall();
+                        if((600.0f+ gm.getCurrentGameState().getCurrentBall().getBallShape().getTranslateY()-movedistance)> (screenheight/2))
+                            gm.getCurrentGameState().getCurrentBall().MoveBall();
                         else {
-                            g.CurrentBall.getTranslateTransition().stop();
+                            gm.getCurrentGameState().getCurrentBall().getTranslateTransition().stop();
                             //g.CurrentBall.translateTransition.setByY(0);
                             //g.CurrentBall.translateTransition.setCycleCount(1);
                             //g.CurrentBall.translateTransition.setDuration(Duration.millis(0));
-                            for (Obstacle o : g.sceneObstacles)
-                                o.movedown(g.CurrentBall );
-//                            for(Star o:  g.sceneStars)
-//                              o.movedown();
+                            boolean fl=false;
+                            for (Obstacle o : gm.getCurrentGameState().getSceneObstacles()) {
+                                fl=true;
+                                o.movedown(gm.getCurrentGameState().getCurrentBall());
+                            }
+                            for(Star o: gm.getCurrentGameState().getSceneStars()) {
+                                fl=true;
+                                o.movedown(gm.getCurrentGameState().getCurrentBall());
+                            }
+                            for(ColorSwitcher o: gm.getCurrentGameState().getSceneColorSwitcher()) {
+                                fl=true;
+                                o.movedown(gm.getCurrentGameState().getCurrentBall());
+                            }
+                            if(!fl)
+                                gm.getCurrentGameState().getCurrentBall().atend();
                             //for (ColorSwitcher o : g.sceneColorSwitcher)
                               //  o.movedown(g.CurrentBall.getBallShape(),g.CurrentBall.translateTransition );
                             //g.CurrentBall.translateTransition.play();
@@ -246,6 +267,81 @@ public class Main extends Application {
                         System.out.println("downkey");
                         timer.cancel();
                         timer.purge();
+                        break;
+                    case LEFT:
+                        System.out.println("leftkey");
+                        s.getPolygon().setVisible(false);
+                        gm.getCurrentGameState().getSceneColorSwitcher().remove(s);
+                        gm.getGrp().getChildren().remove(s);
+                        gm.getCurrentGameState().getSceneStars().remove(s);
+//                        primaryStage.show();
+                        break;
+                    case RIGHT:
+                        System.out.println("rightkey");
+//                        scoretext.setText(""+1);
+
+//                          primaryStage.show();
+                        break;
+                    case W:
+
+                        System.out.println("circle.getTranslateX():"+ gm.getCurrentGameState().getCurrentBall().getBallShape().getTranslateX());
+                        System.out.println("circle.getTranslateY():"+ gm.getCurrentGameState().getCurrentBall().getBallShape().getTranslateY());
+                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().stop();
+                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().setToY(Double.NaN);
+                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().setToX(Double.NaN);
+                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().setByX( 0);
+                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().setByY(- movedistance);
+
+                        //Setting the cycle count for the transition
+                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().setCycleCount(1);
+                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().setDuration(Duration.millis(movtime));
+                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().setOnFinished(null) ;
+                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().play();
+                       break;
+                    case A:
+                        System.out.println("circle.getTranslateX():"+ gm.getCurrentGameState().getCurrentBall().getBallShape().getTranslateX());
+                        System.out.println("circle.getTranslateY():"+ gm.getCurrentGameState().getCurrentBall().getBallShape().getTranslateY());
+                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().stop();
+                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().setToX(Double.NaN);
+                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().setToY(Double.NaN);
+                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().setByY( 0);
+                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().setByX(- movedistance);
+
+                        //Setting the cycle count for the transition
+                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().setCycleCount(1);
+                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().setDuration(Duration.millis(movtime));
+                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().setOnFinished(null) ;
+                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().play();
+                        break;
+                    case S:
+                        System.out.println("circle.getTranslateX():"+ gm.getCurrentGameState().getCurrentBall().getBallShape().getTranslateX());
+                        System.out.println("circle.getTranslateY():"+ gm.getCurrentGameState().getCurrentBall().getBallShape().getTranslateY());
+                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().stop();
+                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().setToY(Double.NaN);
+                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().setToX(Double.NaN);
+                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().setByX( 0);
+                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().setByY( movedistance);
+
+                        //Setting the cycle count for the transition
+                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().setCycleCount(1);
+                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().setDuration(Duration.millis(movtime));
+                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().setOnFinished(null) ;
+                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().play();
+                        break;
+                    case D:
+                        System.out.println("circle.getTranslateX():"+ gm.getCurrentGameState().getCurrentBall().getBallShape().getTranslateX());
+                        System.out.println("circle.getTranslateY():"+ gm.getCurrentGameState().getCurrentBall().getBallShape().getTranslateY());
+                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().stop();
+                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().setToX(Double.NaN);
+                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().setToY(Double.NaN);
+                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().setByY( 0);
+                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().setByX( movedistance);
+
+                        //Setting the cycle count for the transition
+                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().setCycleCount(1);
+                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().setDuration(Duration.millis(movtime));
+                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().setOnFinished(null) ;
+                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().play();
                         break;
                     default:
                         System.out.println("defaultkey");
@@ -261,3 +357,6 @@ public class Main extends Application {
 }
 
 //This is a branch
+//
+//
+
