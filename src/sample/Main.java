@@ -193,8 +193,8 @@ public class Main extends Application {
 
         Group root = new Group();
         GameMain gm=new GameMain(root);
-        Star s=new Star(600,300);
-        GameState g =new GameState(s);
+//        Star s=new Star(600,300);
+        GameState g =new GameState();
         gm.setCurrentGameState(g);
 
 
@@ -211,7 +211,7 @@ public class Main extends Application {
 
         //timer checks collions after every 1s
         // to stop the timer ,use down arrow key
-        moveBallOnKeyPress(scene, gm ,timer,s);
+        moveBallOnKeyPress(scene, gm ,timer);
 
         primaryStage.setScene(scene);
         primaryStage.setTitle("Path Transition Example");
@@ -229,7 +229,7 @@ public class Main extends Application {
 //
 //        }
     }
-    private void moveBallOnKeyPress(Scene scene,  GameMain gm,Timer timer,Star s) {
+    private void moveBallOnKeyPress(Scene scene,  GameMain gm,Timer timer) {
         scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override public void handle(KeyEvent event) {
                 switch (event.getCode()) {
@@ -270,10 +270,10 @@ public class Main extends Application {
                         break;
                     case LEFT:
                         System.out.println("leftkey");
-                        s.getPolygon().setVisible(false);
-                        gm.getCurrentGameState().getSceneColorSwitcher().remove(s);
-                        gm.getGrp().getChildren().remove(s);
-                        gm.getCurrentGameState().getSceneStars().remove(s);
+//                        s.getPolygon().setVisible(false);
+//                        gm.getCurrentGameState().getSceneColorSwitcher().remove(s);
+//                        gm.getGrp().getChildren().remove(s);
+//                        gm.getCurrentGameState().getSceneStars().remove(s);
 //                        primaryStage.show();
                         break;
                     case RIGHT:

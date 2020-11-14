@@ -23,7 +23,7 @@ public class GameState {
     private ArrayList<Star>   sceneStars;
     private ArrayList<ColorSwitcher>   sceneColorSwitcher;
 
-    public GameState(Star st){
+    public GameState(){
         scoretext = new Label(""+numStarsinGame);
         scoretext.setAlignment(Pos.TOP_LEFT);
         scoretext.setTextFill(Color.WHITE);
@@ -34,13 +34,13 @@ public class GameState {
         sceneObstacles=new ArrayList<Obstacle>();
         sceneStars=new ArrayList<Star>();
         sceneColorSwitcher=new ArrayList<ColorSwitcher>();
-        CurrentBall=new Ball(Color.PURPLE,600.0f,600.0f,20.0f);
-//        RingObstacle ringObstacle = new RingObstacle("Ring", 6000, 0, 100,20, 600, 50, true);
-//        ringObstacle.draw();
+        CurrentBall=new Ball(Color.DEEPPINK,600.0f,600.0f,20.0f);
+        RingObstacle ringObstacle = new RingObstacle("Ring", 6000, 0, 100,20, 600, 50, true);
+        ringObstacle.draw();
 
-//        ringObstacle.WayOfMovement();
-//        ringObstacle.rotateRing();
-//        sceneObstacles.add(ringObstacle);
+        ringObstacle.WayOfMovement();
+        ringObstacle.rotateRing();
+        sceneObstacles.add(ringObstacle);
 //        sceneStars.add(st);
 //        sceneColorSwitcher.add(st);
 
@@ -115,9 +115,9 @@ public class GameState {
                 System.out.println("numStarsinGame:"+numStarsinGame);
                 break;
             }
-            System.out.println("d1:");
+//            System.out.println("d1:");
         }
-        System.out.println("d2:");
+//        System.out.println("d2:");
     }
 
     public long getNumStarsinGame() {
