@@ -18,11 +18,11 @@ public class Star extends GameObject{
 
 
     //    private Trail BallTrail;
-    private TranslateTransition translateTransition;
+
     public Star( ) {
     }
     public Star(double x,double y){
-        translateTransition=new TranslateTransition();
+         super();
         position=new Position(x,y);
         polygon   = new Polygon();
         Double[] ar=new Double[]{//y-axis is inverted
@@ -121,8 +121,7 @@ public class Star extends GameObject{
     }
 
     public void shownOnScreen(Group g) {
-        System.out.println( g.getChildren());
-        System.out.println(polygon);
+
             g.getChildren().add(polygon);
 
     }

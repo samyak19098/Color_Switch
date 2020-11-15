@@ -79,9 +79,13 @@ public class RingObstacle extends Obstacle {
     }
 
     public void rotateRing() {
-        for (int i = 0; i < timelines.size(); i++) {
-            timelines.get(i).play();
-        }
+        Platform.runLater(() -> {
+            System.out.println("rotating");
+            for (int i = 0; i < timelines.size(); i++) {
+                timelines.get(i).play();
+            }
+        });
+
     }
 
     @Override
@@ -198,14 +202,29 @@ public class RingObstacle extends Obstacle {
     public ArrayList<Path> getQuarters() {
         return quarters;
     }
-    public void pauseRing(){
-        for(int i=0;i<timelines.size();i++){
-            timelines.get(i).pause();
-        }
-        for(int i=0;i<rotate_list.size();i++){
-            System.out.println("angle of ring "+(i));
-            System.out.println(":"+rotate_list.get(i).getAngle());
-        }
+    @Override
+    public void Resume(){
+        Platform.runLater(() -> {
+            rotateRing();
+            for (int i = 0; i < tlist.size(); i++) {
+
+                tlist.get(i).play();
+            }
+        });
+
+    }
+    @Override
+    public void Pause(){
+       Platform.runLater(() -> {
+            for (int i = 0; i < timelines.size(); i++) {
+                timelines.get(i).pause();
+                tlist.get(i).pause();
+            }
+//            for (int i = 0; i < rotate_list.size(); i++) {
+//                System.out.println("angle of ring " + (i));
+//                System.out.println(":" + rotate_list.get(i).getAngle());
+//            }
+        });
 
     }
     public boolean collisionCheck(Ball b) {
@@ -233,7 +252,7 @@ public class RingObstacle extends Obstacle {
         double cal = b.getPosition().get_y() + b.getBallShape().getTranslateY() - position.get_y() - quarters.get(i).getTranslateY();
 //        System.out.println("quarters.get(i).getTranslateY():" + quarters.get(i).getTranslateY());
 //        System.out.println("cal:" + cal);
-        ang -= (i * 90);
+        ang += (i * 90);
 //        System.out.println("ang2:" + ang);
         //So that angle is b/w 0 and 360
         ang = adjust(ang);
@@ -269,7 +288,7 @@ public class RingObstacle extends Obstacle {
     }
     public static double adjust(double ang){
         while(!(0<=ang && ang <360)){
-            ang+=360;
+            ang-=360;
         }
         return ang;
 

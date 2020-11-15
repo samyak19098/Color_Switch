@@ -1,8 +1,10 @@
 package sample;
 
 import javafx.animation.TranslateTransition;
+import javafx.application.Platform;
 import javafx.scene.Group;
 import javafx.scene.shape.Shape;
+import javafx.util.Duration;
 
 public abstract class GameObject   {
 
@@ -10,7 +12,7 @@ public abstract class GameObject   {
     protected final int movedistance = 100;
     protected final int movtime=250;
     //    private Trail BallTrail;
-
+    protected TranslateTransition translateTransition;
     protected Position position;
     public abstract void shownOnScreen(Group g);
 
@@ -24,9 +26,24 @@ public abstract class GameObject   {
     }
 
     public GameObject(){
-
+        translateTransition = new TranslateTransition();
+        translateTransition.setDuration(Duration.millis(movtime));
 
         //Setting the node for the transition
+
+    }
+
+    public void Pause( ) {
+        Platform.runLater(() -> {
+            translateTransition.pause();
+        });
+
+    }
+
+    public void Resume( ) {
+        Platform.runLater(() -> {
+            translateTransition.play();
+        });
 
     }
 

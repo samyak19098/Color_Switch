@@ -27,10 +27,10 @@ public class GameState {
         scoretext = new Label(""+numStarsinGame);
         scoretext.setAlignment(Pos.TOP_LEFT);
         scoretext.setTextFill(Color.WHITE);
-        System.out.println("x:"+scoretext.getLayoutX());
-        System.out.println("y:"+scoretext.getLayoutY());
-        System.out.println("hei:"+scoretext.getHeight());
-        System.out.println("wi:"+scoretext.getWidth());
+//        System.out.println("x:"+scoretext.getLayoutX());
+//        System.out.println("y:"+scoretext.getLayoutY());
+//        System.out.println("hei:"+scoretext.getHeight());
+//        System.out.println("wi:"+scoretext.getWidth());
         sceneObstacles=new ArrayList<Obstacle>();
         sceneStars=new ArrayList<Star>();
         sceneColorSwitcher=new ArrayList<ColorSwitcher>();
@@ -41,8 +41,8 @@ public class GameState {
         ringObstacle.WayOfMovement();
         ringObstacle.rotateRing();
         sceneObstacles.add(ringObstacle);
-//        sceneStars.add(st);
-//        sceneColorSwitcher.add(st);
+        sceneStars.add(new Star(600,50));
+       sceneColorSwitcher.add(new ColorSwitcher(600,200,20));
 
     }
 
@@ -108,11 +108,12 @@ public class GameState {
         for(Obstacle s: sceneObstacles) {
             if (s.collisionCheck(CurrentBall)) {
                 System.out.println("collided3!!");
+                System.out.println("12");
                 //todo remove obstacles
                 //s.polygon.setVisible(false);
 //                sceneObstacles.remove(s);
 //                g.getChildren().remove(s);
-                System.out.println("numStarsinGame:"+numStarsinGame);
+//                System.out.println("numStarsinGame:"+numStarsinGame);
                 break;
             }
 //            System.out.println("d1:");

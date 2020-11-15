@@ -343,6 +343,13 @@ public class Main extends Application {
                         gm.getCurrentGameState().getCurrentBall().getTranslateTransition().setOnFinished(null) ;
                         gm.getCurrentGameState().getCurrentBall().getTranslateTransition().play();
                         break;
+                    case P://pause
+                        gm.Pause();
+                        break;
+
+                    case R://pause
+                        gm.continueGame();
+                        break;
                     default:
                         System.out.println("defaultkey");
                         break;

@@ -17,7 +17,7 @@ public class Ball extends GameObject {
     private Shape BallShape;
     private double radius;
 //    private Trail BallTrail;todo
-    private TranslateTransition translateTransition;
+
 
 
 
@@ -25,12 +25,12 @@ public class Ball extends GameObject {
 
     }
     public Ball(Color c,double x,double y,double r) {
+        super();
         BallColor = c;
 
         BallShape=new Circle(x,y,r,c);
 //        BallTrail = t;
-        translateTransition = new TranslateTransition();
-        translateTransition.setDuration(Duration.millis(movtime));
+
 
         //Setting the node for the transition
         translateTransition.setNode(BallShape);
@@ -56,7 +56,7 @@ public class Ball extends GameObject {
             translateTransition.setDuration(Duration.millis(movtime));
             //Setting auto reverse value to false
             // translateTransition.setAutoReverse(false);
-            System.out.println("move up");
+//            System.out.println("move up");
 
             //Playing the animation
             translateTransition.setOnFinished(new EventHandler<ActionEvent>() {//todo: dont create eventhandler  everytime
@@ -71,7 +71,7 @@ public class Ball extends GameObject {
     public void atend(){
         Platform.runLater(() -> {
             double a = BallShape.getTranslateX();
-            System.out.println("move ball down ");
+//            System.out.println("move ball down ");
 //        System.out.println("circle.getTranslateX():"+BallShape.getTranslateX());
 //        System.out.println("circle.getTranslateY():"+BallShape.getTranslateY());
 //        System.out.println("circle.getCenterY():"+circle.getCenterY());

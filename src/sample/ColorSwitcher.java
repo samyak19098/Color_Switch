@@ -15,7 +15,7 @@ public class ColorSwitcher extends GameObject implements SpecialObject{
 
 
     private Circle circle;
-    private  TranslateTransition translateTransition;
+
     static HashMap<Integer,Color> map=new HashMap<Integer,Color>();
     static {
         map.put(0,Color.PURPLE);
