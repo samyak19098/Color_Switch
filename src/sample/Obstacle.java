@@ -1,6 +1,7 @@
 package sample;
 import java.util.*;
 import javafx.animation.TranslateTransition;
+import javafx.scene.Group;
 import javafx.util.Duration;
 
 public abstract class Obstacle extends GameObject{
@@ -10,7 +11,9 @@ public abstract class Obstacle extends GameObject{
     private int Orientation;
     protected ArrayList<TranslateTransition> tlist;
 
-
+    public void pauseRing(){
+        System.out.println("");
+    }
     Obstacle(String type, double speed, int orientation){
         this.ObstacleType = type;
         this.ObstacleSpeed = speed;
@@ -24,7 +27,10 @@ public abstract class Obstacle extends GameObject{
 
 
     }
-    protected abstract void movedown(Ball b);
+    public void removeself(Group grp){
+
+    }
+    public abstract void movedown(Ball b);
 
 
     protected abstract void WayOfMovement();
@@ -54,4 +60,7 @@ public abstract class Obstacle extends GameObject{
     }
 
 
+    public boolean outofBounds() {
+        return true;
+    }
 }

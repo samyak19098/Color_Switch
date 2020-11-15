@@ -30,7 +30,7 @@ public class ConcentricObstacle extends Obstacle{
     }
 
     @Override
-    protected void movedown(Ball b) {
+    public void movedown(Ball b) {
 
     }
 

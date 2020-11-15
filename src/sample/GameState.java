@@ -5,6 +5,7 @@ import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.application.Platform;
+import javafx.scene.shape.Path;
 
 
 import java.util.*;
@@ -47,6 +48,20 @@ public class GameState {
     }
 
 
+    public void RemoveObstacles(Group grp){
+
+        for(Obstacle s: sceneObstacles){
+
+            if(s.outofBounds()){
+//                s.removeself(grp);
+//                sceneObstacles.remove(s);
+
+            }
+        }
+    }
+    public void AddObjects(Group grp){
+
+    }
 
     public void incNumStarsinGame( ) {
         this.numStarsinGame +=1;

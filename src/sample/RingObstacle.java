@@ -63,7 +63,19 @@ public class RingObstacle extends Obstacle {
         this.width = width;
         this.directionClockwise = direction;
     }
-
+    @Override
+    public boolean outofBounds(){
+        if((position.get_y()-radius)>screenheight)
+          return true;
+        return false;
+    }
+    @Override
+    public void removeself(Group grp){
+        for(Path p: quarters) {
+            p.setVisible(false);
+            grp.getChildren().remove(p);
+        }
+    }
     @Override
     protected void WayOfMovement() {
         for (int i = 0; i < timelines.size(); i++) {
@@ -301,6 +313,9 @@ public class RingObstacle extends Obstacle {
 
     public ArrayList<Rotate> getRotate_list() {
         return rotate_list;
+    }
+    public ArrayList<Path> getQuarters() {
+        return quarters;
     }
 
 }

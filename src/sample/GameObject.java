@@ -7,7 +7,8 @@ import javafx.scene.shape.Shape;
 import javafx.util.Duration;
 
 public abstract class GameObject   {
-
+    protected  static   double screenwidth=1200;
+    protected static  double screenheight=800;
 
     protected final int movedistance = 100;
     protected final int movtime=250;

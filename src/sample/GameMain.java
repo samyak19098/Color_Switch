@@ -16,6 +16,8 @@ public class GameMain extends TimerTask {
 
     public void run( ) {
         CurrentGameState.checkAllcollisions(grp);
+        CurrentGameState.RemoveObstacles(grp);
+        CurrentGameState.AddObjects(grp);
         //System.out.println("Timer ran ");
     }
     public void Pause(){
