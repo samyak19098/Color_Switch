@@ -314,8 +314,5 @@ public class RingObstacle extends Obstacle {
     public ArrayList<Rotate> getRotate_list() {
         return rotate_list;
     }
-    public ArrayList<Path> getQuarters() {
-        return quarters;
-    }
 
 }

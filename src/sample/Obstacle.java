@@ -11,9 +11,7 @@ public abstract class Obstacle extends GameObject{
     private int Orientation;
     protected ArrayList<TranslateTransition> tlist;
 
-    public void pauseRing(){
-        System.out.println("");
-    }
+
     Obstacle(String type, double speed, int orientation){
         this.ObstacleType = type;
         this.ObstacleSpeed = speed;
