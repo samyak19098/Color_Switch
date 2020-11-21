@@ -220,7 +220,7 @@ public class GameState {
 //                            mp_GameOver.stop();
 //                            mp_GameOver.play();
 //                        });
-                //throw new GameOverException("struck an obstacle");
+                throw new GameOverException("struck an obstacle");
             }
 //            System.out.println("d1:");
         }

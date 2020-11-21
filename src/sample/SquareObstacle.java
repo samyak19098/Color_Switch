@@ -139,7 +139,7 @@ public class SquareObstacle extends Obstacle {
     }
     @Override
     public boolean collisionCheck(Ball b)  {
-        return true;
+        return false;
     }
     @Override
     public void movedown(Ball b) {
