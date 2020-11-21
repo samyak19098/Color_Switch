@@ -59,6 +59,6 @@ public abstract class Obstacle extends GameObject{
 
 
     public boolean outofBounds() {
-        return true;
+        return false;
     }
 }

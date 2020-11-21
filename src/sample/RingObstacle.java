@@ -3,6 +3,7 @@ import javafx.animation.*;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.Parent;
 import javafx.scene.transform.Rotate;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
@@ -30,9 +31,17 @@ public class RingObstacle extends Obstacle {
     private ArrayList<Rotate> rotate_list = new ArrayList<Rotate>();
     private boolean directionClockwise;
 
+    RingObstacle(String type, double speed, int orientation, double radius, double width, double centre_x, double centre_y, boolean direction) {
+        super(type, speed, orientation);
+        this.setPosition(new Position(centre_x, centre_y));
+        this.radius = radius;
+        this.width = width;
+        this.directionClockwise = direction;
+    }
     public void movedown(Ball b) {
         Platform.runLater(() -> {
                     for (int i = 0; i < 4; i++) {
+                        tlist.get(i).stop();
                         tlist.get(i).setToY(Double.NaN);
                         tlist.get(i).setByY(movedistance);
 
@@ -41,7 +50,7 @@ public class RingObstacle extends Obstacle {
                         tlist.get(i).setDuration(Duration.millis(movtime));
                         //Setting auto reverse value to false
                         // translateTransition.setAutoReverse(false);
-                        System.out.println("move down");
+//                        System.out.println("move down");
                         tlist.get(i).setOnFinished(new EventHandler<ActionEvent>() {//todo: dont create eventhandler  everytime
                             @Override
                             public void handle(ActionEvent t) {
@@ -56,25 +65,22 @@ public class RingObstacle extends Obstacle {
 //        collisionCheck(b);
     }
 
-    RingObstacle(String type, double speed, int orientation, double radius, double width, double centre_x, double centre_y, boolean direction) {
-        super(type, speed, orientation);
-        this.setPosition(new Position(centre_x, centre_y));
-        this.radius = radius;
-        this.width = width;
-        this.directionClockwise = direction;
-    }
+
     @Override
     public boolean outofBounds(){
-        if((position.get_y()-radius)>screenheight)
+        if((position.get_y()+quarters.get(0).getTranslateY()-radius)>screenheight)
           return true;
         return false;
     }
     @Override
     public void removeself(Group grp){
         for(Path p: quarters) {
-            p.setVisible(false);
-            grp.getChildren().remove(p);
+            Platform.runLater(() -> {
+                p.setVisible(false);
+                grp.getChildren().remove(p);
+            });
         }
+        System.out.println("notvisible");
     }
     @Override
     protected void WayOfMovement() {
@@ -102,9 +108,11 @@ public class RingObstacle extends Obstacle {
 
     @Override
     public void shownOnScreen(Group g) {
-        for (int i = 0; i < quarters.size(); i++) {
-            g.getChildren().add(quarters.get(i));
-        }
+        Platform.runLater(() -> {
+            for (int i = 0; i < quarters.size(); i++) {
+                g.getChildren().add(quarters.get(i));
+            }
+        });
     }
 
     @Override

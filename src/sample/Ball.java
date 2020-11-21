@@ -76,15 +76,21 @@ public class Ball extends GameObject {
 //        System.out.println("circle.getTranslateY():"+BallShape.getTranslateY());
 //        System.out.println("circle.getCenterY():"+circle.getCenterY());
 //        System.out.println("circle.getCenterX():"+circle.getCenterX());
-            translateTransition.setToY(0.0);
+            translateTransition.setToY(screenheight-position.get_y()+(2*radius));
             translateTransition.setCycleCount(1);
-            translateTransition.setDuration(Duration.millis(movtime));
+            translateTransition.setDuration(Duration.millis((2*movtime)));
             translateTransition.play();
             translateTransition.setOnFinished(null);
         });
 
     }
 
+    public boolean outofBounds(){
+        if((position.get_y()+BallShape.getTranslateY())>(screenheight+radius))
+                                                    //  600 + 0   >  800+20
+            return true;
+        return false;
+    }
     @Override
     public void shownOnScreen(Group g) {
         Platform.runLater(() -> {

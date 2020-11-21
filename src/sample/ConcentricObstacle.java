@@ -41,7 +41,6 @@ public class ConcentricObstacle extends Obstacle{
             rings.get(1).getTimelines().get(i).setCycleCount(Animation.INDEFINITE);
             int angle_to_cover_inner, angle_to_cover_outer;
             if(directionClockwise == true){
-                //angle_to_cover = (int) (360 + angle1);
                 angle_to_cover_inner = (int) (360 + angleRing);
                 angle_to_cover_outer = (int) (-360 + angleRing);
             }
@@ -56,10 +55,12 @@ public class ConcentricObstacle extends Obstacle{
 
     @Override
     public void shownOnScreen(Group g) {
-
+        rings.get(0).shownOnScreen(g);
+        rings.get(1).shownOnScreen(g);
     }
 
     public void rotateConcentric(){
+//        this.WayOfMovement();
         rings.get(0).rotateRing();
         rings.get(1).rotateRing();
     }
@@ -75,12 +76,11 @@ public class ConcentricObstacle extends Obstacle{
         RingObstacle ring2 = new RingObstacle("Ring", 6000, 0, radius + width + 5, width ,pos.get_x(), pos.get_y(), false);
         ring2.draw();
         for(int i = 0 ;i < 4; i++){
-            ring1.getRotate_list().get(i).setAngle(45);
-            ring2.getRotate_list().get(i).setAngle(45);
+            ring1.getRotate_list().get(i).setAngle(angleRing);
+            ring2.getRotate_list().get(i).setAngle(angleRing);
         }
         rings.add(ring1);
         rings.add(ring2);
-
     }
 
     @Override

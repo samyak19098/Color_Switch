@@ -42,6 +42,7 @@ public class ColorSwitcher extends GameObject implements SpecialObject{
     }
     public void movedown(Ball b) {
         Platform.runLater(() -> {
+            translateTransition.stop();
                     translateTransition.setToY(Double.NaN);
                     translateTransition.setByY(movedistance);
                     //Setting the cycle count for the transition
@@ -49,7 +50,7 @@ public class ColorSwitcher extends GameObject implements SpecialObject{
                     translateTransition.setDuration(Duration.millis(movtime));
                     //Setting auto reverse value to false
                     // translateTransition.setAutoReverse(false);
-                    System.out.println("move down");
+//                    System.out.println("move down");
                     translateTransition.setOnFinished(new EventHandler<ActionEvent>() {//todo: dont create eventhandler  everytime
                         @Override
                         public void handle(ActionEvent t) {
@@ -95,17 +96,18 @@ public class ColorSwitcher extends GameObject implements SpecialObject{
 //        System.out.println("quarters.get(i).getTranslateY():" + quarters.get(i).getTranslateY());
 //        System.out.println("cal:" + cal);
 //        System.out.println("ang3:" + ang);
-        if (cal > 0) {//when ball is near bottom of obstacle
+        cal=Math.abs(cal);
+
 //            System.out.println("(radius - b.getRadius()) <= (cal):" +( (radius - b.getRadius()) <= (cal)));
 //            System.out.println("(radius + b.getRadius()) >= (cal):" +( (radius + b.getRadius()) >= (cal)));
 //            System.out.println("1:" + ((radius - b.getRadius()) <= (cal)));
 //            System.out.println("2:" + (cal <= (radius + b.getRadius()+width)));
 //            System.out.println("2.1:" +cal);
 //                    System.out.println("2.2:" +(radius + b.getRadius()+width));
-            if (((circle.getRadius() - b.getRadius()) <= (cal)) && (cal <= (circle.getRadius()  + b.getRadius()))) {
+            if  (cal <= (circle.getRadius()  + b.getRadius())) {
                 return true;//different color
             }
-        }
+
         return false;
     }
     public Circle getCircle() {

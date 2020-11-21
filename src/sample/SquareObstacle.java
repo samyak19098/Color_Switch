@@ -91,18 +91,6 @@ public class SquareObstacle extends Obstacle {
         double VLine3 = 0;
         Color c = Color.PURPLE;
 
-//        Path p = new Path();
-//        MoveTo start_position = new MoveTo(425,375);
-//        HLineTo horizontal4 = new HLineTo(435); // side = 50, width = 20;
-//        HLineTo horizontal2 = new HLineTo(425);
-//        VLineTo vertical1 = new VLineTo(425);
-//        VLineTo vertical3 = new VLineTo(375);
-//        p.getElements().addAll(start_position);
-//        p.getElements().add(horizontal4);
-//        p.getElements().add(vertical1);
-//        p.getElements().add(horizontal2);
-//        p.getElements().add(vertical3);
-//        root.getChildren().add(p);
         if(side_number == 1){
             startX = obstacleCentre.get_x() + change_in_coordinate;
             startY = obstacleCentre.get_y() - change_in_coordinate;

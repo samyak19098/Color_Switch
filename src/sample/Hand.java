@@ -9,7 +9,7 @@ import javafx.scene.shape.*;
 import javafx.util.Duration;
 import javafx.application.Platform;
 
-public class Star extends GameObject{
+public class Hand extends GameObject{
 
 
     private Polygon polygon;
@@ -19,27 +19,31 @@ public class Star extends GameObject{
 
     //    private Trail BallTrail;
 
-    public Star( ) {
-    }
-    public Star(double x,double y){
-         super();
+
+    public Hand(double x,double y){
+        super();
         position=new Position(x,y);
         polygon   = new Polygon();
         Double[] ar=new Double[]{//y-axis is inverted
-                0.0, -2.0,
-                1.0, -1.0,
-                2.0, -1.0,
-                1.0, -0.0,
-                2.0, 2.0,
-                0.0, 1.0,
-                -2.0,2.0,
-                -1.0,-0.0,
-                -2.0,-1.0,
-                -1.0,-1.0,
-                0.0, -2.0};
+                0.0, 0.0,
+                5.0, 0.0,
+                6.0, -5.0,
+                5.0, -6.0,
+                4.0, -5.0,
+                3.0, -6.0,
+                2.0,-5.0,
+                1.0,-6.0,
+                0.0,-5.0,
+                0.0,-10.0,
+                -1.0,-10.0,
+                -1.0, -5.0,
+                -2.0,-5.0,
+                -2.0,-4.0,
+                -1.0,-3.0,
+                0.0,0.0,};
         for(int i=0;i<ar.length;i++){
 
-            ar[i]=ar[i]*20;//scaling
+            ar[i]=ar[i]*10;//scaling
             if(i%2==0)
                 ar[i]=ar[i]+x;//displacing
             else
@@ -109,11 +113,11 @@ public class Star extends GameObject{
 //            System.out.println("2:" + (cal <= (radius + b.getRadius()+width)));
 //            System.out.println("2.1:" +cal);
 //                    System.out.println("2.2:" +(radius + b.getRadius()+width));
-            if  (cal <= (radius + b.getRadius()+width)){
+        if  (cal <= (radius + b.getRadius()+width)){
 
 
-                    return true;//different color
-            }
+            return true;//different color
+        }
 
 
         //System.out.println("b.getShape().getTranslateY():"+b.getBallShape().getr());
@@ -127,7 +131,10 @@ public class Star extends GameObject{
         });
 
     }
-
+    public void removeself(Group grp) {
+        polygon.setVisible(false);
+        grp.getChildren().remove(polygon);
+    }
     @Override
     public void draw() {
 
