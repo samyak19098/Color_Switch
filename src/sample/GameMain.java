@@ -9,10 +9,12 @@ public class GameMain extends TimerTask {
 
     private Group grp;
     private GameState CurrentGameState;
-    private Stage gameplay_stage;
 
-    public GameMain(Group grp){
+
+    private Stage gameplay_stage;
+    public GameMain(Group grp, Stage game_stage){
         this.grp=grp;
+        this.gameplay_stage = game_stage;
 
     }
 
@@ -21,8 +23,22 @@ public class GameMain extends TimerTask {
             CurrentGameState.checkAllcollisions(grp, gameplay_stage);
         } catch (Exception e) {
             e.printStackTrace();
+            while(true){
+            }
+
         }
-        CurrentGameState.RemoveObstacles(grp, gameplay_stage);
+//        try {
+        try {
+            CurrentGameState.RemoveObstacles(grp, gameplay_stage);
+        } catch (Exception e) {
+            e.printStackTrace();
+            while(true){
+                System.out.println("WHILE");
+            }
+        }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
 //        CurrentGameState.AddObjects(grp);
         //System.out.println("Timer ran ");
     }
@@ -67,16 +83,12 @@ public class GameMain extends TimerTask {
         CurrentGameState.getHand().removeself(grp);
     }
 
-    public void setGameplay_stage(Stage gameplay_stage) {
-        this.gameplay_stage = gameplay_stage;
-    }
-    public void setGrp(Group grp) {
-        this.grp = grp;
-    }
-
     public Stage getGameplay_stage() {
         return gameplay_stage;
     }
 
-
+    public void setGameplay_stage(Stage gameplay_stage) {
+        this.gameplay_stage = gameplay_stage;
+    }
 }
+

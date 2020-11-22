@@ -53,12 +53,10 @@ import org.w3c.dom.css.Rect;
 
 
 public class Main extends Application {
-
     private static  double screenwidth=1200;
     private static double screenheight=800;
     private final int movedistance = 100;//distance moved in one move
     private final int movtime=250;
-
     @Override
     public void start(Stage primaryStage) throws Exception{
 
@@ -68,59 +66,70 @@ public class Main extends Application {
 //        Media button = new Media(new File("button.wav").toURI().toString());
 //        MediaPlayer mp_button = new MediaPlayer(button);
 
-        MainPageMenu menu_starting = new MainPageMenu();
-        menu_starting.start(primaryStage);
-        System.out.println("OUT INTO MAIN");
 
-//        Group root = new Group();
-//        // set background
-//        Rectangle hbox=new Rectangle(screenwidth,screenheight);
-//        Image im = new Image("file:bg.jpg",false);
-//        hbox.setFill(new ImagePattern(im));
-//        root.getChildren().add(hbox);
-//
-//        GameMain gm=new GameMain(root);
-////        Star s=new Star(600,300);
-//        gm.setGameplay_stage(primaryStage);
-//        GameState g =new GameState();
-//        gm.setCurrentGameState(g);
-//
-//        Button pause_button = new Button("PAUSE GAME");
-//        pause_button.setWrapText(true);
-//        pause_button.setPrefSize(100,50);
-//        pause_button.setLayoutX(20);
-//        pause_button.setLayoutY(50);
-//        root.getChildren().add(pause_button);
-//        EventHandler<ActionEvent> event_pause_game = new EventHandler<ActionEvent>() {
-//            public void handle(ActionEvent e)
-//            {
-//                System.out.println("PAUSE BUTTON PRESSED");
-//                show_pause_screen(primaryStage);
-//            }
-//        };
-//        pause_button.setOnAction(event_pause_game);
-//
-//        Scene scene = new Scene(root,screenwidth,screenheight);//, Color.BLACK);
-//
-//        g.shownOnScreen(root);
-//        Timer timer = new Timer();
-//
-//        timer.schedule(gm , 500, 100);
-//
-//        //timer checks collions after every 1s
-//        // to stop the timer ,use down arrow key
-//        moveBallOnKeyPress(scene, gm ,timer);//,mp_ballup,mp_button);
-//        primaryStage.setScene(scene);
-//        primaryStage.setTitle("Color Switch");
-//        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>(){
-//            @Override
-//            public  void handle(WindowEvent t){
-//                Platform.exit();
-//                System.exit(0);
-//            }
-//                                       });
-//        primaryStage.show();
+
+        Group root = new Group();
+        // set background
+        Rectangle hbox=new Rectangle(screenwidth,screenheight);
+        Image im = new Image("file:bg.jpg",false);
+        hbox.setFill(new ImagePattern(im));
+        root.getChildren().add(hbox);
+
+
+
+        GameMain gm=new GameMain(root, primaryStage);
+//        Star s=new Star(600,300);
+        GameState g =new GameState();
+        gm.setCurrentGameState(g);
+
+
+        Button pause_button = new Button("PAUSE GAME");
+        pause_button.setWrapText(true);
+        pause_button.setPrefSize(100,50);
+        pause_button.setLayoutX(20);
+        pause_button.setLayoutY(50);
+        root.getChildren().add(pause_button);
+        EventHandler<ActionEvent> event_new_game = new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent e)
+            {
+                System.out.println("PAUSE BUTTON PRESSED");
+                gm.Pause();
+                show_pause_screen(primaryStage);
+
+            }
+        };
+        pause_button.setOnAction(event_new_game);
+
+
+
+
+
+
+
+
+        Scene scene = new Scene(root,screenwidth,screenheight);//, Color.BLACK);
+
+        g.shownOnScreen(root);
+        Timer timer = new Timer();
+
+
+        timer.schedule(gm , 500, 100);
+
+        //timer checks collions after every 1s
+        // to stop the timer ,use down arrow key
+        moveBallOnKeyPress(scene, gm ,timer);//,mp_ballup,mp_button);
+        primaryStage.setScene(scene);
+        primaryStage.setTitle("Color Switch");
+        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>(){
+            @Override
+            public  void handle(WindowEvent t){
+                Platform.exit();
+                System.exit(0);
+            }
+                                       });
+        primaryStage.show();
     }
+
 
     private void show_pause_screen(Stage stage){
         InGameMenu in_game_menu = new InGameMenu();
@@ -131,7 +140,6 @@ public class Main extends Application {
             ex.printStackTrace();
         }
     }
-//    })
     private void moveBallOnKeyPress(Scene scene,  GameMain gm,Timer timer){//, MediaPlayer mp_ballup,MediaPlayer mp_button) {
         scene.addEventFilter(KeyEvent.KEY_PRESSED,new EventHandler<KeyEvent>() {
             @Override public void handle(KeyEvent event) {

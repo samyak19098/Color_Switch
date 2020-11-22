@@ -140,16 +140,15 @@ public class GameState {
             Platform.runLater(() -> {
 //                mp_GameOver.stop();
 //                mp_GameOver.play();
-                ObstacleHitMenu hit_menu = new ObstacleHitMenu();
-//                Pause();
+//            });
+                ObstacleHitMenu obm = new ObstacleHitMenu();
                 try {
-                    hit_menu.start(stage);
-                    System.out.println("::::::::::::::: DONE EXECUTION :::::::::::::::");
+                    obm.start(stage);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+                throw new GameOverException("ball gone out");
             });
-            throw new GameOverException("ball gone out");
         }
     }
 
@@ -175,7 +174,7 @@ public class GameState {
 
     }
 
-    public void checkAllcollisions(Group g, Stage stage) throws Exception {
+    public void checkAllcollisions(Group g, Stage stage) throws Exception{
 //        System.out.println("checking");
         for(Star s: sceneStars) {
             if (s.collisionCheck(CurrentBall)) {
@@ -225,13 +224,17 @@ public class GameState {
                 System.out.println("collided3!!");
                 System.out.println("12");
                 //todo remove obstacles
+//                Platform.runLater(() -> {
+//                            mp_GameOver.stop();
+//                            mp_GameOver.play();
+//                        });
                 Platform.runLater(() -> {
 //                            mp_GameOver.stop();
 //                            mp_GameOver.play();
 //                        });
 //                throw new GameOverException("struck an obstacle");
 
-                            ObstacleHitMenu obm = new ObstacleHitMenu();
+                    ObstacleHitMenu obm = new ObstacleHitMenu();
 //                Pause();
                     try {
                         obm.start(stage);
@@ -239,9 +242,7 @@ public class GameState {
                         e.printStackTrace();
                     }
                 });
-//                obm.start();
-
-
+                throw new GameOverException("struck an obstacle");
             }
 //            System.out.println("d1:");
         }
