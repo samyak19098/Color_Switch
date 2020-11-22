@@ -33,7 +33,7 @@ public class GameMain extends TimerTask {
         } catch (Exception e) {
             e.printStackTrace();
             while(true){
-                System.out.println("WHILE");
+//                System.out.println("WHILE");
             }
         }
 //        } catch (Exception e) {

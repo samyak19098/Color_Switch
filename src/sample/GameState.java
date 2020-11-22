@@ -147,8 +147,8 @@ public class GameState {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                throw new GameOverException("ball gone out");
             });
+            throw new GameOverException("ball gone out");
         }
     }
 
