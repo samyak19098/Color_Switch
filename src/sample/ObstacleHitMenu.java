@@ -7,31 +7,27 @@ import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
-import java.io.FileInputStream;
-
 public class ObstacleHitMenu extends Application {
 
-    MainPageMenu main_page_obj;
-    Stage in_game_stage;
+//    MainPageMenu main_page_obj;
+    Stage hit_menu_stage;
 
     @Override
-    public void start(Stage InGameStage) throws Exception {
-        this.in_game_stage = InGameStage;
-        Group in_game_group = new Group();
+    public void start(Stage HitMenuStage) throws Exception {
+        this.hit_menu_stage = HitMenuStage;
+        Group hit_menu_group = new Group();
 
-        Text game_paused_text = new Text("OBSTACLE HIT");
-        game_paused_text.setStyle("-fx-font: 80 arial;");
+        Text game_over_text = new Text(" GAME OVER ");
+        game_over_text.setStyle("-fx-font: 80 arial;");
 
-        game_paused_text.setFill(Color.WHITE);
-        game_paused_text.setX(300);
-        game_paused_text.setLayoutY(100);
+        game_over_text.setFill(Color.WHITE);
+        game_over_text.setX(300);
+        game_over_text.setLayoutY(100);
 
         RingObstacle restart_ring = new RingObstacle("Ring", 6000, 0, 110, 15, 270, 410, true);
         Button restart_game_button = new Button("RESTART GAME");
@@ -41,7 +37,7 @@ public class ObstacleHitMenu extends Application {
         restart_ring.draw();
         restart_ring.WayOfMovement();
         restart_ring.rotateRing();
-        restart_ring.shownOnScreen(in_game_group);
+        restart_ring.shownOnScreen(hit_menu_group);
 
 
         RingObstacle continue_ring = new RingObstacle("Ring", 6000, 0, 110, 15, 580, 410, true);
@@ -53,7 +49,7 @@ public class ObstacleHitMenu extends Application {
         continue_ring.draw();
         continue_ring.WayOfMovement();
         continue_ring.rotateRing();
-        continue_ring.shownOnScreen(in_game_group);
+        continue_ring.shownOnScreen(hit_menu_group);
 
 
         RingObstacle exit_to_main_ring = new RingObstacle("Ring", 6000, 0, 110, 15, 890, 410, true);
@@ -64,7 +60,7 @@ public class ObstacleHitMenu extends Application {
         exit_to_main_ring.draw();
         exit_to_main_ring.WayOfMovement();
         exit_to_main_ring.rotateRing();
-        exit_to_main_ring.shownOnScreen(in_game_group);
+        exit_to_main_ring.shownOnScreen(hit_menu_group);
 
 
 
@@ -73,7 +69,7 @@ public class ObstacleHitMenu extends Application {
             {
                 System.out.println("BUTTON RESTART GAME PRESSED");
                 try {
-                    saveGame();
+                    restartGame();
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
@@ -113,14 +109,14 @@ public class ObstacleHitMenu extends Application {
 
 
 
-        in_game_group.getChildren().addAll(game_paused_text, restart_game_button, continue_game_button, exit_to_main_button);
+        hit_menu_group.getChildren().addAll(game_over_text, restart_game_button, continue_game_button, exit_to_main_button);
 
-        Scene scene = new Scene(in_game_group,1200,800, Color.BLACK);
-        InGameStage.setScene(scene);
-        InGameStage.setTitle("In Game Menu");
-        InGameStage.show();
+        Scene scene = new Scene(hit_menu_group,1200,800, Color.BLACK);
+        HitMenuStage.setScene(scene);
+        HitMenuStage.setTitle("Game Over Menu");
+        HitMenuStage.show();
 
-        InGameStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+        HitMenuStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
             public void handle(WindowEvent t) {
                 Platform.exit();
@@ -135,11 +131,14 @@ public class ObstacleHitMenu extends Application {
         System.out.println("GAME WILL BE CONTINUED !!");
     }
 
-    public void saveGame(){
-        System.out.println("GAME WILL BE SAVED !!");
+    public void restartGame(){
+        System.out.println("GAME WILL BE RESTARTED !!");
+
     }
     public void exitToMainPage() throws Exception {
         System.out.println("GAME WILL BE EXITED TO MAIN PAGE !!");
+        MainPageMenu mainpage = new MainPageMenu();
+        mainpage.start(hit_menu_stage);
     }
 
     public static void main(String args[]){

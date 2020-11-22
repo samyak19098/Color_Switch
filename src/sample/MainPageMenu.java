@@ -20,15 +20,14 @@ public class MainPageMenu extends Application {
 
     Main m = new Main();
     HowToPlayPage how_to_play_page_obj = new HowToPlayPage();
-    InGameMenu in_game_obj = new InGameMenu();
-
+//    InGameMenu in_game_obj = new InGameMenu();
     Stage main_page_stage;
 
     @Override
     public void start(Stage stage) throws Exception {
 
         this.how_to_play_page_obj.main_page_obj = this;
-        this.in_game_obj.main_page_obj = this;
+//        this.in_game_obj.main_page_obj = this;
         this.main_page_stage = stage;
         this.how_to_play_page_obj.mp_stage = stage;
         Group main_page_group = new Group();
@@ -41,7 +40,7 @@ public class MainPageMenu extends Application {
         imageView.setFitWidth(230);
         imageView.setPreserveRatio(true);
 
-        ConcentricObstacle conc = new ConcentricObstacle("concentric", 6000, 0, 140, 15, 600, 185, true, 45);
+        ConcentricObstacle conc = new ConcentricObstacle("Concentric", 6000, 0, 140, 15, 600, 185, true, 45);
         conc.draw();
         conc.WayOfMovement();
         conc.rotateConcentric();
@@ -83,7 +82,7 @@ public class MainPageMenu extends Application {
         EventHandler<ActionEvent> event_new_game = new EventHandler<ActionEvent>() {
             public void handle(ActionEvent e)
             {
-                System.out.println("BUTTON 1 PRESSED");
+                System.out.println("BUTTON NEW-GAME PRESSED");
 
                 try {
                     newGame();
@@ -97,7 +96,7 @@ public class MainPageMenu extends Application {
         EventHandler<ActionEvent> event_resume_game = new EventHandler<ActionEvent>() {
             public void handle(ActionEvent e)
             {
-                System.out.println("BUTTON 2 PRESSED");
+                System.out.println("BUTTON RESUME-GAME PRESSED");
                 try {
                     resumeGame();
                 } catch (Exception ex) {
@@ -109,7 +108,7 @@ public class MainPageMenu extends Application {
         EventHandler<ActionEvent> event_how_to_play = new EventHandler<ActionEvent>() {
             public void handle(ActionEvent e)
             {
-                System.out.println("BUTTON 3 PRESSED");
+                System.out.println("BUTTON HOW-TO-PLAY PRESSED");
                 try {
                     HowToPlay();
                 } catch (Exception ex) {

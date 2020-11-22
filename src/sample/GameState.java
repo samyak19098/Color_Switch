@@ -10,6 +10,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.application.Platform;
 import javafx.scene.shape.Path;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 
 
@@ -93,15 +94,15 @@ public class GameState {
         sceneStars.add(new Star(600,50));
         sceneStars.add(new Star(600,50-screenheight));
 
-        sceneColorSwitcher.add(new ColorSwitcher(600,200,20));
-        sceneColorSwitcher.add(new ColorSwitcher(600,200-screenheight,20));
+        sceneColorSwitcher.add(new ColorSwitcher(600,250,20));
+        sceneColorSwitcher.add(new ColorSwitcher(600,250-screenheight,20));
 
 
 
     }
 
 
-    public void RemoveObstacles(Group grp){
+    public void RemoveObstacles(Group grp, Stage stage){
 // relocates/ respawns objects to original position
 //        System.out.println("len1:"+sceneObstacles.size());
         for(Obstacle s: sceneObstacles){
@@ -136,10 +137,18 @@ public class GameState {
 //            System.out.println("aa11");
         }
         if(    CurrentBall.outofBounds()) {
-//            Platform.runLater(() -> {
+            Platform.runLater(() -> {
 //                mp_GameOver.stop();
 //                mp_GameOver.play();
-//            });
+                ObstacleHitMenu hit_menu = new ObstacleHitMenu();
+//                Pause();
+                try {
+                    hit_menu.start(stage);
+                    System.out.println("::::::::::::::: DONE EXECUTION :::::::::::::::");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
             throw new GameOverException("ball gone out");
         }
     }
@@ -166,7 +175,7 @@ public class GameState {
 
     }
 
-    public void checkAllcollisions(Group g){
+    public void checkAllcollisions(Group g, Stage stage) throws Exception {
 //        System.out.println("checking");
         for(Star s: sceneStars) {
             if (s.collisionCheck(CurrentBall)) {
@@ -216,11 +225,23 @@ public class GameState {
                 System.out.println("collided3!!");
                 System.out.println("12");
                 //todo remove obstacles
-//                Platform.runLater(() -> {
+                Platform.runLater(() -> {
 //                            mp_GameOver.stop();
 //                            mp_GameOver.play();
 //                        });
-                throw new GameOverException("struck an obstacle");
+//                throw new GameOverException("struck an obstacle");
+
+                            ObstacleHitMenu obm = new ObstacleHitMenu();
+//                Pause();
+                    try {
+                        obm.start(stage);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                });
+//                obm.start();
+
+
             }
 //            System.out.println("d1:");
         }

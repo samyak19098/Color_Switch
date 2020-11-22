@@ -3,11 +3,13 @@ import java.util.*;
 
 import javafx.application.Platform;
 import javafx.scene.Group;
+import javafx.stage.Stage;
 
 public class GameMain extends TimerTask {
 
     private Group grp;
     private GameState CurrentGameState;
+    private Stage gameplay_stage;
 
     public GameMain(Group grp){
         this.grp=grp;
@@ -15,8 +17,12 @@ public class GameMain extends TimerTask {
     }
 
     public void run( ) {
-        CurrentGameState.checkAllcollisions(grp);
-        CurrentGameState.RemoveObstacles(grp);
+        try {
+            CurrentGameState.checkAllcollisions(grp, gameplay_stage);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        CurrentGameState.RemoveObstacles(grp, gameplay_stage);
 //        CurrentGameState.AddObjects(grp);
         //System.out.println("Timer ran ");
     }
@@ -60,4 +66,17 @@ public class GameMain extends TimerTask {
     public void removehand() {
         CurrentGameState.getHand().removeself(grp);
     }
+
+    public void setGameplay_stage(Stage gameplay_stage) {
+        this.gameplay_stage = gameplay_stage;
+    }
+    public void setGrp(Group grp) {
+        this.grp = grp;
+    }
+
+    public Stage getGameplay_stage() {
+        return gameplay_stage;
+    }
+
+
 }

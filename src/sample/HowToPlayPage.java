@@ -76,7 +76,7 @@ public class HowToPlayPage extends Application{
 
         Scene scene = new Scene(help_page_group,1200,800, Color.BLACK);
         HelpStage.setScene(scene);
-        HelpStage.setTitle("Main Page Menu");
+        HelpStage.setTitle("How To Play");
         HelpStage.show();
 
         EventHandler<ActionEvent> event_back_to_home = new EventHandler<ActionEvent>() {
