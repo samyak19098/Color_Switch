@@ -10,7 +10,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.application.Platform;
 import javafx.scene.shape.Path;
-import javafx.stage.Stage;
 import javafx.util.Duration;
 
 
@@ -30,8 +29,10 @@ public class GameState {
 //    MediaPlayer mp_GameOver = new MediaPlayer(GameOver);
 
     private static  double screenwidth=1200;
-    protected static  double screenheight=800;
-
+    private static  double initialhColorSwitcher=230;
+    private static  double initialhobstacle=50;
+    private static  double screenheight=800;
+    private static  double speed=6000;
     private Label scoretext;
     private long numStarsinGame;
     private Ball CurrentBall;
@@ -47,6 +48,7 @@ public class GameState {
     private ArrayList<Star>   sceneStars;
     private ArrayList<ColorSwitcher>   sceneColorSwitcher;
     private int debug=1;
+    public Trail BallTrail;
     public GameState(){
         scoretext = new Label("Score:"+numStarsinGame);
         scoretext.setAlignment(Pos.TOP_LEFT);
@@ -59,96 +61,101 @@ public class GameState {
         sceneObstacles=new ArrayList<Obstacle>();
         sceneStars=new ArrayList<Star>();
         sceneColorSwitcher=new ArrayList<ColorSwitcher>();
-        CurrentBall=new Ball(Color.DEEPPINK,600.0f,600.0f,20.0f);
-        hand=new Hand(600,600+20+100);
-        RingObstacle ringObstacle = new RingObstacle("Ring", 6000, 0, 100,20, 600, 50, true);
+        CurrentBall=new Ball(Color.DEEPPINK,600.0f,600.0f,20.0f,-1);
+        BallTrail=new Neontrail(CurrentBall);
+        hand=new Hand(screenwidth/2,600+20+100);
+        RingObstacle ringObstacle = new RingObstacle("Ring", speed, 0, 100,20, screenwidth/2, initialhobstacle, true);
         ringObstacle.draw();
-
         ringObstacle.WayOfMovement();
-        ringObstacle.rotateRing();
+        ringObstacle.rotateRing();//ringObstacle.Pause();
         sceneObstacles.add(ringObstacle);
-        RingObstacle ringObstacle2 = new RingObstacle("Ring", 6000, 0, 100,20, 600, 50-screenheight, true);
-        ringObstacle2.draw();
 
-        ringObstacle2.WayOfMovement();
-        ringObstacle2.rotateRing();
-        sceneObstacles.add(ringObstacle2);
-        ConcentricObstacle concentricObstacle= new ConcentricObstacle("Concentric",6000,0,100, 20, screenwidth*0.75,screenheight/4 ,true,45);
-        concentricObstacle.draw();
-        concentricObstacle.WayOfMovement();
-        concentricObstacle.rotateConcentric();
-
-
-        SquareObstacle squareObstacle = new SquareObstacle("Square",6000,0,screenwidth/4,screenheight/4 ,100 ,20 ,true);
+        SquareObstacle squareObstacle = new SquareObstacle("Square",speed,0,screenwidth/2,initialhobstacle-screenheight  ,175 ,20 ,true);
         squareObstacle.draw();
         squareObstacle.WayOfMovement();
-        squareObstacle.rotateSquare();
-        //        String type, double speed, int orientation, double centre_x, double centre_y, double side, double thickness, boolean
-        TangentialObstacle tangentialObstacle = new TangentialObstacle("Tangential",6000,0,100, 20,screenwidth/4 ,screenheight*0.75 ,true,45,235);
-        tangentialObstacle.draw();
-        tangentialObstacle.WayOfMovement();
-        tangentialObstacle.rotateTangential();
-        sceneObstacles.add(concentricObstacle);
+        squareObstacle.rotateSquare();//squareObstacle.Pause();
         sceneObstacles.add(squareObstacle);
-        sceneObstacles.add(tangentialObstacle);
-        sceneStars.add(new Star(600,50));
-        sceneStars.add(new Star(600,50-screenheight));
 
-        sceneColorSwitcher.add(new ColorSwitcher(600,250,20));
-        sceneColorSwitcher.add(new ColorSwitcher(600,250-screenheight,20));
+        for(int i=0;i<2;i++){
+            sceneStars.add(new Star(screenwidth/2,initialhobstacle-(i*screenheight)));
+            sceneColorSwitcher.add(new ColorSwitcher(screenwidth/2,initialhColorSwitcher-(i*screenheight),20));
 
-
+        }
 
     }
 
 
-    public void RemoveObstacles(Group grp, Stage stage){
+    public void RemoveObstacles(Group grp){
 // relocates/ respawns objects to original position
-//        System.out.println("len1:"+sceneObstacles.size());
+
         for(Obstacle s: sceneObstacles){
 
             if(s.outofBounds()){
+                System.out.println("len1:"+sceneObstacles.size());
 //                System.out.println(""+s.getPosition().get_y());
-//                //Platform.runLater(() -> {
-//                System.out.println("len2:"+sceneObstacles.size());
-//                System.out.println("outofbounds"+debug);
-//                debug+=1;
-//                RingObstacle ringObstacle2 = new RingObstacle("Ring", 6000, 0, 100,20, 600, 50-screenheight, true);
-//                ringObstacle2.draw();
-//
-//                ringObstacle2.WayOfMovement();
-//                ringObstacle2.rotateRing();
-//                sceneObstacles.add(ringObstacle2);
-//                ringObstacle2.shownOnScreen(grp);
-//
-//                Star a1=new Star(600,50-screenheight);
-//                a1.shownOnScreen(grp);
-//                sceneStars.add(a1);
-//                ColorSwitcher b1=new ColorSwitcher(600,200-screenheight,20);
-//                b1.shownOnScreen(grp);
-//                sceneColorSwitcher.add(b1);
+                Platform.runLater(() -> {
+                    if(s.getObstacleType().equals("Ring")){
+
+                        ConcentricObstacle concentricObstacle= new ConcentricObstacle("Concentric",speed,0,100, 20, screenwidth/2,initialhobstacle-screenheight ,true,45);
+                        concentricObstacle.draw();
+                        concentricObstacle.WayOfMovement();
+                        concentricObstacle.rotateConcentric();
+                        concentricObstacle.shownOnScreen(grp);
+                        sceneObstacles.add(concentricObstacle);
+
+                    }
+                    else if(s.getObstacleType().equals("Square")){
+                        TangentialObstacle tangentialObstacle = new TangentialObstacle("Tangential",speed,0,170, 20,screenwidth/2 ,initialhobstacle -screenheight ,true,45,225);
+                        tangentialObstacle.draw();
+                        tangentialObstacle.WayOfMovement();
+                        tangentialObstacle.rotateTangential();
+                        tangentialObstacle.shownOnScreen(grp);//tangentialObstacle.Pause();//tangentialObstacle.Resume();
+                        sceneObstacles.add(tangentialObstacle);
+
+                    }
+                    else if(s.getObstacleType().equals("Concentric")){
+                        speed-=5;//more difficulty
+                        RingObstacle ringObstacle = new RingObstacle("Ring", speed, 0, 100,20, screenwidth/2, initialhobstacle-screenheight, true);
+                        ringObstacle.draw();
+                        ringObstacle.WayOfMovement();
+                        ringObstacle.rotateRing();
+                        ringObstacle.shownOnScreen(grp);
+                        sceneObstacles.add(ringObstacle);
+                    }
+                    else if(s.getObstacleType().equals("Tangential")){
+
+                        SquareObstacle squareObstacle = new SquareObstacle("Square",speed,0,screenwidth/2,initialhobstacle-screenheight  ,175 ,20 ,true);
+                        squareObstacle.draw();
+                        squareObstacle.WayOfMovement();
+                        squareObstacle.rotateSquare();
+                        squareObstacle.shownOnScreen(grp);
+                        sceneObstacles.add(squareObstacle);
+
+                    }
+                    else if(s.getObstacleType().equals("Cross")){
 
 
-                s.removeself(grp);
-                //});
-                sceneObstacles.remove(0);//hopefully 1st obstacle needs to be removed
+                    }
+                    Star  newstar=new Star(screenwidth/2,initialhobstacle-screenheight);
+                    newstar.shownOnScreen(grp);
+                    sceneStars.add(newstar);
+                    ColorSwitcher newcolorSwitcher=new ColorSwitcher(screenwidth/2,initialhColorSwitcher-screenheight,20);
+                    newcolorSwitcher.shownOnScreen(grp);
+
+                    sceneColorSwitcher.add(newcolorSwitcher);
+                    s.removeself(grp);
+                    sceneObstacles.remove(s);
+                });
+//                sceneObstacles.remove(0);//hopefully 1st obstacle needs to be removed
                 break;
             }
 //            System.out.println("aa11");
         }
         if(    CurrentBall.outofBounds()) {
-            Platform.runLater(() -> {
+//            Platform.runLater(() -> {
 //                mp_GameOver.stop();
 //                mp_GameOver.play();
-                ObstacleHitMenu hit_menu = new ObstacleHitMenu();
-//                Pause();
-                try {
-                    hit_menu.start(stage);
-                    System.out.println("::::::::::::::: DONE EXECUTION :::::::::::::::");
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            });
+//            });
             throw new GameOverException("ball gone out");
         }
     }
@@ -168,15 +175,21 @@ public class GameState {
                 o.shownOnScreen(g);
             for (ColorSwitcher o : sceneColorSwitcher)
                 o.shownOnScreen(g);
-            g.getChildren().add(CurrentBall.getBallShape());
+            BallTrail.shownOnScreen(g);
+            CurrentBall.shownOnScreen(g);
+//            g.getChildren().add(CurrentBall.getBallShape());
+
             g.getChildren().add(scoretext );
             g.getChildren().add(hand.getPolygon() );
         });
 
     }
 
-    public void checkAllcollisions(Group g, Stage stage) throws Exception {
-//        System.out.println("checking");
+    public void checkAllcollisions(Group g){
+//        System.out.println("1:"+sceneStars.size());
+//        System.out.println("2:"+sceneColorSwitcher.size());
+//        System.out.println("3:"+sceneObstacles.size());
+
         for(Star s: sceneStars) {
             if (s.collisionCheck(CurrentBall)) {
 //                System.out.println("collided1!!");
@@ -225,23 +238,11 @@ public class GameState {
                 System.out.println("collided3!!");
                 System.out.println("12");
                 //todo remove obstacles
-                Platform.runLater(() -> {
+//                Platform.runLater(() -> {
 //                            mp_GameOver.stop();
 //                            mp_GameOver.play();
 //                        });
 //                throw new GameOverException("struck an obstacle");
-
-                            ObstacleHitMenu obm = new ObstacleHitMenu();
-//                Pause();
-                    try {
-                        obm.start(stage);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                });
-//                obm.start();
-
-
             }
 //            System.out.println("d1:");
         }

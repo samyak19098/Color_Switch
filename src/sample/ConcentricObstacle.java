@@ -1,6 +1,7 @@
 package sample;
 
 import javafx.animation.*;
+import javafx.application.Platform;
 import javafx.scene.transform.Rotate;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
@@ -31,7 +32,7 @@ public class ConcentricObstacle extends Obstacle{
 
     @Override
     public void movedown(Ball b) {
-
+        rings.get(0).movedown(b);        rings.get(1).movedown(b);
     }
 
     @Override
@@ -48,7 +49,7 @@ public class ConcentricObstacle extends Obstacle{
                 angle_to_cover_inner = (int) (-360 + angleRing);
                 angle_to_cover_outer = (int) (360 + angleRing);
             }
-            rings.get(0).getTimelines().get(i).getKeyFrames().add(new KeyFrame(Duration.millis((this.getObstacleSpeed())), new KeyValue(rings.get(0).getRotate_list().get(i).angleProperty(), angle_to_cover_inner)));
+            rings.get(0).getTimelines().get(i).getKeyFrames().add(new KeyFrame(Duration.millis((this.getObstacleSpeed()*3)), new KeyValue(rings.get(0).getRotate_list().get(i).angleProperty(), angle_to_cover_inner)));
             rings.get(1).getTimelines().get(i).getKeyFrames().add(new KeyFrame(Duration.millis((this.getObstacleSpeed())), new KeyValue(rings.get(1).getRotate_list().get(i).angleProperty(), angle_to_cover_outer)));
         }
     }
@@ -71,13 +72,14 @@ public class ConcentricObstacle extends Obstacle{
     public void draw() {
 
         Position pos = this.getPosition();
-        RingObstacle ring1 = new RingObstacle("Ring", 6000, 0, radius, width ,pos.get_x(), pos.get_y(), true);
+        RingObstacle ring1 = new RingObstacle("Ring", ObstacleSpeed*3, 0, radius, width ,pos.get_x(), pos.get_y(), true);
         ring1.draw();
-        RingObstacle ring2 = new RingObstacle("Ring", 6000, 0, radius + width + 5, width ,pos.get_x(), pos.get_y(), false);
+        RingObstacle ring2 = new RingObstacle("Ring", ObstacleSpeed, 0, radius + width + 5, width ,pos.get_x(), pos.get_y(), false);
         ring2.draw();
         for(int i = 0 ;i < 4; i++){
             ring1.getRotate_list().get(i).setAngle(angleRing);
             ring2.getRotate_list().get(i).setAngle(angleRing);
+
         }
         rings.add(ring1);
         rings.add(ring2);
@@ -85,6 +87,30 @@ public class ConcentricObstacle extends Obstacle{
 
     @Override
     public boolean collisionCheck(Ball b) {
-        return false;
+        //double ang = rings.get(0).getRotate_list().get(0).getAngle();//inner ring
+        //double ang2 = rings.get(0).getRotate_list().get(0).getAngle();//outer ring
+        if(rings.get(0).collisionCheck(b) || rings.get(1).collisionCheck((b)))
+            return true;
+//        System.out.println("rings.get(0).collisionCheck(b):"+rings.get(0).collisionCheck(b));
+//        System.out.println("rings.get(1).collisionCheck(b):"+rings.get(1).collisionCheck(b));
+
+         return false;
+    }
+    @Override
+    public void removeself(Group grp){
+        rings.get(0).removeself(grp);rings.get(1).removeself(grp);
+//        System.out.println("notvisible");
+    }
+    @Override
+    public boolean outofBounds(){
+        return rings.get(1).outofBounds();//outer ring
+    }
+    @Override
+    public void Pause(){
+        rings.get(0).Pause();rings.get(1).Pause();
+    }
+    @Override
+    public void Resume(){
+        rings.get(0).Resume();rings.get(1).Resume();
     }
 }

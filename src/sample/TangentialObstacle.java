@@ -3,9 +3,11 @@ package sample;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
+import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Path;
 import javafx.util.Duration;
 
 import java.util.ArrayList;
@@ -30,7 +32,7 @@ public class TangentialObstacle extends Obstacle{
 
     @Override
     public void movedown(Ball b) {
-
+        rings.get(0).movedown(b);        rings.get(1).movedown(b);
     }
 
     @Override
@@ -81,9 +83,89 @@ public class TangentialObstacle extends Obstacle{
         rings.add(ring1);   rings.add(ring2);
 
     }
-
+    @Override
+    public void removeself(Group grp){
+         rings.get(0).removeself(grp);    rings.get(1).removeself(grp);
+        System.out.println("notvisible");
+    }
     @Override
     public boolean collisionCheck(Ball b) {
+        //returns true  if collision occurs
+        //otherwise false
+//        if(true)
+//            return false;
+        int i = -1;
+        //System.out.println("will do");
+//        System.out.println("b.getShape().getTranslateX():" + b.getBallShape().getTranslateX());
+//        System.out.println("b.getShape().getTranslateY():" + b.getBallShape().getTranslateY());
+//        System.out.println("b.getPosition().get_x():" + b.getPosition().get_x());
+//        System.out.println("b.getPosition().get_y():" + b.getPosition().get_y());
+//        System.out.println("b.getPosition().getRadius():" + b.getRadius());
+
+        //matching color
+        for (i = 0; i < 4; i++) {
+            if (b.getColor() == rings.get(0).getQuarters().get(i).getFill()) {
+                break;
+            }
+        }
+//        System.out.println("i:" + i);
+//        System.out.println(b.getColor() == quarters.get(i).getFill());
+        double ang = rings.get(0).getRotate_list().get(i).getAngle();//left ring
+//        System.out.println("ang:" + ang);
+        //cal=distance b/w centers
+        double cal = b.getPosition().get_y() + b.getBallShape().getTranslateY() - position.get_y() - rings.get(0).getQuarters().get(i).getTranslateY();
+//        System.out.println("quarters.get(i).getTranslateY():" + quarters.get(i).getTranslateY());
+//        System.out.println("cal:" + cal);
+        ang += (i * 90);
+//        System.out.println("ang2:" + ang);
+        //So that angle is b/w 0 and 360
+        ang = adjust(ang);
+
+//        System.out.println("ang3:" + ang);
+
+//            System.out.println("(radius - b.getRadius()) <= (cal):" +( (radius - b.getRadius()) <= (cal)));
+//            System.out.println("(radius + b.getRadius()) >= (cal):" +( (radius + b.getRadius()) >= (cal)));
+//            System.out.println("1:" + ((radius - b.getRadius()) <= (cal)));
+//            System.out.println("2:" + (cal <= (radius + b.getRadius()+width)));
+//            System.out.println("2.1:" +cal);
+//                    System.out.println("2.2:" +(radius + b.getRadius()+width));
+        double theta1= Math.acos((radius+width)/(b.getRadius()+radius+width));
+
+        if(cal>0){//when ball is near bottom of obstacle
+            if (   Math.atan(cal/radius)  < theta1 ) {
+
+                if (  theta1<=ang && ang<=90  )
+                    return false;//same color
+                else
+                    return true;//different color
+            }
+        }
+        else{//when ball is near top of obstacle
+            cal=Math.abs(cal);
+            if (   Math.atan(cal/radius)  <  Math.acos((radius+width)/(b.getRadius()+radius+width))) {
+
+                if (   ang<=(90-theta1)    )
+                    return false;//same color
+                else
+                    return true;//different color
+            }
+
+        }
+
+
+        //System.out.println("b.getShape().getTranslateY():"+b.getBallShape().getr());
         return false;
+    }
+    @Override
+    public boolean outofBounds(){
+      return rings.get(0).outofBounds();
+    }
+    @Override
+    public void Pause(){
+        rings.get(0).Pause();rings.get(1).Pause();
+    }
+    @Override
+    public void Resume(){
+        rings.get(0).Resume();rings.get(1).Resume();
     }
 }

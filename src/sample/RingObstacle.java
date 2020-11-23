@@ -51,9 +51,11 @@ public class RingObstacle extends Obstacle {
                         //Setting auto reverse value to false
                         // translateTransition.setAutoReverse(false);
 //                        System.out.println("move down");
+                        int finalI = i;
                         tlist.get(i).setOnFinished(new EventHandler<ActionEvent>() {//todo: dont create eventhandler  everytime
                             @Override
                             public void handle(ActionEvent t) {
+                                tlist.get(finalI).setByY(0);
                                 b.atend();
                             }
                         });
@@ -219,9 +221,7 @@ public class RingObstacle extends Obstacle {
         return path_to_add;
     }
 
-    public ArrayList<Path> getQuarters() {
-        return quarters;
-    }
+
     @Override
     public void Resume(){
         Platform.runLater(() -> {
@@ -247,11 +247,13 @@ public class RingObstacle extends Obstacle {
         });
 
     }
+    @Override
     public boolean collisionCheck(Ball b) {
         //returns true  if collision occurs
         //otherwise false
+
         int i = -1;
-        //System.out.println("will do");
+//        System.out.println("will do");
 //        System.out.println("b.getShape().getTranslateX():" + b.getBallShape().getTranslateX());
 //        System.out.println("b.getShape().getTranslateY():" + b.getBallShape().getTranslateY());
 //        System.out.println("b.getPosition().get_x():" + b.getPosition().get_x());
@@ -272,10 +274,15 @@ public class RingObstacle extends Obstacle {
         double cal = b.getPosition().get_y() + b.getBallShape().getTranslateY() - position.get_y() - quarters.get(i).getTranslateY();
 //        System.out.println("quarters.get(i).getTranslateY():" + quarters.get(i).getTranslateY());
 //        System.out.println("cal:" + cal);
+        if(directionClockwise)
         ang += (i * 90);
+        else
+            ang -= (i * 90);
 //        System.out.println("ang2:" + ang);
         //So that angle is b/w 0 and 360
+
         ang = adjust(ang);
+
 //        System.out.println("ang3:" + ang);
         if (cal > 0) {//when ball is near bottom of obstacle
 //            System.out.println("(radius - b.getRadius()) <= (cal):" +( (radius - b.getRadius()) <= (cal)));
@@ -303,17 +310,9 @@ public class RingObstacle extends Obstacle {
             }
         }
         //System.out.println("b.getShape().getTranslateY():"+b.getBallShape().getr());
-
         return false;
     }
-    public static double adjust(double ang){
-        while(!(0<=ang && ang <360)){
-            ang-=360;
-        }
-        return ang;
 
-
-    }
 
     public ArrayList<Timeline> getTimelines() {
         return timelines;
@@ -321,6 +320,9 @@ public class RingObstacle extends Obstacle {
 
     public ArrayList<Rotate> getRotate_list() {
         return rotate_list;
+    }
+    public ArrayList<Path> getQuarters() {
+        return quarters;
     }
 
 }

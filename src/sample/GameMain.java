@@ -63,6 +63,7 @@ public class GameMain extends TimerTask {
             s.Pause();
         }
         CurrentGameState.getCurrentBall().Pause();
+        CurrentGameState.BallTrail.Pause();
 
     }
     public void continueGame(){//todo shift to InGameMenu
@@ -77,6 +78,7 @@ public class GameMain extends TimerTask {
             s.Resume();
         }
         CurrentGameState.getCurrentBall().Resume();
+        CurrentGameState.BallTrail.Resume();
     }
 
     public void startGame(Stage primaryStage){

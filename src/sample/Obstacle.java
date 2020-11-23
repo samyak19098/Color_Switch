@@ -6,9 +6,9 @@ import javafx.util.Duration;
 
 public abstract class Obstacle extends GameObject{
 
-    private String ObstacleType;
-    private double ObstacleSpeed;
-    private int Orientation;
+    protected String ObstacleType;
+    protected double ObstacleSpeed;
+    protected int Orientation;
     protected ArrayList<TranslateTransition> tlist;
 
 
@@ -61,4 +61,17 @@ public abstract class Obstacle extends GameObject{
     public boolean outofBounds() {
         return false;
     }
+    public static double adjust(double ang){
+        while(!(0<=ang && ang <360)){
+            if(ang>=360)
+            ang-=360;
+            else
+                ang+=360;
+        }
+        return ang;
+
+
+    }
+
+
 }

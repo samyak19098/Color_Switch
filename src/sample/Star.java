@@ -51,7 +51,7 @@ public class Star extends GameObject{
         translateTransition.setNode(polygon);
     }
 
-    public void movedown(Ball b) {
+    public void movedown(Ball b,Trail BallTrail) {
         Platform.runLater(() -> {
             translateTransition.stop();
             translateTransition.setToY(Double.NaN);
@@ -66,7 +66,7 @@ public class Star extends GameObject{
             translateTransition.setOnFinished(new EventHandler<ActionEvent>() {//todo: dont create eventhandler  everytime
 
                 public void handle(ActionEvent t) {
-                    b.atend();
+                    translateTransition.setByY(0); b.atend();BallTrail.setAtend(false);
                 }
             });
             //Playing the animation

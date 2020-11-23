@@ -44,255 +44,269 @@ import javafx.animation.PathTransition.OrientationType;
 import java.text.SimpleDateFormat;
 import javafx.event.*;
 import javafx.util.*;
-
+import javafx.concurrent.*;
 import javafx.beans.*;
 import java.util.*;
 import java.io.*;
 import javafx.geometry.*;
 import org.w3c.dom.css.Rect;
+import javafx.scene.media.*;
+
+import static javafx.scene.media.AudioClip.INDEFINITE;
 
 
 public class Main extends Application {
 
-//    private static  double screenwidth=1200;
-//    private static double screenheight=800;
-//    private final int movedistance = 100;//distance moved in one move
-//    private final int movtime=250;
-
-    public Group getRoot() {
-        return root;
-    }
-
-    public GameMain getGm() {
-        return gm;
-    }
-
-    private Group root = new Group();
-    private GameMain gm = new GameMain(root);
-//    gm.setAssociatedMain(this);
+    private static double screenwidth = 1200;
+    private static double screenheight = 800;
+    private final int movedistance = 100;//distance moved in one move
+    private final int movtime = 250;
+    private Timer timer,trailtimer;
 
     @Override
-    public void start(Stage primaryStage) throws Exception{
+    public void start(Stage primaryStage) throws Exception {
 
-
+        new LoadingPage().start(primaryStage);
 //        Media ballup = new Media(new File("ballup.mp3").toURI().toString());
 //        MediaPlayer mp_ballup = new MediaPlayer(ballup);
 //        Media button = new Media(new File("button.wav").toURI().toString());
 //        MediaPlayer mp_button = new MediaPlayer(button);
 
-        MainPageMenu menu_starting = new MainPageMenu();
-        menu_starting.showMenu(primaryStage);
-//        menu_starting.start(primaryStage);
-//        GameMain gm = new GameMain(root);
+        //===========https://stackoverflow.com/questions/31784698/javafx-background-thread-task-should-play-music-in-a-loop-as-background-thread
+         final Task task = new Task() {
+            @Override
+            protected Object call() throws Exception {
+                int s = INDEFINITE;
+        AudioClip audio = new AudioClip( "file:background.wav" );
+                audio.setVolume(0.5f);
+                audio.setCycleCount(s);
+                audio.play();
+                return null;
+            }
+        };
+        Thread thread = new Thread(task);
+        thread.start();
+        //======
+
+        Group root = new Group();
+        // set background
+        Rectangle hbox = new Rectangle(screenwidth, screenheight);
+        Image im = new Image("file:bg.jpg", false);
+        hbox.setFill(new ImagePattern(im));
+        root.getChildren().add(hbox);
 
 
-        System.out.println("OUT INTO MAIN");
+        GameMain gm = new GameMain(root);
+//        Star s=new Star(600,300);
+        GameState g = new GameState();
+        gm.setCurrentGameState(g);
 
 
-//        // set background
-//        Rectangle hbox=new Rectangle(screenwidth,screenheight);
-//        Image im = new Image("file:bg.jpg",false);
-//        hbox.setFill(new ImagePattern(im));
-//        root.getChildren().add(hbox);
+        Button pause_button = new Button("PAUSE GAME");
+        pause_button.setPrefSize(100, 50);
+        pause_button.setLayoutX(20);
+        pause_button.setLayoutY(50);
+        root.getChildren().add(pause_button);
+        EventHandler<ActionEvent> event_new_game = new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent e) {
+                System.out.println("PAUSE BUTTON PRESSED");
+
+
+            }
+        };
+        pause_button.setOnAction(event_new_game);
+
+
+        Scene scene = new Scene(root, screenwidth, screenheight);//, Color.BLACK);
+
+        g.shownOnScreen(root);
+          timer = new Timer();
+
+
+        timer.schedule(gm, 500, 100);
+          trailtimer = new Timer();
+
+
+        trailtimer.schedule(gm.getCurrentGameState().BallTrail, 500, 200);
+
+        //timer checks collions after every 1s
+        // to stop the timer ,use down arrow key
+//        moveBallOnKeyPress(scene, gm ,timer,trailtimer);//,mp_ballup,mp_button);
+        primaryStage.setScene(scene);
+        primaryStage.setTitle("Color Switch");
+        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent t) {
+                Platform.exit();
+                System.exit(0);
+            }
+        });
+        primaryStage.show();
+
+
+//    private void moveBallOnKeyPress(Scene scene,  GameMain gm,Timer timer,Timer trailtimer){//, MediaPlayer mp_ballup,MediaPlayer mp_button) {
+        scene.addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                switch (event.getCode()) {
+                    case UP:
+//                        System.out.println("up");
+//                        Platform.runLater(() -> {
+//                                    mp_ballup.stop();
+//                                    mp_ballup.play();
+
+//                                });
+                        //g.debug();
+
+                        if ((600.0f + gm.getCurrentGameState().getCurrentBall().getBallShape().getTranslateY() - movedistance) > (screenheight / 2))
+                            gm.getCurrentGameState().getCurrentBall().MoveBall(gm.getGrp());
+                        else {
+                            gm.getCurrentGameState().getCurrentBall().getTranslateTransition().stop();
+                            gm.getCurrentGameState().BallTrail.atend = true;
+//                            for(int i=0;i< (gm.getCurrentGameState().getCurrentBall().n-1);i++){
+//                                gm.getCurrentGameState().getCurrentBall().t2.get(i).stop();
 //
-//        GameMain gm=new GameMain(root);
-////        Star s=new Star(600,300);
-//        gm.setGameplay_stage(primaryStage);
-//        GameState g =new GameState();
-//        gm.setCurrentGameState(g);
-//
-//        Button pause_button = new Button("PAUSE GAME");
-//        pause_button.setWrapText(true);
-//        pause_button.setPrefSize(100,50);
-//        pause_button.setLayoutX(20);
-//        pause_button.setLayoutY(50);
-//        root.getChildren().add(pause_button);
-//        EventHandler<ActionEvent> event_pause_game = new EventHandler<ActionEvent>() {
-//            public void handle(ActionEvent e)
-//            {
-//                System.out.println("PAUSE BUTTON PRESSED");
-//                show_pause_screen(primaryStage);
-//            }
-//        };
-//        pause_button.setOnAction(event_pause_game);
-//
-//        Scene scene = new Scene(root,screenwidth,screenheight);//, Color.BLACK);
-//
-//        g.shownOnScreen(root);
-//        Timer timer = new Timer();
-//
-//        timer.schedule(gm , 500, 100);
-//
-//        //timer checks collions after every 1s
-//        // to stop the timer ,use down arrow key
-//        moveBallOnKeyPress(scene, gm ,timer);//,mp_ballup,mp_button);
-//        primaryStage.setScene(scene);
-//        primaryStage.setTitle("Color Switch");
-//        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>(){
-//            @Override
-//            public  void handle(WindowEvent t){
-//                Platform.exit();
-//                System.exit(0);
-//            }
-//                                       });
-//        primaryStage.show();
+//                            }
+                            //g.CurrentBall.translateTransition.setByY(0);
+                            //g.CurrentBall.translateTransition.setCycleCount(1);
+                            //g.CurrentBall.translateTransition.setDuration(Duration.millis(0));
+                            boolean fl = false;//if no obstacle is on screen, then to make  ball go down this flag  is used
+//                            System.out.println("movedown1");
+                            for (Obstacle o : gm.getCurrentGameState().getSceneObstacles()) {
+                                fl = true;
+//                                System.out.println("movedown");
+                                o.movedown(gm.getCurrentGameState().getCurrentBall());
+                            }
+                            for (Star o : gm.getCurrentGameState().getSceneStars()) {
+                                fl = true;
+                                o.movedown(gm.getCurrentGameState().getCurrentBall(), gm.getCurrentGameState().BallTrail);
+                            }
+                            for (ColorSwitcher o : gm.getCurrentGameState().getSceneColorSwitcher()) {
+                                fl = true;
+                                o.movedown(gm.getCurrentGameState().getCurrentBall());
+                            }
+                            if (!fl)
+                                gm.getCurrentGameState().getCurrentBall().atend();
+                            //for (ColorSwitcher o : g.sceneColorSwitcher)
+                            //  o.movedown(g.CurrentBall.getBallShape(),g.CurrentBall.translateTransition );
+                            //g.CurrentBall.translateTransition.play();
+                        }
+                        gm.removehand();
+                        break;
+
+                    case DOWN://todo move to exit from game button button
+                        System.out.println("downkey");
+                        timer.cancel();
+                        timer.purge();
+                        break;
+                    case LEFT:
+                        System.out.println("leftkey");
+//                        s.getPolygon().setVisible(false);
+//                        gm.getCurrentGameState().getSceneColorSwitcher().remove(s);
+//                        gm.getGrp().getChildren().remove(s);
+//                        gm.getCurrentGameState().getSceneStars().remove(s);
+//                        primaryStage.show();
+                        break;
+                    case RIGHT:
+                        System.out.println("rightkey");
+//                        scoretext.setText(""+1);
+
+//                          primaryStage.show();
+                        break;
+                    case W:
+
+                        System.out.println("circle.getTranslateX():" + gm.getCurrentGameState().getCurrentBall().getBallShape().getTranslateX());
+                        System.out.println("circle.getTranslateY():" + gm.getCurrentGameState().getCurrentBall().getBallShape().getTranslateY());
+                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().stop();
+                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().setToY(Double.NaN);
+                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().setToX(Double.NaN);
+                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().setByX(0);
+                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().setByY(-movedistance);
+
+                        //Setting the cycle count for the transition
+                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().setCycleCount(1);
+                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().setDuration(Duration.millis(movtime));
+                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().setOnFinished(null);
+                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().play();
+                        break;
+                    case A:
+                        System.out.println("circle.getTranslateX():" + gm.getCurrentGameState().getCurrentBall().getBallShape().getTranslateX());
+                        System.out.println("circle.getTranslateY():" + gm.getCurrentGameState().getCurrentBall().getBallShape().getTranslateY());
+                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().stop();
+                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().setToX(Double.NaN);
+                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().setToY(Double.NaN);
+                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().setByY(0);
+                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().setByX(-movedistance);
+
+                        //Setting the cycle count for the transition
+                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().setCycleCount(1);
+                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().setDuration(Duration.millis(movtime));
+                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().setOnFinished(null);
+                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().play();
+                        break;
+                    case S:
+                        System.out.println("circle.getTranslateX():" + gm.getCurrentGameState().getCurrentBall().getBallShape().getTranslateX());
+                        System.out.println("circle.getTranslateY():" + gm.getCurrentGameState().getCurrentBall().getBallShape().getTranslateY());
+                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().stop();
+                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().setToY(Double.NaN);
+                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().setToX(Double.NaN);
+                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().setByX(0);
+                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().setByY(movedistance);
+
+                        //Setting the cycle count for the transition
+                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().setCycleCount(1);
+                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().setDuration(Duration.millis(movtime));
+                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().setOnFinished(null);
+                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().play();
+                        break;
+                    case D:
+                        System.out.println("circle.getTranslateX():" + gm.getCurrentGameState().getCurrentBall().getBallShape().getTranslateX());
+                        System.out.println("circle.getTranslateY():" + gm.getCurrentGameState().getCurrentBall().getBallShape().getTranslateY());
+                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().stop();
+                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().setToX(Double.NaN);
+                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().setToY(Double.NaN);
+                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().setByY(0);
+                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().setByX(movedistance);
+
+                        //Setting the cycle count for the transition
+                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().setCycleCount(1);
+                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().setDuration(Duration.millis(movtime));
+                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().setOnFinished(null);
+                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().play();
+                        break;
+                    case P://pause
+//                        Platform.runLater(() -> {
+//                                    mp_button.stop();
+//                                    mp_button.play();
+//                                });
+//                        gm.getCurrentGameState().getSceneObstacles().get(1).Pause();
+//                        timer.cancel();
+//                        trailtimer.cancel();
+                        gm.Pause();
+                        break;
+
+
+                    case R://continue
+//                        Platform.runLater(() -> {
+//                            mp_button.stop();
+//                            mp_button.play();
+//                        });
+//                        gm.getCurrentGameState().getSceneObstacles().get(1).Resume();
+//                        timer = new Timer();
+//                        trailtimer = new Timer();
+//                        timer.schedule(gm, 500, 100);
+//                        trailtimer.schedule(gm.getCurrentGameState().BallTrail, 500, 150);
+                        gm.continueGame();
+                        break;
+                    default:
+                        System.out.println("defaultkey");
+                        break;
+                }
+            }
+        });
     }
 
-//    private void show_pause_screen(Stage stage){
-//        InGameMenu in_game_menu = new InGameMenu();
-//        in_game_menu.in_game_stage = stage;
-//        try {
-//            in_game_menu.start(stage);
-//        } catch (Exception ex) {
-//            ex.printStackTrace();
-//        }
-//    }
-////    })
-//    private void moveBallOnKeyPress(Scene scene,  GameMain gm,Timer timer){//, MediaPlayer mp_ballup,MediaPlayer mp_button) {
-//        scene.addEventFilter(KeyEvent.KEY_PRESSED,new EventHandler<KeyEvent>() {
-//            @Override public void handle(KeyEvent event) {
-//                switch (event.getCode()) {
-//                    case UP:
-//                        System.out.println("up");
-////                        Platform.runLater(() -> {
-////                                    mp_ballup.stop();
-////                                    mp_ballup.play();
-//
-////                                });
-//                        //g.debug();
-//                        if((600.0f+ gm.getCurrentGameState().getCurrentBall().getBallShape().getTranslateY()-movedistance)> (screenheight/2))
-//                            gm.getCurrentGameState().getCurrentBall().MoveBall();
-//                        else {
-//                            gm.getCurrentGameState().getCurrentBall().getTranslateTransition().stop();
-//                            //g.CurrentBall.translateTransition.setByY(0);
-//                            //g.CurrentBall.translateTransition.setCycleCount(1);
-//                            //g.CurrentBall.translateTransition.setDuration(Duration.millis(0));
-//                            boolean fl=false;//if no obstacle is on screen, then to make  ball go down this flag  is used
-//                            System.out.println("movedown1");
-//                            for (Obstacle o : gm.getCurrentGameState().getSceneObstacles()) {
-//                                fl=true;
-//                                System.out.println("movedown");
-//                                o.movedown(gm.getCurrentGameState().getCurrentBall());
-//                            }
-//                            for(Star o: gm.getCurrentGameState().getSceneStars()) {
-//                                fl=true;
-//                                o.movedown(gm.getCurrentGameState().getCurrentBall());
-//                            }
-//                            for(ColorSwitcher o: gm.getCurrentGameState().getSceneColorSwitcher()) {
-//                                fl=true;
-//                                o.movedown(gm.getCurrentGameState().getCurrentBall());
-//                            }
-//                            if(!fl)
-//                                gm.getCurrentGameState().getCurrentBall().atend();
-//                            //for (ColorSwitcher o : g.sceneColorSwitcher)
-//                              //  o.movedown(g.CurrentBall.getBallShape(),g.CurrentBall.translateTransition );
-//                            //g.CurrentBall.translateTransition.play();
-//                        }
-//                            gm.removehand();
-//                        break;
-//
-//                    case DOWN://todo move to exit from game button button
-//                        System.out.println("downkey");
-//                        timer.cancel();
-//                        timer.purge();
-//                        break;
-//                    case LEFT:
-//                        System.out.println("leftkey");
-////                        s.getPolygon().setVisible(false);
-////                        gm.getCurrentGameState().getSceneColorSwitcher().remove(s);
-////                        gm.getGrp().getChildren().remove(s);
-////                        gm.getCurrentGameState().getSceneStars().remove(s);
-////                        primaryStage.show();
-//                        break;
-//                    case RIGHT:
-//                        System.out.println("rightkey");
-////                        scoretext.setText(""+1);
-//
-////                          primaryStage.show();
-//                        break;
-//                    case W:
-//
-//                        System.out.println("circle.getTranslateX():"+ gm.getCurrentGameState().getCurrentBall().getBallShape().getTranslateX());
-//                        System.out.println("circle.getTranslateY():"+ gm.getCurrentGameState().getCurrentBall().getBallShape().getTranslateY());
-//                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().stop();
-//                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().setToY(Double.NaN);
-//                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().setToX(Double.NaN);
-//                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().setByX( 0);
-//                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().setByY(- movedistance);
-//
-//                        //Setting the cycle count for the transition
-//                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().setCycleCount(1);
-//                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().setDuration(Duration.millis(movtime));
-//                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().setOnFinished(null) ;
-//                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().play();
-//                       break;
-//                    case A:
-//                        System.out.println("circle.getTranslateX():"+ gm.getCurrentGameState().getCurrentBall().getBallShape().getTranslateX());
-//                        System.out.println("circle.getTranslateY():"+ gm.getCurrentGameState().getCurrentBall().getBallShape().getTranslateY());
-//                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().stop();
-//                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().setToX(Double.NaN);
-//                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().setToY(Double.NaN);
-//                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().setByY( 0);
-//                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().setByX(- movedistance);
-//
-//                        //Setting the cycle count for the transition
-//                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().setCycleCount(1);
-//                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().setDuration(Duration.millis(movtime));
-//                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().setOnFinished(null) ;
-//                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().play();
-//                        break;
-//                    case S:
-//                        System.out.println("circle.getTranslateX():"+ gm.getCurrentGameState().getCurrentBall().getBallShape().getTranslateX());
-//                        System.out.println("circle.getTranslateY():"+ gm.getCurrentGameState().getCurrentBall().getBallShape().getTranslateY());
-//                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().stop();
-//                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().setToY(Double.NaN);
-//                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().setToX(Double.NaN);
-//                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().setByX( 0);
-//                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().setByY( movedistance);
-//
-//                        //Setting the cycle count for the transition
-//                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().setCycleCount(1);
-//                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().setDuration(Duration.millis(movtime));
-//                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().setOnFinished(null) ;
-//                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().play();
-//                        break;
-//                    case D:
-//                        System.out.println("circle.getTranslateX():"+ gm.getCurrentGameState().getCurrentBall().getBallShape().getTranslateX());
-//                        System.out.println("circle.getTranslateY():"+ gm.getCurrentGameState().getCurrentBall().getBallShape().getTranslateY());
-//                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().stop();
-//                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().setToX(Double.NaN);
-//                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().setToY(Double.NaN);
-//                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().setByY( 0);
-//                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().setByX( movedistance);
-//
-//                        //Setting the cycle count for the transition
-//                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().setCycleCount(1);
-//                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().setDuration(Duration.millis(movtime));
-//                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().setOnFinished(null) ;
-//                        gm.getCurrentGameState().getCurrentBall().getTranslateTransition().play();
-//                        break;
-//                    case P://pause
-////                        Platform.runLater(() -> {
-////                                    mp_button.stop();
-////                                    mp_button.play();
-////                                });
-//                        gm.Pause();
-//                        break;
-//
-//                    case R://continue
-////                        Platform.runLater(() -> {
-////                            mp_button.stop();
-////                            mp_button.play();
-////                        });
-//                        gm.continueGame();
-//                        break;
-//                    default:
-//                        System.out.println("defaultkey");
-//                        break;
-//                }
-//            }
-//        });
-//    }
+
 
     public static void main(String[] args) {
         launch(args);
