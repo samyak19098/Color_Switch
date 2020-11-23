@@ -116,7 +116,7 @@ public class InGameMenu extends Application {
 
         Scene scene = new Scene(in_game_group,1200,800, Color.BLACK);
         InGameStage.setScene(scene);
-        InGameStage.setTitle("In Game Menu");
+        InGameStage.setTitle("In Game/Pause Game Menu");
         InGameStage.show();
 
         InGameStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
@@ -138,9 +138,9 @@ public class InGameMenu extends Application {
         System.out.println("GAME WILL BE SAVED !!");
     }
     public void exitToMainPage() throws Exception {
-        MainPageMenu mp_menu = new MainPageMenu();
-        mp_menu.start(in_game_stage);
-//        main_page_obj.start(main_page_obj.main_page_stage);
+        System.out.println("GAME WILL BE EXITED TO MAIN PAGE !!");
+        MainPageMenu mainpage = new MainPageMenu();
+        mainpage.start(in_game_stage);
     }
 
     public static void main(String args[]){

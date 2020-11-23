@@ -16,12 +16,12 @@ import javafx.stage.WindowEvent;
 
 import java.io.FileInputStream;
 
-public class MainPageMenu extends Application {
+public class MainPageMenu extends Menu{
 
     Main m = new Main();
-    HowToPlayPage how_to_play_page_obj = new HowToPlayPage();
-    InGameMenu in_game_obj = new InGameMenu();
 
+    HowToPlayPage how_to_play_page_obj = new HowToPlayPage();
+//    InGameMenu in_game_obj = new InGameMenu();
     Stage main_page_stage;
 
     @Override
@@ -41,7 +41,7 @@ public class MainPageMenu extends Application {
         imageView.setFitWidth(230);
         imageView.setPreserveRatio(true);
 
-        ConcentricObstacle conc = new ConcentricObstacle("concentric", 6000, 0, 140, 15, 600, 185, true, 45);
+        ConcentricObstacle conc = new ConcentricObstacle("Concentric", 6000, 0, 140, 15, 600, 185, true, 45);
         conc.draw();
         conc.WayOfMovement();
         conc.rotateConcentric();
@@ -83,7 +83,7 @@ public class MainPageMenu extends Application {
         EventHandler<ActionEvent> event_new_game = new EventHandler<ActionEvent>() {
             public void handle(ActionEvent e)
             {
-                System.out.println("BUTTON 1 PRESSED");
+                System.out.println("BUTTON NEW-GAME PRESSED");
 
                 try {
                     newGame();
@@ -97,7 +97,7 @@ public class MainPageMenu extends Application {
         EventHandler<ActionEvent> event_resume_game = new EventHandler<ActionEvent>() {
             public void handle(ActionEvent e)
             {
-                System.out.println("BUTTON 2 PRESSED");
+                System.out.println("BUTTON RESUME-GAME PRESSED");
                 try {
                     resumeGame();
                 } catch (Exception ex) {
@@ -109,7 +109,7 @@ public class MainPageMenu extends Application {
         EventHandler<ActionEvent> event_how_to_play = new EventHandler<ActionEvent>() {
             public void handle(ActionEvent e)
             {
-                System.out.println("BUTTON 3 PRESSED");
+                System.out.println("BUTTON HOW-TO-PLAY PRESSED");
                 try {
                     HowToPlay();
                 } catch (Exception ex) {
@@ -161,8 +161,13 @@ public class MainPageMenu extends Application {
 
     }
 
+    public void showMenu(Stage s) throws Exception {
+//        this.launch("hello");"
+        this.start(s);
+    }
     public void newGame() throws Exception {
-        m.start((this.main_page_stage));
+//        m.start((this.main_page_stage));
+        m.getGm().startGame(this.main_page_stage);
     }
 
     public void resumeGame() throws Exception{

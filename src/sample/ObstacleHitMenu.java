@@ -17,13 +17,12 @@ public class ObstacleHitMenu extends Application {
 //    MainPageMenu main_page_obj;
     Stage hit_menu_stage;
 
-
     @Override
     public void start(Stage HitMenuStage) throws Exception {
         this.hit_menu_stage = HitMenuStage;
-        Group hit_group = new Group();
+        Group hit_menu_group = new Group();
 
-        Text game_over_text = new Text("GAME OVER ");
+        Text game_over_text = new Text(" GAME OVER ");
         game_over_text.setStyle("-fx-font: 80 arial;");
 
         game_over_text.setFill(Color.WHITE);
@@ -38,7 +37,7 @@ public class ObstacleHitMenu extends Application {
         restart_ring.draw();
         restart_ring.WayOfMovement();
         restart_ring.rotateRing();
-        restart_ring.shownOnScreen(hit_group);
+        restart_ring.shownOnScreen(hit_menu_group);
 
 
         RingObstacle continue_ring = new RingObstacle("Ring", 6000, 0, 110, 15, 580, 410, true);
@@ -50,7 +49,7 @@ public class ObstacleHitMenu extends Application {
         continue_ring.draw();
         continue_ring.WayOfMovement();
         continue_ring.rotateRing();
-        continue_ring.shownOnScreen(hit_group);
+        continue_ring.shownOnScreen(hit_menu_group);
 
 
         RingObstacle exit_to_main_ring = new RingObstacle("Ring", 6000, 0, 110, 15, 890, 410, true);
@@ -61,7 +60,7 @@ public class ObstacleHitMenu extends Application {
         exit_to_main_ring.draw();
         exit_to_main_ring.WayOfMovement();
         exit_to_main_ring.rotateRing();
-        exit_to_main_ring.shownOnScreen(hit_group);
+        exit_to_main_ring.shownOnScreen(hit_menu_group);
 
 
 
@@ -110,9 +109,9 @@ public class ObstacleHitMenu extends Application {
 
 
 
-        hit_group.getChildren().addAll(game_over_text, restart_game_button, continue_game_button, exit_to_main_button);
+        hit_menu_group.getChildren().addAll(game_over_text, restart_game_button, continue_game_button, exit_to_main_button);
 
-        Scene scene = new Scene(hit_group,1200,800, Color.BLACK);
+        Scene scene = new Scene(hit_menu_group,1200,800, Color.BLACK);
         HitMenuStage.setScene(scene);
         HitMenuStage.setTitle("Game Over Menu");
         HitMenuStage.show();
@@ -134,6 +133,7 @@ public class ObstacleHitMenu extends Application {
 
     public void restartGame(){
         System.out.println("GAME WILL BE RESTARTED !!");
+
     }
     public void exitToMainPage() throws Exception {
         System.out.println("GAME WILL BE EXITED TO MAIN PAGE !!");

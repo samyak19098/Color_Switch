@@ -140,10 +140,11 @@ public class GameState {
             Platform.runLater(() -> {
 //                mp_GameOver.stop();
 //                mp_GameOver.play();
-//            });
-                ObstacleHitMenu obm = new ObstacleHitMenu();
+                ObstacleHitMenu hit_menu = new ObstacleHitMenu();
+//                Pause();
                 try {
-                    obm.start(stage);
+                    hit_menu.start(stage);
+                    System.out.println("::::::::::::::: DONE EXECUTION :::::::::::::::");
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -174,7 +175,7 @@ public class GameState {
 
     }
 
-    public void checkAllcollisions(Group g, Stage stage) throws Exception{
+    public void checkAllcollisions(Group g, Stage stage) throws Exception {
 //        System.out.println("checking");
         for(Star s: sceneStars) {
             if (s.collisionCheck(CurrentBall)) {
@@ -224,17 +225,13 @@ public class GameState {
                 System.out.println("collided3!!");
                 System.out.println("12");
                 //todo remove obstacles
-//                Platform.runLater(() -> {
-//                            mp_GameOver.stop();
-//                            mp_GameOver.play();
-//                        });
                 Platform.runLater(() -> {
 //                            mp_GameOver.stop();
 //                            mp_GameOver.play();
 //                        });
 //                throw new GameOverException("struck an obstacle");
 
-                    ObstacleHitMenu obm = new ObstacleHitMenu();
+                            ObstacleHitMenu obm = new ObstacleHitMenu();
 //                Pause();
                     try {
                         obm.start(stage);
@@ -242,7 +239,9 @@ public class GameState {
                         e.printStackTrace();
                     }
                 });
-                throw new GameOverException("struck an obstacle");
+//                obm.start();
+
+
             }
 //            System.out.println("d1:");
         }
