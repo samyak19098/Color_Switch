@@ -54,7 +54,7 @@ public class ColorSwitcher extends GameObject implements SpecialObject{
                     translateTransition.setOnFinished(new EventHandler<ActionEvent>() {//todo: dont create eventhandler  everytime
                         @Override
                         public void handle(ActionEvent t) {
-                            b.atend();
+                            translateTransition.setByY(0); b.atend();
                         }
                     });
                     //Playing the animation

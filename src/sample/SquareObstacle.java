@@ -1,6 +1,9 @@
 package sample;
 
 import javafx.animation.*;
+import javafx.application.Platform;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.transform.Rotate;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
@@ -72,6 +75,7 @@ public class SquareObstacle extends Obstacle {
             timelines.add(new Timeline());
             rotate_list.add(r);
             sides.get(i).getTransforms().add(r);
+            tlist.get(i).setNode(sides.get(i));
         }
     }
     /*
@@ -107,7 +111,7 @@ public class SquareObstacle extends Obstacle {
             VLine1 = obstacleCentre.get_y() + change_in_coordinate + thickness;
             HLine2 = obstacleCentre.get_x() - change_in_coordinate - thickness;
             VLine3 = obstacleCentre.get_y() + change_in_coordinate;
-            c = Color.YELLOW;
+            c = Color.DEEPPINK;
         }
         else if(side_number == 3){
             startX = obstacleCentre.get_x() - change_in_coordinate - thickness;
@@ -125,7 +129,7 @@ public class SquareObstacle extends Obstacle {
             VLine1 = obstacleCentre.get_y() - change_in_coordinate;
             HLine2 = obstacleCentre.get_x() - change_in_coordinate - thickness;
             VLine3 = obstacleCentre.get_y() - change_in_coordinate - thickness;
-            c = Color.DEEPPINK;
+            c = Color.YELLOW;
         }
         MoveTo start_position = new MoveTo(startX,startY);
         HLineTo horizontal4 = new HLineTo(HLine4);
@@ -137,12 +141,143 @@ public class SquareObstacle extends Obstacle {
         path_to_add.setFill(c);
         return path_to_add;
     }
-    @Override
-    public boolean collisionCheck(Ball b)  {
-        return false;
-    }
+
     @Override
     public void movedown(Ball b) {
+//        System.out.println("sq move down");
+            Platform.runLater(() -> {
+                for (int i = 0; i < 4; i++) {
+                    tlist.get(i).stop();
+                    tlist.get(i).setToY(Double.NaN);
+                    tlist.get(i).setByY(movedistance);
 
+                    //Setting the cycle count for the transition
+                    tlist.get(i).setCycleCount(1);
+                    tlist.get(i).setDuration(Duration.millis(movtime));
+                    //Setting auto reverse value to false
+                    // translateTransition.setAutoReverse(false);
+//                        System.out.println("move down");
+                    int finalI=i;
+                    tlist.get(i).setOnFinished(new EventHandler<ActionEvent>() {//todo: dont create eventhandler  everytime
+                        @Override
+                        public void handle(ActionEvent t) {
+                            tlist.get(finalI).setByY(0); b.atend();
+                        }
+                    });
+                    //Playing the animation
+
+                    tlist.get(i).play();
+                }
+            });
+//        collisionCheck(b);
+
+    }
+    @Override
+    public void removeself(Group grp){
+        for(Path p: sides) {
+            Platform.runLater(() -> {
+                p.setVisible(false);
+                grp.getChildren().remove(p);
+            });
+        }
+        System.out.println("notvisible");
+    }
+    @Override
+    public boolean outofBounds(){
+        if((position.get_y()+sides.get(0).getTranslateY()-(sideLength*0.707))>screenheight)
+            return true;
+        return false;
+    }
+
+    @Override
+    public void Pause(){
+        Platform.runLater(() -> {
+            for (int i = 0; i < timelines.size(); i++) {
+                timelines.get(i).pause();
+                tlist.get(i).pause();
+            }
+//            for (int i = 0; i < rotate_list.size(); i++) {
+//                System.out.println("angle of ring " + (i));
+//                System.out.println(":" + rotate_list.get(i).getAngle());
+//            }
+        });
+
+    }
+    @Override
+    public void Resume(){
+        Platform.runLater(() -> {
+            rotateSquare();
+            for (int i = 0; i < tlist.size(); i++) {
+
+                tlist.get(i).play();
+            }
+        });
+
+    }
+    @Override
+    public boolean collisionCheck(Ball b) {
+        //returns true  if collision occurs
+        //otherwise false
+        int i = -1;
+        //System.out.println("will do");
+//        System.out.println("b.getShape().getTranslateX():" + b.getBallShape().getTranslateX());
+//        System.out.println("b.getShape().getTranslateY():" + b.getBallShape().getTranslateY());
+//        System.out.println("b.getPosition().get_x():" + b.getPosition().get_x());
+//        System.out.println("b.getPosition().get_y():" + b.getPosition().get_y());
+//        System.out.println("b.getPosition().getRadius():" + b.getRadius());
+
+        //matching color
+        for (i = 0; i < 4; i++) {
+            if (b.getColor() == sides.get(i).getFill()) {
+                break;
+            }
+        }
+//        System.out.println("i:" + i);
+//        System.out.println(b.getColor() == quarters.get(i).getFill());
+        double ang = rotate_list.get(i).getAngle();
+//        System.out.println("ang:" + ang);
+        //cal=distance b/w centers
+        double cal = b.getPosition().get_y() + b.getBallShape().getTranslateY() - position.get_y() - sides.get(i).getTranslateY();
+//        System.out.println("quarters.get(i).getTranslateY():" + quarters.get(i).getTranslateY());
+//        System.out.println("cal:" + cal);
+        ang += (i * 90);
+        ang = adjust(ang);
+//        System.out.println("ang2:" + ang);
+        //So that angle is b/w 0 and 360
+
+//        System.out.println("ang3:" + ang);
+        if (cal > 0) {//when ball is near bottom of obstacle
+//            System.out.println("  (cal):" +  (cal));
+//            System.out.println("sideLength:" +(sideLength));
+//            System.out.println("(effectiveside(ang,sideLength)):" +(effectiveside(ang,sideLength)));
+//            System.out.println("b.getRadius():" + b.getRadius());
+//
+//            System.out.println("(effectiveside(ang,sideLength+thickness):" +effectiveside(ang,sideLength+thickness));
+//                    System.out.println("2.2:" +(radius + b.getRadius()+width));
+
+                if ((((effectiveside(ang,sideLength)) - b.getRadius()) <= (cal)) && (cal <= ((effectiveside(ang,sideLength+thickness)) + b.getRadius()))){
+//                    System.out.println("ang1:" + ang);
+                    if (((45) <= ang) && (ang < 135))//same color
+                        return false;
+                else
+                    return true;//different color
+            }
+        }
+        if (cal < 0) {//when ball is near top of obstacle
+            if ((((effectiveside(ang,sideLength)) - b.getRadius()) <= (-cal)) && ((-cal) <= ((effectiveside(ang,sideLength+thickness)) + b.getRadius() ))) {
+//                System.out.println("ang2:" + ang);
+                if (((225) <= ang) && (ang < 315))
+                    return false;
+                else
+                    return true;
+            }
+        }
+        //System.out.println("b.getShape().getTranslateY():"+b.getBallShape().getr());
+        return false;
+    }
+    public double effectiveside(double ang,double sidel){
+
+
+        return sidel/(2* Math.cos( Math.toRadians(ang-(90*(Math.ceil((ang-45)/90))) )) );
     }
 }
