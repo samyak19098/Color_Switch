@@ -16,22 +16,24 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
 import java.io.FileInputStream;
+import java.util.HashMap;
 import java.util.Map;
 
-public class AchievementsPage extends Application{
+public class ShopPage extends Application{
     protected static  double screenheight=800;
     MainPageMenu main_page_obj;
     GameMain gm;
-    Stage achievement_page_stage;
+    Stage shop_page_stage;
     Stage mp_stage;
+
 
     @Override
     public void start(Stage HelpStage) throws Exception {
 
-        this.achievement_page_stage = HelpStage;
+        this.shop_page_stage = HelpStage;
         Group help_page_group = new Group();
 
-        Image how_to_play_image = new Image(new FileInputStream("achievements.png"));
+        Image how_to_play_image = new Image(new FileInputStream("shop.png"));
         ImageView imageView = new ImageView(how_to_play_image);
         imageView.setX(485);
         imageView.setY(120);
@@ -65,7 +67,7 @@ public class AchievementsPage extends Application{
         home_button.setLayoutY(0);
         Rectangle tmp;
         int i=0;
-        for(Map.Entry<Integer,Achievement> t: gm.getGameAchievements().entrySet()) {
+        for(Map.Entry<Integer,Achievement> t: gm.getOwnedTrails().entrySet()) {
             if(t.getValue().Unlock)
                 tmp=t.getValue().unlocked;
             else

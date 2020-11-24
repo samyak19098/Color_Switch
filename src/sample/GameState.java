@@ -62,7 +62,7 @@ public class GameState {
         sceneStars=new ArrayList<Star>();
         sceneColorSwitcher=new ArrayList<ColorSwitcher>();
         CurrentBall=new Ball(Color.DEEPPINK,600.0f,600.0f,20.0f,-1);
-        BallTrail=new Neontrail(CurrentBall);
+        BallTrail=new Firetrail(CurrentBall);
         hand=new Hand(screenwidth/2,600+20+100);
         RingObstacle ringObstacle = new RingObstacle("Ring", speed, 0, 100,20, screenwidth/2, initialhobstacle, true);
         ringObstacle.draw();

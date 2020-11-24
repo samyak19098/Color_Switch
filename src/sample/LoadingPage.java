@@ -48,6 +48,8 @@ import javafx.concurrent.*;
 import javafx.beans.*;
 import java.util.*;
 import java.io.*;
+import java.util.concurrent.TimeUnit;
+
 import javafx.geometry.*;
 import org.w3c.dom.css.Rect;
 import javafx.scene.media.*;
@@ -82,7 +84,7 @@ public class LoadingPage extends Application {
         Rectangle progress = new Rectangle(screenwidth/4,screenheight*0.75,0, 50);
         Timeline t1=new Timeline();
         t1.setCycleCount(1);
-        t1.getKeyFrames().add(new KeyFrame(Duration.millis(2000), new KeyValue(progress.widthProperty(), screenwidth*0.5, Interpolator.LINEAR)));
+        t1.getKeyFrames().add(new KeyFrame(Duration.millis(1000), new KeyValue(progress.widthProperty(), screenwidth*0.5, Interpolator.LINEAR)));
         progress.setFill(Color.YELLOW);
         bar.setFill(Color.WHITE);
         t1.play();

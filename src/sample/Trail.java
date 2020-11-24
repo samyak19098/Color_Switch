@@ -49,6 +49,7 @@ import org.w3c.dom.css.Rect;
 public class Trail  extends TimerTask {
 
 
+
     protected boolean atend;
     protected static double screenwidth = 1200;
     protected static double screenheight = 800;
@@ -62,6 +63,9 @@ public class Trail  extends TimerTask {
     protected ArrayList<Ball> list;
 
     public Trail(Ball b) {
+
+
+
         atend=false;
         t1 = new ArrayList<Timeline>();
         parentball = b;

@@ -5,6 +5,7 @@ public class StarAchievement extends Achievement {
 
     public StarAchievement(long rs){
         super(); RequiredStars=rs;
+        text.setText("Collect "+RequiredStars+" stars");
     }
 
     @Override
