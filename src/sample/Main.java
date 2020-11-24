@@ -124,9 +124,6 @@ public class Main extends Application {
                     ));
         wait.play();
 
-
-
-
     }
 
 

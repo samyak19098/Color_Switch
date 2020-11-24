@@ -83,7 +83,7 @@ public class ObstacleHitMenu extends Application {
             {
                 System.out.println("BUTTON CONTINUE GAME PRESSED");
                 try {
-                    continueGame();
+                    Obstacle_Menu_continueGame();
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
@@ -128,13 +128,14 @@ public class ObstacleHitMenu extends Application {
     }
 
 
-    public void continueGame(){
+    public void Obstacle_Menu_continueGame(){
         System.out.println("GAME WILL BE CONTINUED !! + COLL FLAG == " +  game_main.collided_flag);
         game_main.collided_flag = false;
 //        game_main.getCurrentGameState().coll_flag = false;
-        game_main.continueGame();
+//        game_main.continueGame();
         game_main.AssociatedMain.getMainStage().setScene(game_main.getGm_scene());
         game_main.AssociatedMain.getMainStage().show();
+//        game_main.Pause();
 
     }
 

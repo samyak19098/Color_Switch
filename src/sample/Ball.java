@@ -132,6 +132,19 @@ public class Ball extends GameObject {
 
     }
 
+    public void reposition(){
+        Platform.runLater(() -> {
+            translateTransition.stop();
+            translateTransition.setToY(Double.NaN);
+            translateTransition.setByY(-movedistance);
+            translateTransition.setCycleCount(1);
+            translateTransition.setDuration(Duration.millis(1));
+            translateTransition.setOnFinished(null);
+            translateTransition.play();
+        });
+
+    }
+
     public boolean outofBounds(){
         if((position.get_y()+BallShape.getTranslateY())>(screenheight+radius))
                                                     //  600 + 0   >  800+20
@@ -142,8 +155,6 @@ public class Ball extends GameObject {
     public void shownOnScreen(Group g) {
         Platform.runLater(() -> {
             g.getChildren().add(BallShape);
-
-
         });
 
     }

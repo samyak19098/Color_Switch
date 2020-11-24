@@ -183,7 +183,9 @@ public class GameState {
                 //                    e.printStackTrace();
                 //                }
                 //            });
+
                 throw new GameOverException("ball gone out");
+
             }
         }
 //    }

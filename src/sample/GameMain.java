@@ -48,6 +48,7 @@ public class GameMain extends TimerTask {
 
     //made as an indicator for run() method of thread
     boolean collided_flag;
+    boolean pause_var;
 
     public GameMain(Group root, Main m){
         numStars=0;
@@ -69,7 +70,7 @@ public class GameMain extends TimerTask {
         {
             @Override
             public void handle(MouseEvent t) {
-                rect.setFill(Color.RED);
+//                rect.setFill(Color.RED);
             }
         });
         a.Unlock=true;a.text.setPrefColumnCount(10);a.text.setStyle(" -fx-font-weight: bold; -fx-font-size:20;");
@@ -104,6 +105,7 @@ public class GameMain extends TimerTask {
     public void startGame(Stage primaryStage){
 
         this.collided_flag = false;
+        this.pause_var = false;
         Group grp = new Group();
         this.root = grp;
         this.GameMainStage = primaryStage;
@@ -196,6 +198,7 @@ public class GameMain extends TimerTask {
             public void handle(KeyEvent event) {
                 switch (event.getCode()) {
                     case UP:
+
 //                        System.out.println("up");
 //                        Platform.runLater(() -> {
 //                                    mp_ballup.stop();
@@ -203,7 +206,10 @@ public class GameMain extends TimerTask {
 
 //                                });
                         //g.debug();
-
+                        if(pause_var == true){
+                            continueGame();
+                            pause_var = false;
+                        }
                         if ((600.0f + CurrentGameState.getCurrentBall().getBallShape().getTranslateY() - movedistance) > (screenheight / 2))
                             CurrentGameState.getCurrentBall().MoveBall(root);
                         else {
@@ -238,6 +244,8 @@ public class GameMain extends TimerTask {
                             //g.CurrentBall.translateTransition.play();
                         }
                         removehand();
+
+
                         break;
 
                     case DOWN://todo move to exit from game button button
@@ -357,44 +365,59 @@ public class GameMain extends TimerTask {
         if(CurrentGameState != null && this.collided_flag == false ){
             try {
                 CurrentGameState.checkAllcollisions(root,AssociatedMain.getMainStage());
+                System.out.println("CHECKING ALL COLLISIONS");
             } catch (Exception e) {
-                System.out.println("IN RUN ");
-                Pause();
-                this.collided_flag = true;
-                this.getCurrentGameState().coll_flag = true;
-                this.getCurrentGameState().getCurrentBall().setColor(Color.WHITE);
                 Platform.runLater(() -> {
-                    ObstacleHitMenu obm = new ObstacleHitMenu();
-                    obm.game_main = this;
-                    obm.main_page_obj = this.AssociatedMain.getMain_page();
+                    System.out.println("IN RUN ");
+                    Pause();
+                    this.collided_flag = true;
+                    this.pause_var = true;
+    //                this.CurrentGameState.coll_flag = true;
+                    this.CurrentGameState.getCurrentBall().setColor(Color.WHITE);
+                    this.CurrentGameState.getCurrentBall().reposition();
+    //                Platform.runLater(() -> {
+                        ObstacleHitMenu obm = new ObstacleHitMenu();
+                        obm.game_main = this;
+                        obm.main_page_obj = this.AssociatedMain.getMain_page();
 
-                    try {
-                        obm.start(GameMainStage);
-                    } catch (Exception e1) {
+                        try {
+                            obm.start(GameMainStage);
+                        } catch (Exception e1) {
+                            e1.printStackTrace();
+                        }
                         e.printStackTrace();
-                    }
                 });
-                e.printStackTrace();
+
             }
+        }
+
+        if(CurrentGameState != null && this.collided_flag == false ) {
             try {
                 CurrentGameState.RemoveObstacles(root, AssociatedMain.getMainStage());
             } catch (Exception e) {
-                System.out.println("IN RUN ");
-                Pause();
-                this.collided_flag = true;
-                this.getCurrentGameState().coll_flag = true;
                 Platform.runLater(() -> {
-                    ObstacleHitMenu obm = new ObstacleHitMenu();
-                    obm.game_main = this;
-                    obm.main_page_obj = this.AssociatedMain.getMain_page();
-                    try {
-                        obm.start(GameMainStage);
-                    }
-                    catch (Exception e1) {
+                    System.out.println("IN RUN ");
+    //                for(int i = 0 ; i < 100 ; i++) {
+    //                    this.CurrentGameState.getCurrentBall().MoveBall(root);
+    //                }
+                    Pause();
+                    this.CurrentGameState.getCurrentBall().setColor(Color.WHITE);
+                    this.CurrentGameState.getCurrentBall().reposition();
+                    this.collided_flag = true;
+                    this.pause_var = true;
+                    this.getCurrentGameState().coll_flag = true;
+    //                Platform.runLater(() -> {
+                        ObstacleHitMenu obm = new ObstacleHitMenu();
+                        obm.game_main = this;
+                        obm.main_page_obj = this.AssociatedMain.getMain_page();
+                        try {
+                            obm.start(GameMainStage);
+                        } catch (Exception e1) {
+                            e1.printStackTrace();
+                        }
                         e.printStackTrace();
-                    }
                 });
-                e.printStackTrace();
+
             }
         }
 //        CurrentGameState.AddObjects(grp);
