@@ -51,6 +51,16 @@ import java.io.*;
 import javafx.geometry.*;
 import org.w3c.dom.css.Rect;
 import javafx.scene.media.*;
+import java.awt.AWTException;
+//import java.awt.Rectangle;
+import java.awt.Robot;
+import java.awt.Toolkit;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
+
+import javax.imageio.ImageIO;
 
 import static javafx.scene.media.AudioClip.INDEFINITE;
 
@@ -96,8 +106,24 @@ public class Main extends Application {
 //        MediaPlayer mp_button = new MediaPlayer(button);
 
         //===========https://stackoverflow.com/questions/31784698/javafx-background-thread-task-should-play-music-in-a-loop-as-background-thread
+//        TimeUnit.SECONDS.sleep(5);
+        Timeline wait=new Timeline();
+        wait.getKeyFrames().add(   new KeyFrame(Duration.millis(1000), new   EventHandler<ActionEvent>() {
 
-        main_page.start(primaryStage);
+            @Override
+            public void handle(ActionEvent event) {
+                System.out.println("this is called every 5 seconds on UI thread");
+                try {
+                    main_page.start(primaryStage);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+                    ));
+        wait.play();
+
 
 
 
@@ -108,7 +134,21 @@ public class Main extends Application {
         launch(args);
     }
 }
-
+// case X://screenshot
+//         try {
+//         Robot robot = new Robot();
+//         String format = "jpg";
+//         String fileName = "FullScreenshot." + format;
+//
+//         java.awt.Rectangle screenRect = new java.awt.Rectangle((int)primaryStage.getX()+5,(int)primaryStage.getY()+30,(int)screenwidth,(int)screenheight-50);//Toolkit.getDefaultToolkit().getScreenSize());
+//         BufferedImage screenFullImage = robot.createScreenCapture(screenRect);
+//         ImageIO.write(screenFullImage, format, new File(fileName));
+//
+//         System.out.println("A full screenshot saved!");
+//         } catch (AWTException | IOException ex) {
+//         System.err.println(ex);
+//         }
+//         break;
 //This is a branch
 //
 //

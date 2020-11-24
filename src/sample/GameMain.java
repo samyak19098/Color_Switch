@@ -10,6 +10,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.media.AudioClip;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
@@ -21,14 +22,8 @@ import javafx.util.Duration;
 import static javafx.scene.media.AudioClip.INDEFINITE;
 
 public class GameMain extends TimerTask {
+    public long numStars;
 
-    public Group getRoot() {
-        return root;
-    }
-
-    public Scene getGm_scene() {
-        return gm_scene;
-    }
 
     private Scene gm_scene;
     private Group root;
@@ -36,6 +31,13 @@ public class GameMain extends TimerTask {
     public Stage GameMainStage;
     public Main AssociatedMain;
 
+
+    public HashMap<Integer, Achievement> getOwnedTrails() {
+        return OwnedTrails;
+    }
+
+    public HashMap<Integer,Achievement> OwnedTrails;
+    private HashMap<Integer,Achievement> GameAchievements;
     private Task task;
 
     private static double screenwidth = 1200;
@@ -48,10 +50,54 @@ public class GameMain extends TimerTask {
     boolean collided_flag;
 
     public GameMain(Group root, Main m){
+        numStars=0;
         this.root = new Group();
         this.AssociatedMain = m;
         timer = new Timer();
         timer.schedule(this, 500, 100);
+        GameAchievements=new  HashMap<>();OwnedTrails=new HashMap<>();
+        for(int i=0;i<3;i++)
+            GameAchievements.put(i,new StarAchievement(((i+1)*30)));
+
+
+        Achievement a=new Achievement();
+        a.text.setText("No trail");
+        OwnedTrails.put(0, a);
+        Image im = new Image("file:notrail.png",false);
+        a.unlocked.setFill(new ImagePattern(im));
+        a.unlocked.setOnMouseClicked(new EventHandler<MouseEvent>()
+        {
+            @Override
+            public void handle(MouseEvent t) {
+                rect.setFill(Color.RED);
+            }
+        });
+        a.Unlock=true;a.text.setPrefColumnCount(10);a.text.setStyle(" -fx-font-weight: bold; -fx-font-size:20;");
+
+         a=new Achievement();
+        a.requirednumber=50;
+        a.text.setText("Generating mist in the space with dash of the ball. Cost " + a.requirednumber+" stars");
+          im = new Image("file:greytrail.jpg",false);
+        a.unlocked.setFill(new ImagePattern(im));
+        OwnedTrails.put(1, a);a.text.setPrefColumnCount(30);
+
+        a=new Achievement();
+        a.requirednumber=50;
+        a.text.setText("Fire Balls signifying the rage of the ball. Cost " + a.requirednumber+" stars");
+          im = new Image("file:firetrail2.jpg",false);
+        a.unlocked.setFill(new ImagePattern(im));
+        OwnedTrails.put(2, a);a.text.setPrefColumnCount(30);//a.text.setStyle(" -fx-font-weight: bold; -fx-font-size:15;");
+
+        a=new Achievement();
+        a.requirednumber=50;
+        a.text.setText("Laser like trail. Similar to nitro boost in race cars. Cost " + a.requirednumber+" stars");
+        im = new Image("file:neontrail.jpg",false);
+        a.unlocked.setFill(new ImagePattern(im));
+        OwnedTrails.put(3, a);a.text.setPrefColumnCount(30);//a.text.setStyle(" -fx-font-weight: bold; -fx-font-size:15;");
+
+
+
+
     }
 
 
@@ -413,5 +459,15 @@ public class GameMain extends TimerTask {
 
     public void removehand() {
         CurrentGameState.getHand().removeself(root);
+    }
+    public HashMap<Integer, Achievement> getGameAchievements() {
+        return GameAchievements;
+    }
+    public Group getRoot() {
+        return root;
+    }
+
+    public Scene getGm_scene() {
+        return gm_scene;
     }
 }

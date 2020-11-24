@@ -18,6 +18,8 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Duration;
+import java.awt.Desktop;
+import java.net.URI;
 
 import java.io.FileInputStream;
 
@@ -25,7 +27,8 @@ public class MainPageMenu extends Application {
 
     // privatise !
     HowToPlayPage how_to_play_page_obj = new HowToPlayPage();
-    AchievementPage ach = new AchievementPage();
+    AchievementsPage achievement_page_obj = new AchievementsPage();
+    ShopPage shop_page_obj = new ShopPage();
 //    InGameMenu in_game_obj = new InGameMenu();
     Main AssociatedMain;
     Stage main_page_stage;
@@ -33,15 +36,21 @@ public class MainPageMenu extends Application {
     MainPageMenu(Main m){
         this.AssociatedMain = m;
         this.how_to_play_page_obj.main_page_obj = this;
-        this.ach.main_page_obj = this;
+        this.achievement_page_obj.main_page_obj=this;
+        this.achievement_page_obj.gm=m.getGm();
+        this.shop_page_obj.main_page_obj=this;
+        this.shop_page_obj.gm=m.getGm();
+
 //        this.in_game_obj.main_page_obj = this;
+
     }
     @Override
     public void start(Stage stage) throws Exception {
 
         this.main_page_stage = stage;
         this.how_to_play_page_obj.mp_stage = stage;
-        this.ach.mp_stage = stage;
+        this.achievement_page_obj.mp_stage = stage;
+        this.shop_page_obj.mp_stage = stage;
 
         Group main_page_group = new Group();
 
@@ -84,37 +93,21 @@ public class MainPageMenu extends Application {
         exit_game_button.setLayoutX(500);
         exit_game_button.setLayoutY(690);
 
-        Image trophy_img = new Image(new FileInputStream("/Users/rohitritika/Desktop/AP_RESOURCE/final_tp.png"));
-        ImageView trohpy_img_view = new ImageView(trophy_img);
-        trohpy_img_view.setX(200);
-        trohpy_img_view.setY(200);
-        trohpy_img_view.setFitHeight(100);
-        trohpy_img_view.setFitWidth(1000);
-        trohpy_img_view.setPreserveRatio(true);
-
-        RotateTransition rot = new RotateTransition(Duration.millis(3000), trohpy_img_view);
-        rot.setByAngle(360);
-        rot.setCycleCount(Animation.INDEFINITE);
-        rot.setInterpolator(Interpolator.LINEAR);
-        rot.play();
-
-        EventHandler mouseHandler = new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent t) {
-//                AchievementPage ap = new AchievementPage();
-                try {
-                    show_ach_page();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        };
-
-        trohpy_img_view.setOnMouseClicked(mouseHandler);
+        Button achievements_button = new Button("ACHIEVEMENTS");
+        achievements_button.setPrefSize(200,50);
+        achievements_button.setLayoutX(710);
+        achievements_button.setLayoutY(370);
+        Button feedback_button = new Button("FEEDBACK");
+        feedback_button.setPrefSize(200,50);
+        feedback_button.setLayoutX(710);
+        feedback_button.setLayoutY(450);
+        Button shop_button = new Button("SHOP");
+        shop_button.setPrefSize(200,50);
+        shop_button.setLayoutX(710);
+        shop_button.setLayoutY(530);
 
 
-
-        main_page_group.getChildren().addAll(imageView,new_game_button, resume_game_button, how_to_play_button, display_developer_button, exit_game_button, trohpy_img_view);
+        main_page_group.getChildren().addAll(imageView,new_game_button, resume_game_button, how_to_play_button, display_developer_button, exit_game_button,achievements_button,feedback_button,shop_button);
 //        main_page_group.getChildren().add(new_game_button);
         Scene scene = new Scene(main_page_group,1200,800, Color.BLACK);
         stage.setScene(scene);
@@ -184,13 +177,54 @@ public class MainPageMenu extends Application {
 
             }
         };
+        EventHandler<ActionEvent> event_achievement = new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent e)
+            {
+                System.out.println("BUTTON 6 PRESSED");
+                try {
+                    Achieve();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+
+            }
+        };
+        EventHandler<ActionEvent> event_feedback = new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent e)
+            {
+                System.out.println("BUTTON 7 PRESSED");
+                try {//===========https://stackoverflow.com/questions/37926495/desktop-and-desktop-browse-are-supported-but-browse-still-hangs
+                    if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
+                        Desktop.getDesktop().browse(new URI("https://docs.google.com/forms/d/e/1FAIpQLSeOVoNOlZNfHiGfusyXL1aTqCRjpRcf46kuARrMvLID1WJWbA/viewform?usp=sf_link"));
+                    }
+                    //=====================
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+
+            }
+        };
+        EventHandler<ActionEvent> event_shop = new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent e)
+            {
+                System.out.println("BUTTON 8 PRESSED");
+                try {
+                    shop();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+
+            }
+        };
 
         new_game_button.setOnAction(event_new_game);
         display_developer_button.setOnAction(event_display_developers);
         resume_game_button.setOnAction(event_resume_game);
         how_to_play_button.setOnAction(event_how_to_play);
         exit_game_button.setOnAction(event_exit_game);
-
+        achievements_button.setOnAction(event_achievement);
+        feedback_button.setOnAction(event_feedback);
+        shop_button.setOnAction(event_shop);
 
         stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
@@ -199,11 +233,6 @@ public class MainPageMenu extends Application {
                 System.exit(0);
             }
         });
-
-    }
-
-    private void show_ach_page() throws Exception {
-        ach.start((this.main_page_stage));
 
     }
 
@@ -222,6 +251,13 @@ public class MainPageMenu extends Application {
     public void HowToPlay() throws Exception {
         how_to_play_page_obj.start((this.main_page_stage));
     }
+    public void Achieve() throws Exception {
+        achievement_page_obj.start((this.main_page_stage));
+    }
+    public void shop() throws Exception {
+        shop_page_obj.start((this.main_page_stage));
+    }
+
 
     public void exitGame() throws Exception{
         Platform.exit();

@@ -14,7 +14,7 @@ import java.util.*;
 public class ColorSwitcher extends GameObject implements SpecialObject{
 
 
-    private Circle circle;
+    protected Circle circle;
 
     static HashMap<Integer,Color> map=new HashMap<Integer,Color>();
     static {

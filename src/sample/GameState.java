@@ -30,7 +30,7 @@ public class GameState {
 //    MediaPlayer mp_GameOver = new MediaPlayer(GameOver);
 
     private static  double screenwidth=1200;
-    private static  double initialhColorSwitcher=230;
+    private static  double initialhColorSwitcher=250;
     private static  double initialhobstacle=50;
     private static  double screenheight=800;
     private static  double speed=6000;
@@ -67,7 +67,7 @@ public class GameState {
         sceneStars=new ArrayList<Star>();
         sceneColorSwitcher=new ArrayList<ColorSwitcher>();
         CurrentBall=new Ball(Color.DEEPPINK,600.0f,600.0f,20.0f,-1);
-        BallTrail=new Neontrail(CurrentBall);
+        BallTrail=new Firetrail(CurrentBall);
         hand=new Hand(screenwidth/2,600+20+100);
         RingObstacle ringObstacle = new RingObstacle("Ring", speed, 0, 100,20, screenwidth/2, initialhobstacle, true);
         ringObstacle.draw();
@@ -116,22 +116,41 @@ public class GameState {
                             tangentialObstacle.shownOnScreen(grp);//tangentialObstacle.Pause();//tangentialObstacle.Resume();
                             sceneObstacles.add(tangentialObstacle);
 
-                        } else if (s.getObstacleType().equals("Concentric")) {
-                            speed -= 5;//more difficulty
-                            RingObstacle ringObstacle = new RingObstacle("Ring", speed, 0, 100, 20, screenwidth / 2, initialhobstacle - screenheight, true);
-                            ringObstacle.draw();
-                            ringObstacle.WayOfMovement();
-                            ringObstacle.rotateRing();
-                            ringObstacle.shownOnScreen(grp);
-                            sceneObstacles.add(ringObstacle);
-                        } else if (s.getObstacleType().equals("Tangential")) {
+                    }
+                    else if(s.getObstacleType().equals("Concentric")){
+                        VerTanObstacle vertanObstacle= new VerTanObstacle("VerTan",speed,0,100, 20, screenwidth/2,initialhobstacle-screenheight ,true,45);
+                        vertanObstacle.draw();
+                        vertanObstacle.WayOfMovement();
+                        vertanObstacle.rotateConcentric();
+                        vertanObstacle.shownOnScreen(grp);
+//                        vertanObstacle.Pause();
+                        sceneObstacles.add(vertanObstacle);
 
-                            SquareObstacle squareObstacle = new SquareObstacle("Square", speed, 0, screenwidth / 2, initialhobstacle - screenheight, 175, 20, true);
-                            squareObstacle.draw();
-                            squareObstacle.WayOfMovement();
-                            squareObstacle.rotateSquare();
-                            squareObstacle.shownOnScreen(grp);
-                            sceneObstacles.add(squareObstacle);
+
+
+                    }
+                    else if(s.getObstacleType().equals("Tangential")){
+
+                        speed-=5;//more difficulty
+                        RingObstacle ringObstacle = new RingObstacle("Ring", speed, 0, 100,20, screenwidth/2, initialhobstacle-screenheight, true);
+                        ringObstacle.draw();
+                        ringObstacle.WayOfMovement();
+                        ringObstacle.rotateRing();
+                        ringObstacle.shownOnScreen(grp);
+                        sceneObstacles.add(ringObstacle);
+                        SuperColorSwitcher scs=new SuperColorSwitcher(screenwidth/2,initialhColorSwitcher-screenheight-(2*20),20);
+                        scs.shownOnScreen(grp);
+
+                        sceneColorSwitcher.add(scs);
+
+                    }
+                    else if(s.getObstacleType().equals("VerTan")){
+                        SquareObstacle squareObstacle = new SquareObstacle("Square",speed,0,screenwidth/2,initialhobstacle-screenheight  ,175 ,20 ,true);
+                        squareObstacle.draw();
+                        squareObstacle.WayOfMovement();
+                        squareObstacle.rotateSquare();
+                        squareObstacle.shownOnScreen(grp);
+                        sceneObstacles.add(squareObstacle);
 
                         } else if (s.getObstacleType().equals("Cross")) {
 
@@ -243,6 +262,8 @@ public class GameState {
                     }
         //            System.out.println("d1:");
                 }
+                if(CurrentBall.getColor()==Color.WHITE)
+                    return ;
                 for(Obstacle s: sceneObstacles) {
                     if (s.collisionCheck(CurrentBall)) {
                         System.out.println("collided3!!");
