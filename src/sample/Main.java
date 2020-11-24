@@ -51,6 +51,15 @@ import java.io.*;
 import javafx.geometry.*;
 import org.w3c.dom.css.Rect;
 import javafx.scene.media.*;
+import java.awt.AWTException;
+//import java.awt.Rectangle;
+import java.awt.Robot;
+import java.awt.Toolkit;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
 
 import static javafx.scene.media.AudioClip.INDEFINITE;
 
@@ -297,6 +306,21 @@ public class Main extends Application {
 //                        timer.schedule(gm, 500, 100);
 //                        trailtimer.schedule(gm.getCurrentGameState().BallTrail, 500, 150);
                         gm.continueGame();
+                        break;
+                    case X://screenshot
+                        try {
+                            Robot robot = new Robot();
+                            String format = "jpg";
+                            String fileName = "FullScreenshot." + format;
+
+                            java.awt.Rectangle screenRect = new java.awt.Rectangle((int)primaryStage.getX()+5,(int)primaryStage.getY()+30,(int)screenwidth,(int)screenheight-50);//Toolkit.getDefaultToolkit().getScreenSize());
+                            BufferedImage screenFullImage = robot.createScreenCapture(screenRect);
+                            ImageIO.write(screenFullImage, format, new File(fileName));
+
+                            System.out.println("A full screenshot saved!");
+                        } catch (AWTException | IOException ex) {
+                            System.err.println(ex);
+                        }
                         break;
                     default:
                         System.out.println("defaultkey");

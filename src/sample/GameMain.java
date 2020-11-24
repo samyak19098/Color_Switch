@@ -8,9 +8,12 @@ public class GameMain extends TimerTask {
 
     private Group grp;
     private GameState CurrentGameState;
-
+    private HashMap<Integer,Achievement> GameAchievements;
     public GameMain(Group grp){
         this.grp=grp;
+        GameAchievements=new  HashMap<>();
+        for(int i=0;i<3;i++)
+            GameAchievements.put(i,new StarAchievement((i*30)));
 
     }
 
