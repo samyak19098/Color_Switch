@@ -1,5 +1,8 @@
 package sample;
 
+import javafx.animation.Animation;
+import javafx.animation.Interpolator;
+import javafx.animation.RotateTransition;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -9,16 +12,20 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import javafx.util.Duration;
 
 import java.io.FileInputStream;
 
 public class MainPageMenu extends Application {
 
+    // privatise !
     HowToPlayPage how_to_play_page_obj = new HowToPlayPage();
+    AchievementPage ach = new AchievementPage();
 //    InGameMenu in_game_obj = new InGameMenu();
     Main AssociatedMain;
     Stage main_page_stage;
@@ -26,14 +33,15 @@ public class MainPageMenu extends Application {
     MainPageMenu(Main m){
         this.AssociatedMain = m;
         this.how_to_play_page_obj.main_page_obj = this;
+        this.ach.main_page_obj = this;
 //        this.in_game_obj.main_page_obj = this;
-
     }
     @Override
     public void start(Stage stage) throws Exception {
 
         this.main_page_stage = stage;
         this.how_to_play_page_obj.mp_stage = stage;
+        this.ach.mp_stage = stage;
 
         Group main_page_group = new Group();
 
@@ -76,8 +84,37 @@ public class MainPageMenu extends Application {
         exit_game_button.setLayoutX(500);
         exit_game_button.setLayoutY(690);
 
+        Image trophy_img = new Image(new FileInputStream("/Users/rohitritika/Desktop/AP_RESOURCE/final_tp.png"));
+        ImageView trohpy_img_view = new ImageView(trophy_img);
+        trohpy_img_view.setX(200);
+        trohpy_img_view.setY(200);
+        trohpy_img_view.setFitHeight(100);
+        trohpy_img_view.setFitWidth(1000);
+        trohpy_img_view.setPreserveRatio(true);
 
-        main_page_group.getChildren().addAll(imageView,new_game_button, resume_game_button, how_to_play_button, display_developer_button, exit_game_button);
+        RotateTransition rot = new RotateTransition(Duration.millis(3000), trohpy_img_view);
+        rot.setByAngle(360);
+        rot.setCycleCount(Animation.INDEFINITE);
+        rot.setInterpolator(Interpolator.LINEAR);
+        rot.play();
+
+        EventHandler mouseHandler = new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent t) {
+//                AchievementPage ap = new AchievementPage();
+                try {
+                    show_ach_page();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+
+        trohpy_img_view.setOnMouseClicked(mouseHandler);
+
+
+
+        main_page_group.getChildren().addAll(imageView,new_game_button, resume_game_button, how_to_play_button, display_developer_button, exit_game_button, trohpy_img_view);
 //        main_page_group.getChildren().add(new_game_button);
         Scene scene = new Scene(main_page_group,1200,800, Color.BLACK);
         stage.setScene(scene);
@@ -162,6 +199,11 @@ public class MainPageMenu extends Application {
                 System.exit(0);
             }
         });
+
+    }
+
+    private void show_ach_page() throws Exception {
+        ach.start((this.main_page_stage));
 
     }
 

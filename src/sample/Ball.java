@@ -96,8 +96,8 @@ public class Ball extends GameObject {
 //        System.out.println("circle.getTranslateY():"+BallShape.getTranslateY());
 //        System.out.println("circle.getCenterY():"+circle.getCenterY());
 //        System.out.println("circle.getCenterX():"+circle.getCenterX());
-            //translateTransition.setToY(screenheight-position.get_y()+(2*radius));
-            translateTransition.setToY(0);
+            translateTransition.setToY(screenheight-position.get_y()+(2*radius));
+//            translateTransition.setToY(0);
             translateTransition.setCycleCount(1);
             translateTransition.setDuration(Duration.millis((2*movtime)));
             translateTransition.play();

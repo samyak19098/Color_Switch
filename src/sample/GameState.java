@@ -10,6 +10,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.application.Platform;
 import javafx.scene.shape.Path;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 
 
@@ -38,6 +39,9 @@ public class GameState {
     private Ball CurrentBall;
     private Date DateofSave;
 
+    //collision flag :
+    public boolean coll_flag;
+
     public Hand getHand() {
         return hand;
     }
@@ -50,6 +54,7 @@ public class GameState {
     private int debug=1;
     public Trail BallTrail;
     public GameState(){
+        coll_flag = false;
         scoretext = new Label("Score:"+numStarsinGame);
         scoretext.setAlignment(Pos.TOP_LEFT);
         scoretext.setTextFill(Color.WHITE);
@@ -85,80 +90,84 @@ public class GameState {
     }
 
 
-    public void RemoveObstacles(Group grp){
+    public void RemoveObstacles(Group grp, Stage stage){
 // relocates/ respawns objects to original position
+//        if(coll_flag == false) {
+            for (Obstacle s : sceneObstacles) {
 
-        for(Obstacle s: sceneObstacles){
+                if (s.outofBounds()) {
+                    System.out.println("len1:" + sceneObstacles.size());
+                    //                System.out.println(""+s.getPosition().get_y());
+                    Platform.runLater(() -> {
+                        if (s.getObstacleType().equals("Ring")) {
 
-            if(s.outofBounds()){
-                System.out.println("len1:"+sceneObstacles.size());
-//                System.out.println(""+s.getPosition().get_y());
-                Platform.runLater(() -> {
-                    if(s.getObstacleType().equals("Ring")){
+                            ConcentricObstacle concentricObstacle = new ConcentricObstacle("Concentric", speed, 0, 100, 20, screenwidth / 2, initialhobstacle - screenheight, true, 45);
+                            concentricObstacle.draw();
+                            concentricObstacle.WayOfMovement();
+                            concentricObstacle.rotateConcentric();
+                            concentricObstacle.shownOnScreen(grp);
+                            sceneObstacles.add(concentricObstacle);
 
-                        ConcentricObstacle concentricObstacle= new ConcentricObstacle("Concentric",speed,0,100, 20, screenwidth/2,initialhobstacle-screenheight ,true,45);
-                        concentricObstacle.draw();
-                        concentricObstacle.WayOfMovement();
-                        concentricObstacle.rotateConcentric();
-                        concentricObstacle.shownOnScreen(grp);
-                        sceneObstacles.add(concentricObstacle);
+                        } else if (s.getObstacleType().equals("Square")) {
+                            TangentialObstacle tangentialObstacle = new TangentialObstacle("Tangential", speed, 0, 170, 20, screenwidth / 2, initialhobstacle - screenheight, true, 45, 225);
+                            tangentialObstacle.draw();
+                            tangentialObstacle.WayOfMovement();
+                            tangentialObstacle.rotateTangential();
+                            tangentialObstacle.shownOnScreen(grp);//tangentialObstacle.Pause();//tangentialObstacle.Resume();
+                            sceneObstacles.add(tangentialObstacle);
 
-                    }
-                    else if(s.getObstacleType().equals("Square")){
-                        TangentialObstacle tangentialObstacle = new TangentialObstacle("Tangential",speed,0,170, 20,screenwidth/2 ,initialhobstacle -screenheight ,true,45,225);
-                        tangentialObstacle.draw();
-                        tangentialObstacle.WayOfMovement();
-                        tangentialObstacle.rotateTangential();
-                        tangentialObstacle.shownOnScreen(grp);//tangentialObstacle.Pause();//tangentialObstacle.Resume();
-                        sceneObstacles.add(tangentialObstacle);
+                        } else if (s.getObstacleType().equals("Concentric")) {
+                            speed -= 5;//more difficulty
+                            RingObstacle ringObstacle = new RingObstacle("Ring", speed, 0, 100, 20, screenwidth / 2, initialhobstacle - screenheight, true);
+                            ringObstacle.draw();
+                            ringObstacle.WayOfMovement();
+                            ringObstacle.rotateRing();
+                            ringObstacle.shownOnScreen(grp);
+                            sceneObstacles.add(ringObstacle);
+                        } else if (s.getObstacleType().equals("Tangential")) {
 
-                    }
-                    else if(s.getObstacleType().equals("Concentric")){
-                        speed-=5;//more difficulty
-                        RingObstacle ringObstacle = new RingObstacle("Ring", speed, 0, 100,20, screenwidth/2, initialhobstacle-screenheight, true);
-                        ringObstacle.draw();
-                        ringObstacle.WayOfMovement();
-                        ringObstacle.rotateRing();
-                        ringObstacle.shownOnScreen(grp);
-                        sceneObstacles.add(ringObstacle);
-                    }
-                    else if(s.getObstacleType().equals("Tangential")){
+                            SquareObstacle squareObstacle = new SquareObstacle("Square", speed, 0, screenwidth / 2, initialhobstacle - screenheight, 175, 20, true);
+                            squareObstacle.draw();
+                            squareObstacle.WayOfMovement();
+                            squareObstacle.rotateSquare();
+                            squareObstacle.shownOnScreen(grp);
+                            sceneObstacles.add(squareObstacle);
 
-                        SquareObstacle squareObstacle = new SquareObstacle("Square",speed,0,screenwidth/2,initialhobstacle-screenheight  ,175 ,20 ,true);
-                        squareObstacle.draw();
-                        squareObstacle.WayOfMovement();
-                        squareObstacle.rotateSquare();
-                        squareObstacle.shownOnScreen(grp);
-                        sceneObstacles.add(squareObstacle);
-
-                    }
-                    else if(s.getObstacleType().equals("Cross")){
+                        } else if (s.getObstacleType().equals("Cross")) {
 
 
-                    }
-                    Star  newstar=new Star(screenwidth/2,initialhobstacle-screenheight);
-                    newstar.shownOnScreen(grp);
-                    sceneStars.add(newstar);
-                    ColorSwitcher newcolorSwitcher=new ColorSwitcher(screenwidth/2,initialhColorSwitcher-screenheight,20);
-                    newcolorSwitcher.shownOnScreen(grp);
+                        }
+                        Star newstar = new Star(screenwidth / 2, initialhobstacle - screenheight);
+                        newstar.shownOnScreen(grp);
+                        sceneStars.add(newstar);
+                        ColorSwitcher newcolorSwitcher = new ColorSwitcher(screenwidth / 2, initialhColorSwitcher - screenheight, 20);
+                        newcolorSwitcher.shownOnScreen(grp);
 
-                    sceneColorSwitcher.add(newcolorSwitcher);
-                    s.removeself(grp);
-                    sceneObstacles.remove(s);
-                });
-//                sceneObstacles.remove(0);//hopefully 1st obstacle needs to be removed
-                break;
+                        sceneColorSwitcher.add(newcolorSwitcher);
+                        s.removeself(grp);
+                        sceneObstacles.remove(s);
+                    });
+                    //                sceneObstacles.remove(0);//hopefully 1st obstacle needs to be removed
+                    break;
+                }
+                //            System.out.println("aa11");
             }
-//            System.out.println("aa11");
+            if (CurrentBall.outofBounds()) {
+                //            Platform.runLater(() -> {
+                //                mp_GameOver.stop();
+                //                mp_GameOver.play();
+                //            });
+                //                ObstacleHitMenu obm = new ObstacleHitMenu();
+                //                try {
+                //                    obm.start(stage);
+                //                } catch (Exception e) {
+                //                    e.printStackTrace();
+                //                }
+                //            });
+                throw new GameOverException("ball gone out");
+            }
         }
-        if(    CurrentBall.outofBounds()) {
-//            Platform.runLater(() -> {
-//                mp_GameOver.stop();
-//                mp_GameOver.play();
-//            });
-            throw new GameOverException("ball gone out");
-        }
-    }
+//    }
 
 
     public void incNumStarsinGame( ) {
@@ -185,71 +194,83 @@ public class GameState {
 
     }
 
-    public void checkAllcollisions(Group g){
+    public void checkAllcollisions(Group g, Stage stage){
 //        System.out.println("1:"+sceneStars.size());
 //        System.out.println("2:"+sceneColorSwitcher.size());
 //        System.out.println("3:"+sceneObstacles.size());
 
-        for(Star s: sceneStars) {
-            if (s.collisionCheck(CurrentBall)) {
-//                System.out.println("collided1!!");
+//        if(coll_flag == ){
+                for(Star s: sceneStars) {
+                    if (s.collisionCheck(CurrentBall)) {
+        //                System.out.println("collided1!!");
 
 
 
-                incNumStarsinGame();
+                        incNumStarsinGame();
 
-//                s.polygon.setFill(Color.BLUE);
-                Platform.runLater(() -> {
-//                    mp_starcollect.stop();
-//                    mp_starcollect.play();
-                            s.getPolygon().setVisible(false);
+        //                s.polygon.setFill(Color.BLUE);
+                        Platform.runLater(() -> {
+        //                    mp_starcollect.stop();
+        //                    mp_starcollect.play();
+                                    s.getPolygon().setVisible(false);
 
-                            sceneStars.remove(s);
-                            g.getChildren().remove(s.getPolygon());
+                                    sceneStars.remove(s);
+                                    g.getChildren().remove(s.getPolygon());
+                                });
+        //                System.out.println("numStarsinGame:"+numStarsinGame);
+                        break;
+                    }
+        //            System.out.println("d1:");
+                }
+                for(ColorSwitcher s: sceneColorSwitcher) {
+                    if (s.collisionCheck(CurrentBall)) {
+        //                System.out.println("collided2!!");
+                        Platform.runLater(() -> {
+        //                    mp_colorswitchercollect.stop();
+        //                    mp_colorswitchercollect.play();
+                        s.specialChange(CurrentBall);
+        //                s.polygon.setFill(Color.BLUE);
+                        s.getCircle().setVisible(false);
+                            sceneColorSwitcher.remove(s);
+                            g.getChildren().remove(s.getCircle());
+        //                System.out.println("aa1:"+);
+
+        //                    System.out.println("bb1:"+);
                         });
-//                System.out.println("numStarsinGame:"+numStarsinGame);
-                break;
-            }
-//            System.out.println("d1:");
-        }
-        for(ColorSwitcher s: sceneColorSwitcher) {
-            if (s.collisionCheck(CurrentBall)) {
-//                System.out.println("collided2!!");
-                Platform.runLater(() -> {
-//                    mp_colorswitchercollect.stop();
-//                    mp_colorswitchercollect.play();
-                s.specialChange(CurrentBall);
-//                s.polygon.setFill(Color.BLUE);
-                s.getCircle().setVisible(false);
-                    sceneColorSwitcher.remove(s);
-                    g.getChildren().remove(s.getCircle());
-//                System.out.println("aa1:"+);
 
-//                    System.out.println("bb1:"+);
-                });
+        //                System.out.println("numStarsinGame:"+numStarsinGame);
+                        break;
+                    }
+        //            System.out.println("d1:");
+                }
+                for(Obstacle s: sceneObstacles) {
+                    if (s.collisionCheck(CurrentBall)) {
+                        System.out.println("collided3!!");
+                        System.out.println("12");
+                        //todo remove obstacles
+        //                Platform.runLater(() -> {
+        //                            mp_GameOver.stop();
+        //                            mp_GameOver.play();
+        //                    ObstacleHitMenu obm = new ObstacleHitMenu();
+        //                    try {
+        //                        obm.start(stage);
+        //                    } catch (Exception e) {
+        //                        e.printStackTrace();
+        //                    }
+        //                });
 
-//                System.out.println("numStarsinGame:"+numStarsinGame);
-                break;
+//                        s.removeself(g);
+//                        sceneObstacles.remove(s);
+                        throw new GameOverException("struck an obstacle");
+                    }
             }
 //            System.out.println("d1:");
-        }
-        for(Obstacle s: sceneObstacles) {
-            if (s.collisionCheck(CurrentBall)) {
-                System.out.println("collided3!!");
-                System.out.println("12");
-                //todo remove obstacles
-//                Platform.runLater(() -> {
-//                            mp_GameOver.stop();
-//                            mp_GameOver.play();
-//                        });
-//                throw new GameOverException("struck an obstacle");
-            }
-//            System.out.println("d1:");
-        }
+//        }
+    }
 
 
 //        System.out.println("d2:");
-    }
+
 
     public long getNumStarsinGame() {
         return numStarsinGame;

@@ -11,6 +11,7 @@ import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.media.AudioClip;
+import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
@@ -43,6 +44,9 @@ public class GameMain extends TimerTask {
     private final int movtime = 250;
     private Timer timer,trailtimer;
 
+    //made as an indicator for run() method of thread
+    boolean collided_flag;
+
     public GameMain(Group root, Main m){
         this.root = new Group();
         this.AssociatedMain = m;
@@ -53,12 +57,15 @@ public class GameMain extends TimerTask {
 
     public void startGame(Stage primaryStage){
 
+        this.collided_flag = false;
         Group grp = new Group();
         this.root = grp;
-
+        this.GameMainStage = primaryStage;
         InGameMenu igm = new InGameMenu();
         igm.main_page_obj = this.AssociatedMain.getMain_page();
         igm.game_main = this;
+
+
         final AudioClip[] audio = new AudioClip[1];
         task = new Task() {
             @Override
@@ -301,13 +308,53 @@ public class GameMain extends TimerTask {
 
 
     public void run( ) {
-        if(CurrentGameState != null){
-            CurrentGameState.checkAllcollisions(root);
-            CurrentGameState.RemoveObstacles(root);
+        if(CurrentGameState != null && this.collided_flag == false ){
+            try {
+                CurrentGameState.checkAllcollisions(root,AssociatedMain.getMainStage());
+            } catch (Exception e) {
+                System.out.println("IN RUN ");
+                Pause();
+                this.collided_flag = true;
+                this.getCurrentGameState().coll_flag = true;
+                this.getCurrentGameState().getCurrentBall().setColor(Color.WHITE);
+                Platform.runLater(() -> {
+                    ObstacleHitMenu obm = new ObstacleHitMenu();
+                    obm.game_main = this;
+                    obm.main_page_obj = this.AssociatedMain.getMain_page();
+
+                    try {
+                        obm.start(GameMainStage);
+                    } catch (Exception e1) {
+                        e.printStackTrace();
+                    }
+                });
+                e.printStackTrace();
+            }
+            try {
+                CurrentGameState.RemoveObstacles(root, AssociatedMain.getMainStage());
+            } catch (Exception e) {
+                System.out.println("IN RUN ");
+                Pause();
+                this.collided_flag = true;
+                this.getCurrentGameState().coll_flag = true;
+                Platform.runLater(() -> {
+                    ObstacleHitMenu obm = new ObstacleHitMenu();
+                    obm.game_main = this;
+                    obm.main_page_obj = this.AssociatedMain.getMain_page();
+                    try {
+                        obm.start(GameMainStage);
+                    }
+                    catch (Exception e1) {
+                        e.printStackTrace();
+                    }
+                });
+                e.printStackTrace();
+            }
         }
 //        CurrentGameState.AddObjects(grp);
         //System.out.println("Timer ran ");
     }
+
     public void Pause(){
         System.out.println("pausing!!");
         for(Star s: CurrentGameState.getSceneStars()) {

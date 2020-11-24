@@ -7,31 +7,28 @@ import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
-import java.io.FileInputStream;
-
 public class ObstacleHitMenu extends Application {
 
     MainPageMenu main_page_obj;
-    Stage in_game_stage;
+    Stage ob_hit_stage;
+    GameMain game_main;
 
     @Override
-    public void start(Stage InGameStage) throws Exception {
-        this.in_game_stage = InGameStage;
+    public void start(Stage HitMenuStage) throws Exception {
+        this.ob_hit_stage = HitMenuStage;
         Group in_game_group = new Group();
 
-        Text game_paused_text = new Text("OBSTACLE HIT");
-        game_paused_text.setStyle("-fx-font: 80 arial;");
+        Text game_over_text = new Text("GAME OVER");
+        game_over_text.setStyle("-fx-font: 80 arial;");
 
-        game_paused_text.setFill(Color.WHITE);
-        game_paused_text.setX(300);
-        game_paused_text.setLayoutY(100);
+        game_over_text.setFill(Color.WHITE);
+        game_over_text.setX(300);
+        game_over_text.setLayoutY(100);
 
         RingObstacle restart_ring = new RingObstacle("Ring", 6000, 0, 110, 15, 270, 410, true);
         Button restart_game_button = new Button("RESTART GAME");
@@ -113,14 +110,14 @@ public class ObstacleHitMenu extends Application {
 
 
 
-        in_game_group.getChildren().addAll(game_paused_text, restart_game_button, continue_game_button, exit_to_main_button);
+        in_game_group.getChildren().addAll(game_over_text, restart_game_button, continue_game_button, exit_to_main_button);
 
         Scene scene = new Scene(in_game_group,1200,800, Color.BLACK);
-        InGameStage.setScene(scene);
-        InGameStage.setTitle("In Game Menu");
-        InGameStage.show();
+        HitMenuStage.setScene(scene);
+        HitMenuStage.setTitle("In Game Menu");
+        HitMenuStage.show();
 
-        InGameStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+        HitMenuStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
             public void handle(WindowEvent t) {
                 Platform.exit();
@@ -132,7 +129,13 @@ public class ObstacleHitMenu extends Application {
 
 
     public void continueGame(){
-        System.out.println("GAME WILL BE CONTINUED !!");
+        System.out.println("GAME WILL BE CONTINUED !! + COLL FLAG == " +  game_main.collided_flag);
+        game_main.collided_flag = false;
+//        game_main.getCurrentGameState().coll_flag = false;
+        game_main.continueGame();
+        game_main.AssociatedMain.getMainStage().setScene(game_main.getGm_scene());
+        game_main.AssociatedMain.getMainStage().show();
+
     }
 
     public void saveGame(){
@@ -140,6 +143,8 @@ public class ObstacleHitMenu extends Application {
     }
     public void exitToMainPage() throws Exception {
         System.out.println("GAME WILL BE EXITED TO MAIN PAGE !!");
+        main_page_obj.start(main_page_obj.main_page_stage);
+
     }
 
     public static void main(String args[]){
