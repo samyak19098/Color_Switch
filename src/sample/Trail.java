@@ -59,8 +59,8 @@ public class Trail  extends TimerTask {
     protected  boolean pausetrail;
     protected transient  Ball parentball;
     protected transient Queue<Ball> q;
-    protected ArrayList<Timeline> t1;
-    protected ArrayList<Ball> list;
+    protected transient ArrayList<Timeline> t1;
+    protected transient ArrayList<Ball> list;
 
     public Trail(){
 

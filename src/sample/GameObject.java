@@ -9,11 +9,11 @@ import javafx.util.Duration;
 public abstract class GameObject   {
     protected  static   double screenwidth=1200;
     protected static  double screenheight=800;
-
+    protected Position savedposition;
     protected final int movedistance = 100;
     protected final int movtime=250;
     //    private Trail BallTrail;
-    protected TranslateTransition translateTransition;
+    protected  transient TranslateTransition translateTransition;
     protected Position position;
     public abstract void shownOnScreen(Group g);
 
@@ -29,10 +29,12 @@ public abstract class GameObject   {
     public GameObject(){
         translateTransition = new TranslateTransition();
         translateTransition.setDuration(Duration.millis(movtime));
-
+        savedposition=new Position(-1,-1);
         //Setting the node for the transition
 
     }
+
+
 
     public void Pause( ) {
         Platform.runLater(() -> {

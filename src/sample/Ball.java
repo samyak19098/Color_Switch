@@ -18,7 +18,7 @@ public class Ball extends GameObject {
     private final int movedistance = 100;//distance moved in one move
     private transient Color BallColor;
     private transient Shape BallShape;
-
+    private int savedcolor;
     private double radius;
     public int n=10;
 
@@ -30,8 +30,10 @@ public class Ball extends GameObject {
     }
     public Ball(Color c,double x,double y,double r,int id) {
         super();
+
         this.id=id;
         BallColor = c;
+        savedcolor=ColorSwitcher.getcolormap.get(BallColor);
         BallShape=new Circle(x,y,r,c);
 //        BallShape.setVisible(false);
 //        BallTrail = t;
@@ -168,6 +170,7 @@ public class Ball extends GameObject {
             BallShape.setFill(c);
 
         });
+        savedcolor=ColorSwitcher.getcolormap.get(BallColor);
 
     }
 

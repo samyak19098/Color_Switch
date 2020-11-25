@@ -12,7 +12,7 @@ import javafx.application.Platform;
 public class Star extends GameObject{
 
 
-    private Polygon polygon;
+    private transient Polygon polygon;
     private int width=0;
     private double radius=1.414;
 

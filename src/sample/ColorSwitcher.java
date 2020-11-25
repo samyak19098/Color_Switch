@@ -14,14 +14,21 @@ import java.util.*;
 public class ColorSwitcher extends GameObject implements SpecialObject{
 
 
-    protected Circle circle;
+    protected transient Circle circle;
 
-    static HashMap<Integer,Color> map=new HashMap<Integer,Color>();
+    static transient HashMap<Integer,Color> map=new HashMap<Integer,Color>();
+    static transient HashMap<Color,Integer> getcolormap=new HashMap<Color,Integer>();
     static {
         map.put(0,Color.PURPLE);
         map.put(1,Color.CYAN);
         map.put(2,Color.DEEPPINK);
         map.put(3,Color.YELLOW);
+        map.put(4,Color.WHITE);
+        getcolormap.put(Color.PURPLE,0);
+        getcolormap.put(Color.CYAN,1);
+        getcolormap.put(Color.DEEPPINK,2);
+        getcolormap.put(Color.YELLOW,3);
+        getcolormap.put(Color.WHITE,4);
     }
     public ColorSwitcher(int x){
 

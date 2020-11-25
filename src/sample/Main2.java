@@ -24,6 +24,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
+import javafx.scene.shape.Polygon;
 import javafx.scene.transform.Translate;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
@@ -34,17 +35,15 @@ import java.io.*;
 
 class Manager extends ImageView implements Serializable {
   public  String name;
-  public TranslateTransition t;
-  public Manager(String n) {  name=n; }//t=new TranslateTransition(); }
-    public void setter(TranslateTransition c){
-      t=c;
-    }
+  public Polygon t;
+  public Manager(String n) {  name=n;  t=new Polygon(); }
+
 }
   class Main2  {
 
     public static void serialize() throws IOException {
         Manager s1 = new Manager("Amy");
-        s1.setter(new TranslateTransition());
+
         ObjectOutputStream out = null;
         try {
             out = new ObjectOutputStream(new FileOutputStream("out.txt"));
