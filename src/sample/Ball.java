@@ -41,6 +41,8 @@ public class Ball extends GameObject {
         translateTransition.setNode(BallShape);
         position=new Position(x,y);
         radius=r;
+        ////
+        savedposition.set_x();
 
     }
     public Ball(Color c, Shape s,double x,double y,double r) {
@@ -191,3 +193,4 @@ public class Ball extends GameObject {
         BallShape = s;
     }
 }
+
