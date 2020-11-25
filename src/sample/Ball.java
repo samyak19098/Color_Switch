@@ -42,7 +42,7 @@ public class Ball extends GameObject {
         position=new Position(x,y);
         radius=r;
         ////
-        savedposition.set_x();
+//        savedposition.set_x();
 
     }
     public Ball(Color c, Shape s,double x,double y,double r) {
