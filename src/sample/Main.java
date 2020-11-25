@@ -41,6 +41,9 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.animation.PathTransition.OrientationType;
+
+import java.lang.reflect.Array;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import javafx.event.*;
 import javafx.util.*;
@@ -61,6 +64,8 @@ import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 import javax.imageio.ImageIO;
+import javax.xml.crypto.Data;
+
 
 import static javafx.scene.media.AudioClip.INDEFINITE;
 
@@ -112,7 +117,7 @@ public class Main extends Application {
 
             @Override
             public void handle(ActionEvent event) {
-                System.out.println("this is called every 5 seconds on UI thread");
+//                System.out.println("this is called every 5 seconds on UI thread");
                 try {
                     main_page.start(primaryStage);
                 } catch (Exception e) {

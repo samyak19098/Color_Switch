@@ -20,6 +20,7 @@ import java.util.Map;
 
 public class AchievementsPage extends Application{
     protected static  double screenheight=800;
+    private static double screenwidth = 1200;
     MainPageMenu main_page_obj;
     GameMain gm;
     Stage achievement_page_stage;
@@ -37,6 +38,13 @@ public class AchievementsPage extends Application{
         imageView.setY(120);
         imageView.setFitHeight(180);
         imageView.setFitWidth(230);
+        imageView.setPreserveRatio(true);
+
+        ImageView redball = new ImageView(new Image(new FileInputStream("redball2.jpg")));
+        redball.setX(screenwidth*0.33);
+        redball.setY(screenheight*0.75);
+//        imageView.setFitHeight(180);
+//        imageView.setFitWidth(230);
         imageView.setPreserveRatio(true);
 
 
@@ -78,8 +86,8 @@ public class AchievementsPage extends Application{
             i+=1;
         }
 //        help_page_group.getChildren().add(text);
-        help_page_group.getChildren().add(imageView);
-        help_page_group.getChildren().add(home_button);
+        help_page_group.getChildren().addAll(imageView,home_button,redball);
+//        help_page_group.getChildren().add(home_button);
 
         Scene scene = new Scene(help_page_group,1200,800, Color.BLACK);
         HelpStage.setScene(scene);

@@ -12,7 +12,7 @@ import javafx.application.Platform;
 public class Star extends GameObject{
 
 
-    private Polygon polygon;
+    private transient Polygon polygon;
     private int width=0;
     private double radius=1.414;
 
@@ -66,7 +66,9 @@ public class Star extends GameObject{
             translateTransition.setOnFinished(new EventHandler<ActionEvent>() {//todo: dont create eventhandler  everytime
 
                 public void handle(ActionEvent t) {
-                    translateTransition.setByY(0); b.atend();BallTrail.setAtend(false);
+                    translateTransition.setByY(0); b.atend();
+                    if(BallTrail!=null)
+                    BallTrail.setAtend(false);
                 }
             });
             //Playing the animation
@@ -121,6 +123,40 @@ public class Star extends GameObject{
         return false;
     }
 
+    public void save_star(){
+        savedposition.set_x(polygon.getTranslateX());
+        savedposition.set_x(polygon.getTranslateY());
+
+    }
+
+    @Override
+    public void load_attributes(){
+        super.load_attributes();
+        polygon   = new Polygon();
+        Double[] ar=new Double[]{//y-axis is inverted
+                0.0, -2.0,
+                1.0, -1.0,
+                2.0, -1.0,
+                1.0, -0.0,
+                2.0, 2.0,
+                0.0, 1.0,
+                -2.0,2.0,
+                -1.0,-0.0,
+                -2.0,-1.0,
+                -1.0,-1.0,
+                0.0, -2.0};
+        for(int i=0;i<ar.length;i++){
+            ar[i]=ar[i]*20;//scaling
+            if(i%2==0)
+                ar[i]=ar[i]+position.get_x();//displacing
+            else
+                ar[i]=ar[i]+position.get_y();
+        }
+        polygon.getPoints().addAll(ar);
+        polygon.setFill(Color.WHITE);
+        polygon.setStrokeWidth(1.0);
+        translateTransition.setNode(polygon);
+    }
     public void shownOnScreen(Group g) {
         Platform.runLater(() -> {
             g.getChildren().add(polygon);

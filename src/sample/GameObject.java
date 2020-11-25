@@ -6,14 +6,16 @@ import javafx.scene.Group;
 import javafx.scene.shape.Shape;
 import javafx.util.Duration;
 
-public abstract class GameObject   {
+import java.io.Serializable;
+
+public abstract class GameObject  implements Serializable {
     protected  static   double screenwidth=1200;
     protected static  double screenheight=800;
-
+    protected Position savedposition;
     protected final int movedistance = 100;
     protected final int movtime=250;
     //    private Trail BallTrail;
-    protected TranslateTransition translateTransition;
+    protected  transient TranslateTransition translateTransition;
     protected Position position;
     public abstract void shownOnScreen(Group g);
 
@@ -29,10 +31,12 @@ public abstract class GameObject   {
     public GameObject(){
         translateTransition = new TranslateTransition();
         translateTransition.setDuration(Duration.millis(movtime));
-
+        savedposition=new Position(-1,-1);
         //Setting the node for the transition
 
     }
+
+
 
     public void Pause( ) {
         Platform.runLater(() -> {
@@ -48,6 +52,15 @@ public abstract class GameObject   {
 
     }
 
+    public void load_attributes(){
+        translateTransition=new TranslateTransition();
+        translateTransition.setToX(savedposition.get_x());
+        translateTransition.setToY(savedposition.get_y());
+        translateTransition.setCycleCount(1);
+        translateTransition.setDuration(Duration.millis(1));
+        translateTransition.setOnFinished(null);
+        translateTransition.play();
+    }
 
 
 }

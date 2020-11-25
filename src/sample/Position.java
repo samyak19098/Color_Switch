@@ -1,6 +1,8 @@
 package sample;
 
-public class Position {
+import java.io.Serializable;
+
+public class Position implements Serializable {
     double x_pos;
     double y_pos;
 

@@ -5,6 +5,7 @@ import javafx.scene.image.Image;
 import javafx.scene.paint.ImagePattern;
 
 public class Firetrail extends Trail{
+    public Firetrail( ){}
     public Firetrail(Ball b){
         super(b);
 

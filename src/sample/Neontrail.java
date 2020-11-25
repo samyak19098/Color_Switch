@@ -9,6 +9,7 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.paint.ImagePattern;
 
     public class Neontrail extends Trail{
+        public Neontrail( ){}
         public Neontrail(Ball b){
             super(b);
 

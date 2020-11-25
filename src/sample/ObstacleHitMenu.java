@@ -7,10 +7,14 @@ import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+
+import java.io.FileInputStream;
 
 public class ObstacleHitMenu extends Application {
 
@@ -131,6 +135,7 @@ public class ObstacleHitMenu extends Application {
     public void Obstacle_Menu_continueGame(){
         System.out.println("GAME WILL BE CONTINUED !! + COLL FLAG == " +  game_main.collided_flag);
         game_main.collided_flag = false;
+        game_main.lock = false;
 //        game_main.getCurrentGameState().coll_flag = false;
 //        game_main.continueGame();
         game_main.AssociatedMain.getMainStage().setScene(game_main.getGm_scene());
@@ -143,6 +148,7 @@ public class ObstacleHitMenu extends Application {
         System.out.println("GAME WILL BE SAVED !!");
     }
     public void exitToMainPage() throws Exception {
+        main_page_obj.AssociatedMain.getGm().numStars+=main_page_obj.AssociatedMain.getGm().getCurrentGameState().getNumStarsinGame();
         System.out.println("GAME WILL BE EXITED TO MAIN PAGE !!");
         main_page_obj.start(main_page_obj.main_page_stage);
 

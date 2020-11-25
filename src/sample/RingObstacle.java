@@ -11,11 +11,12 @@ import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 import javafx.util.Duration;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import javafx.scene.shape.*;
 
-public class RingObstacle extends Obstacle {
+public class RingObstacle extends Obstacle  implements Serializable {
 
     /*
     radius - radius of the ring obstacle
@@ -26,10 +27,11 @@ public class RingObstacle extends Obstacle {
     */
     private double radius;
     private double width;
-    private ArrayList<Path> quarters = new ArrayList<Path>();
-    private ArrayList<Timeline> timelines = new ArrayList<Timeline>();
-    private ArrayList<Rotate> rotate_list = new ArrayList<Rotate>();
+    private transient ArrayList<Path> quarters = new ArrayList<Path>();
+    private transient ArrayList<Timeline> timelines = new ArrayList<Timeline>();
+    private transient ArrayList<Rotate> rotate_list = new ArrayList<Rotate>();
     private boolean directionClockwise;
+    private double saved_angle;
 
     RingObstacle(String type, double speed, int orientation, double radius, double width, double centre_x, double centre_y, boolean direction) {
         super(type, speed, orientation);
@@ -67,6 +69,28 @@ public class RingObstacle extends Obstacle {
 //        collisionCheck(b);
     }
 
+    @Override
+    protected void save_attributes(){
+        this.saved_angle = rotate_list.get(0).getAngle();
+        savedposition.set_x(quarters.get(0).getTranslateX());
+        savedposition.set_y(quarters.get(0).getTranslateY());
+    }
+
+
+    @Override
+    public void load_attributes(){
+            for(int i=0;i<4;i++) {
+                tlist.get(i).setToX(savedposition.get_x());
+                tlist.get(i).setToY(savedposition.get_y());
+                tlist.get(i).setCycleCount(1);
+                tlist.get(i).setDuration(Duration.millis(1));
+                tlist.get(i).setOnFinished(null);
+                tlist.get(i).play();
+            }
+            for(int i = 0 ; i  < 4; i++){
+                rotate_list.get(i).setAngle(saved_angle);
+            }
+    }
 
     @Override
     public boolean outofBounds(){
@@ -82,7 +106,7 @@ public class RingObstacle extends Obstacle {
                 grp.getChildren().remove(p);
             });
         }
-        System.out.println("notvisible");
+//        System.out.println("notvisible");
     }
     @Override
     protected void WayOfMovement() {
@@ -100,7 +124,7 @@ public class RingObstacle extends Obstacle {
 
     public void rotateRing() {
         Platform.runLater(() -> {
-            System.out.println("rotating");
+//            System.out.println("rotating");
             for (int i = 0; i < timelines.size(); i++) {
                 timelines.get(i).play();
             }
@@ -313,6 +337,23 @@ public class RingObstacle extends Obstacle {
         return false;
     }
 
+
+
+    public double getRadius() {
+        return radius;
+    }
+
+    public double getWidth() {
+        return width;
+    }
+
+    public boolean isDirectionClockwise() {
+        return directionClockwise;
+    }
+
+    public double getSaved_angle() {
+        return saved_angle;
+    }
 
     public ArrayList<Timeline> getTimelines() {
         return timelines;

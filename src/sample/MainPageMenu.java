@@ -242,6 +242,7 @@ public class MainPageMenu extends Application {
 
     public void resumeGame() throws Exception{
         System.out.println("RESUME FUNCTIONALITY");
+
     }
 
     public void displayDeveloper() throws Exception{
