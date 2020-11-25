@@ -56,12 +56,15 @@ public class Trail  extends TimerTask {
     protected final int movedistance = 100;
     protected final int movtime = 250;
     protected final int n = 5;
-
-    protected Ball parentball;
-    protected Queue<Ball> q;
+    protected  boolean pausetrail;
+    protected transient  Ball parentball;
+    protected transient Queue<Ball> q;
     protected ArrayList<Timeline> t1;
     protected ArrayList<Ball> list;
 
+    public Trail(){
+
+    }
     public Trail(Ball b) {
 
 
@@ -118,7 +121,7 @@ public class Trail  extends TimerTask {
     public int t=0;
     public void run() {
 
-        if (!q.isEmpty()) {
+        if (!q.isEmpty() && pausetrail==false) {
 //            System.out.println("Hello World!"+t);
             t++;
             Ball b = q.remove();
@@ -150,6 +153,7 @@ public class Trail  extends TimerTask {
         //System.out.println("Timer ran ");
     }
     public void Pause(){
+        pausetrail=true;
         for (Ball var : list) {
             var.Pause();
             t1.get(var.id).pause();
@@ -163,6 +167,7 @@ public class Trail  extends TimerTask {
     }
 
     public void Resume() {
+        pausetrail=false;
         for (Ball var : list) {
             var.Resume();
             t1.get(var.id).play();

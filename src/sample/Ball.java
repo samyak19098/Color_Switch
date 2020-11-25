@@ -16,15 +16,13 @@ public class Ball extends GameObject {
     public final int id;
     private final int movtime=250;//time duration of one move
     private final int movedistance = 100;//distance moved in one move
-    private Color BallColor;
-    private Shape BallShape;
+    private transient Color BallColor;
+    private transient Shape BallShape;
 
     private double radius;
     public int n=10;
-    public ArrayList<Timeline>  t2,t3,t4;
-//    private ArrayList<Circle> trail;
 
-//    private ArrayList<Timeline> t2=new ArrayList<Timeline>();
+
 
 
     public Ball(Color c, Shape s) {
@@ -76,16 +74,7 @@ public class Ball extends GameObject {
             translateTransition.play();
 //            System.out.println(" 0:"+Duration.ZERO);
 
-//            System.out.println(" t2.get(0).getKeyFrames().size():"+t2.get(0).getKeyFrames().size());
-//            for (int i = 0; i < (n); i++) {
-//                trail.get(i).setVisible(false);
-//                trail.get(i). setCenterY(position.get_y()+BallShape.getTranslateY() -((movedistance*(i+1))/n) );
-////                System.out.println("i:"+i);
-////                t2.get(i).getKeyFrames().clear();
-////                t2.get(i).getKeyFrames().add(new KeyFrame(Duration.millis((movtime*1)/1), new KeyValue(trail.get(i).visibleProperty(), true)));
-//                t2.get(i).play();
-//            }
-           // show(grp);
+
         });
     }
     public void atend(){
@@ -96,8 +85,8 @@ public class Ball extends GameObject {
 //        System.out.println("circle.getTranslateY():"+BallShape.getTranslateY());
 //        System.out.println("circle.getCenterY():"+circle.getCenterY());
 //        System.out.println("circle.getCenterX():"+circle.getCenterX());
-//            translateTransition.setToY(screenheight-position.get_y()+(2*radius));
-            translateTransition.setToY(0);
+            translateTransition.setToY(screenheight-position.get_y()+(2*radius));
+//            translateTransition.setToY(0);
             translateTransition.setCycleCount(1);
             translateTransition.setDuration(Duration.millis((2*movtime)));
             translateTransition.play();
@@ -132,6 +121,19 @@ public class Ball extends GameObject {
 
     }
 
+    public void reposition(){
+        Platform.runLater(() -> {
+            translateTransition.stop();
+            translateTransition.setToY(Double.NaN);
+            translateTransition.setByY(-movedistance);
+            translateTransition.setCycleCount(1);
+            translateTransition.setDuration(Duration.millis(1));
+            translateTransition.setOnFinished(null);
+            translateTransition.play();
+        });
+
+    }
+
     public boolean outofBounds(){
         if((position.get_y()+BallShape.getTranslateY())>(screenheight+radius))
                                                     //  600 + 0   >  800+20
@@ -142,8 +144,6 @@ public class Ball extends GameObject {
     public void shownOnScreen(Group g) {
         Platform.runLater(() -> {
             g.getChildren().add(BallShape);
-
-
         });
 
     }
@@ -168,26 +168,6 @@ public class Ball extends GameObject {
             BallShape.setFill(c);
 
         });
-
-    }
-    public void show(Group grp ){
-
-
-            for (int i = 0; i < (n-1); i++) {
-//                Circle trail = new Circle(position.get_x(), position.get_y()+BallShape.getTranslateY()-((movedistance*(i+1))/n), (radius*(i+1))/n, BallColor );
-//                trail.setVisible(false);
-//                grp.getChildren().add(trail);
-//
-//
-//                Timeline t2 = new Timeline();
-//
-//                t2.setCycleCount(1);
-//
-//                t2.getKeyFrames().add(new KeyFrame(Duration.millis((movtime*(i+1))/n), new KeyValue(trail.visibleProperty(), true)));
-//                t2.getKeyFrames().add(new KeyFrame(Duration.millis((movtime*3*(i+1))/n), new KeyValue(trail.visibleProperty(), false)));
-                t2.get(i).play();
-            }
-
 
     }
 

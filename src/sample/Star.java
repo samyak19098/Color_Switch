@@ -66,7 +66,9 @@ public class Star extends GameObject{
             translateTransition.setOnFinished(new EventHandler<ActionEvent>() {//todo: dont create eventhandler  everytime
 
                 public void handle(ActionEvent t) {
-                    translateTransition.setByY(0); b.atend();BallTrail.setAtend(false);
+                    translateTransition.setByY(0); b.atend();
+                    if(BallTrail!=null)
+                    BallTrail.setAtend(false);
                 }
             });
             //Playing the animation

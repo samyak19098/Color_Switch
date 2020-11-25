@@ -1,4 +1,8 @@
 package sample;
+import javafx.animation.Interpolator;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -10,6 +14,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.application.Platform;
 import javafx.scene.shape.Path;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 
 
@@ -27,7 +32,10 @@ public class GameState {
 //    MediaPlayer mp_colorswitchercollect = new MediaPlayer(colorswitchercollect);
     Media GameOver = new Media(new File("GameOver.wav").toURI().toString());
 //    MediaPlayer mp_GameOver = new MediaPlayer(GameOver);
-
+    private int n,r;
+    private final int movtime = 250;
+    private ArrayList<Circle> gameoverballs;
+    private ArrayList<Timeline> gameovertimeline;
     private static  double screenwidth=1200;
     private static  double initialhColorSwitcher=250;
     private static  double initialhobstacle=50;
@@ -37,6 +45,9 @@ public class GameState {
     private long numStarsinGame;
     private Ball CurrentBall;
     private Date DateofSave;
+
+    //collision flag :
+    public boolean coll_flag;
 
     public Hand getHand() {
         return hand;
@@ -49,7 +60,32 @@ public class GameState {
     private ArrayList<ColorSwitcher>   sceneColorSwitcher;
     private int debug=1;
     public Trail BallTrail;
-    public GameState(){
+    public GameState(Trail trail){
+        coll_flag = false;
+        n=10;
+        r=400; gameoverballs=new ArrayList<>();
+        gameovertimeline=new ArrayList<>();
+        for(int i=0;i<n;i++) {
+
+            gameoverballs.add(new Circle(600.0f, 600.0f, 10.0f));gameoverballs.get(i).setVisible(false);
+            gameoverballs.get(i).setFill(ColorSwitcher.map.get((int) (Math.random() * 4)));
+            gameovertimeline.add(new Timeline());
+            gameovertimeline.get(i).setCycleCount(1);
+            //gameovertimeline.get(i).getKeyFrames().add(new KeyFrame(Duration.millis(4*movtime), new KeyValue((gameoverballs.get(i).radiusProperty(), r, Interpolator.LINEAR)));
+            int finalI = i;
+            gameovertimeline.get(i).setOnFinished((new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent event) {
+                    Platform.runLater(() -> {
+                        gameoverballs.get(finalI).setVisible(false);
+//                        gameoverballs.get(i).setCenterY(600);
+//                        gameoverballs.get(i).setCenterX(600);
+
+//                    System.out.println("Hello World2!"+t);
+                    });
+                }
+            }));
+        }
         scoretext = new Label("Score:"+numStarsinGame);
         scoretext.setAlignment(Pos.TOP_LEFT);
         scoretext.setTextFill(Color.WHITE);
@@ -62,7 +98,18 @@ public class GameState {
         sceneStars=new ArrayList<Star>();
         sceneColorSwitcher=new ArrayList<ColorSwitcher>();
         CurrentBall=new Ball(Color.DEEPPINK,600.0f,600.0f,20.0f,-1);
-        BallTrail=new Firetrail(CurrentBall);
+        if(trail==null) {
+            BallTrail=trail;
+        }
+        else if(trail instanceof Firetrail){
+                BallTrail=new Firetrail(CurrentBall);
+        }
+        else if(trail instanceof Neontrail){
+            BallTrail=new Neontrail(CurrentBall);
+        }
+         else if(trail instanceof Trail){
+                 BallTrail=new Trail(CurrentBall);
+                 }
         hand=new Hand(screenwidth/2,600+20+100);
         RingObstacle ringObstacle = new RingObstacle("Ring", speed, 0, 100,20, screenwidth/2, initialhobstacle, true);
         ringObstacle.draw();
@@ -85,32 +132,31 @@ public class GameState {
     }
 
 
-    public void RemoveObstacles(Group grp){
+    public void RemoveObstacles(Group grp, Stage stage){
 // relocates/ respawns objects to original position
+//        if(coll_flag == false) {
+            for (Obstacle s : sceneObstacles) {
 
-        for(Obstacle s: sceneObstacles){
+                if (s.outofBounds()) {
+//                    System.out.println("len1:" + sceneObstacles.size());
+                    //                System.out.println(""+s.getPosition().get_y());
+                    Platform.runLater(() -> {
+                        if (s.getObstacleType().equals("Ring")) {
 
-            if(s.outofBounds()){
-                System.out.println("len1:"+sceneObstacles.size());
-//                System.out.println(""+s.getPosition().get_y());
-                Platform.runLater(() -> {
-                    if(s.getObstacleType().equals("Ring")){
+                            ConcentricObstacle concentricObstacle = new ConcentricObstacle("Concentric", speed, 0, 100, 20, screenwidth / 2, initialhobstacle - screenheight, true, 45);
+                            concentricObstacle.draw();
+                            concentricObstacle.WayOfMovement();
+                            concentricObstacle.rotateConcentric();
+                            concentricObstacle.shownOnScreen(grp);
+                            sceneObstacles.add(concentricObstacle);
 
-                        ConcentricObstacle concentricObstacle= new ConcentricObstacle("Concentric",speed,0,100, 20, screenwidth/2,initialhobstacle-screenheight ,true,45);
-                        concentricObstacle.draw();
-                        concentricObstacle.WayOfMovement();
-                        concentricObstacle.rotateConcentric();
-                        concentricObstacle.shownOnScreen(grp);
-                        sceneObstacles.add(concentricObstacle);
-
-                    }
-                    else if(s.getObstacleType().equals("Square")){
-                        TangentialObstacle tangentialObstacle = new TangentialObstacle("Tangential",speed,0,170, 20,screenwidth/2 ,initialhobstacle -screenheight ,true,45,225);
-                        tangentialObstacle.draw();
-                        tangentialObstacle.WayOfMovement();
-                        tangentialObstacle.rotateTangential();
-                        tangentialObstacle.shownOnScreen(grp);//tangentialObstacle.Pause();//tangentialObstacle.Resume();
-                        sceneObstacles.add(tangentialObstacle);
+                        } else if (s.getObstacleType().equals("Square")) {
+                            TangentialObstacle tangentialObstacle = new TangentialObstacle("Tangential", speed, 0, 170, 20, screenwidth / 2, initialhobstacle - screenheight, true, 45, 225);
+                            tangentialObstacle.draw();
+                            tangentialObstacle.WayOfMovement();
+                            tangentialObstacle.rotateTangential();
+                            tangentialObstacle.shownOnScreen(grp);//tangentialObstacle.Pause();//tangentialObstacle.Resume();
+                            sceneObstacles.add(tangentialObstacle);
 
                     }
                     else if(s.getObstacleType().equals("Concentric")){
@@ -121,12 +167,32 @@ public class GameState {
                         vertanObstacle.shownOnScreen(grp);
 //                        vertanObstacle.Pause();
                         sceneObstacles.add(vertanObstacle);
-
-
-
+//
+//
+//
                     }
                     else if(s.getObstacleType().equals("Tangential")){
+                             CrossObstacle crossObstacle=new CrossObstacle("cross",speed,0,screenwidth*0.2,20,screenwidth *0.6, initialhobstacle - screenheight,true);
+                            crossObstacle.draw();
+                            crossObstacle.WayOfMovement();
+                            crossObstacle.rotateCross();
+                            crossObstacle.shownOnScreen(grp);
+                            sceneObstacles.add(crossObstacle);
+////                            crossObstacle.Pause();
 
+//
+                    }
+                    else if(s.getObstacleType().equals("VerTan")){
+                            TouchingCross touchingcrossObstacle=new TouchingCross("touchingcross",speed,0,screenwidth*0.2,20,screenwidth/2, initialhobstacle - screenheight,true);
+                            touchingcrossObstacle.draw();
+                            touchingcrossObstacle.WayOfMovement();
+                            touchingcrossObstacle.rotateTouchingCross();
+                            touchingcrossObstacle.shownOnScreen(grp);
+                            sceneObstacles.add(touchingcrossObstacle);
+//
+//
+                        }
+                        else if (s.getObstacleType().equals("cross")) {
                         speed-=5;//more difficulty
                         RingObstacle ringObstacle = new RingObstacle("Ring", speed, 0, 100,20, screenwidth/2, initialhobstacle-screenheight, true);
                         ringObstacle.draw();
@@ -139,43 +205,50 @@ public class GameState {
 
                         sceneColorSwitcher.add(scs);
 
-                    }
-                    else if(s.getObstacleType().equals("VerTan")){
-                        SquareObstacle squareObstacle = new SquareObstacle("Square",speed,0,screenwidth/2,initialhobstacle-screenheight  ,175 ,20 ,true);
-                        squareObstacle.draw();
-                        squareObstacle.WayOfMovement();
-                        squareObstacle.rotateSquare();
-                        squareObstacle.shownOnScreen(grp);
-                        sceneObstacles.add(squareObstacle);
+                        }
+                        else if (s.getObstacleType().equals("touchingcross")) {
+                            SquareObstacle squareObstacle = new SquareObstacle("Square",speed,0,screenwidth/2,initialhobstacle-screenheight  ,175 ,20 ,true);
+                            squareObstacle.draw();
+                            squareObstacle.WayOfMovement();
+                            squareObstacle.rotateSquare();
+                            squareObstacle.shownOnScreen(grp);
+                            sceneObstacles.add(squareObstacle);
 
-                    }
-                    else if(s.getObstacleType().equals("Cross")){
+                        }
+                        Star newstar = new Star(screenwidth / 2, initialhobstacle - screenheight);
+                        newstar.shownOnScreen(grp);
+                        sceneStars.add(newstar);
+                        ColorSwitcher newcolorSwitcher = new ColorSwitcher(screenwidth / 2, initialhColorSwitcher - screenheight, 20);
+                        newcolorSwitcher.shownOnScreen(grp);
 
-
-                    }
-                    Star  newstar=new Star(screenwidth/2,initialhobstacle-screenheight);
-                    newstar.shownOnScreen(grp);
-                    sceneStars.add(newstar);
-                    ColorSwitcher newcolorSwitcher=new ColorSwitcher(screenwidth/2,initialhColorSwitcher-screenheight,20);
-                    newcolorSwitcher.shownOnScreen(grp);
-
-                    sceneColorSwitcher.add(newcolorSwitcher);
-                    s.removeself(grp);
-                    sceneObstacles.remove(s);
-                });
-//                sceneObstacles.remove(0);//hopefully 1st obstacle needs to be removed
-                break;
+                        sceneColorSwitcher.add(newcolorSwitcher);
+                        s.removeself(grp);
+                        sceneObstacles.remove(s);
+                    });
+                    //                sceneObstacles.remove(0);//hopefully 1st obstacle needs to be removed
+                    break;
+                }
+                //            System.out.println("aa11");
             }
-//            System.out.println("aa11");
+            if (CurrentBall.outofBounds()) {
+                //            Platform.runLater(() -> {
+                //                mp_GameOver.stop();
+                //                mp_GameOver.play();
+                //            });
+                //                ObstacleHitMenu obm = new ObstacleHitMenu();
+                //                try {
+                //                    obm.start(stage);
+                //                } catch (Exception e) {
+                //                    e.printStackTrace();
+                //                }
+                //            });
+                CurrentBall.getBallShape().setVisible(false);
+                gameovereffect(grp);
+                throw new GameOverException("ball gone out");
+
+            }
         }
-        if(    CurrentBall.outofBounds()) {
-//            Platform.runLater(() -> {
-//                mp_GameOver.stop();
-//                mp_GameOver.play();
-//            });
-            throw new GameOverException("ball gone out");
-        }
-    }
+//    }
 
 
     public void incNumStarsinGame( ) {
@@ -192,58 +265,63 @@ public class GameState {
                 o.shownOnScreen(g);
             for (ColorSwitcher o : sceneColorSwitcher)
                 o.shownOnScreen(g);
+            if(BallTrail!=null)
             BallTrail.shownOnScreen(g);
             CurrentBall.shownOnScreen(g);
 //            g.getChildren().add(CurrentBall.getBallShape());
 
             g.getChildren().add(scoretext );
             g.getChildren().add(hand.getPolygon() );
+            for(int i=0;i<n;i++){
+                g.getChildren().add(gameoverballs.get(i));
+            }
         });
 
     }
 
-    public void checkAllcollisions(Group g){
+    public void checkAllcollisions(Group g, Stage stage){
 //        System.out.println("1:"+sceneStars.size());
 //        System.out.println("2:"+sceneColorSwitcher.size());
 //        System.out.println("3:"+sceneObstacles.size());
 
-        for(Star s: sceneStars) {
-            if (s.collisionCheck(CurrentBall)) {
-//                System.out.println("collided1!!");
+//        if(coll_flag == ){
+                for(Star s: sceneStars) {
+                    if (s.collisionCheck(CurrentBall)) {
+        //                System.out.println("collided1!!");
 
 
 
-                incNumStarsinGame();
+                        incNumStarsinGame();
 
-//                s.polygon.setFill(Color.BLUE);
-                Platform.runLater(() -> {
-//                    mp_starcollect.stop();
-//                    mp_starcollect.play();
-                            s.getPolygon().setVisible(false);
+        //                s.polygon.setFill(Color.BLUE);
+                        Platform.runLater(() -> {
+        //                    mp_starcollect.stop();
+        //                    mp_starcollect.play();
+                                    s.getPolygon().setVisible(false);
 
-                            sceneStars.remove(s);
-                            g.getChildren().remove(s.getPolygon());
+                                    sceneStars.remove(s);
+                                    g.getChildren().remove(s.getPolygon());
+                                });
+        //                System.out.println("numStarsinGame:"+numStarsinGame);
+                        break;
+                    }
+        //            System.out.println("d1:");
+                }
+                for(ColorSwitcher s: sceneColorSwitcher) {
+                    if (s.collisionCheck(CurrentBall)) {
+        //                System.out.println("collided2!!");
+                        Platform.runLater(() -> {
+        //                    mp_colorswitchercollect.stop();
+        //                    mp_colorswitchercollect.play();
+                        s.specialChange(CurrentBall);
+        //                s.polygon.setFill(Color.BLUE);
+                        s.getCircle().setVisible(false);
+                            sceneColorSwitcher.remove(s);
+                            g.getChildren().remove(s.getCircle());
+        //                System.out.println("aa1:"+);
+
+        //                    System.out.println("bb1:"+);
                         });
-//                System.out.println("numStarsinGame:"+numStarsinGame);
-                break;
-            }
-//            System.out.println("d1:");
-        }
-        for(ColorSwitcher s: sceneColorSwitcher) {
-            if (s.collisionCheck(CurrentBall)) {
-//                System.out.println("collided2!!");
-                Platform.runLater(() -> {
-//                    mp_colorswitchercollect.stop();
-//                    mp_colorswitchercollect.play();
-                s.specialChange(CurrentBall);
-//                s.polygon.setFill(Color.BLUE);
-                s.getCircle().setVisible(false);
-                    sceneColorSwitcher.remove(s);
-                    g.getChildren().remove(s.getCircle());
-//                System.out.println("aa1:"+);
-
-//                    System.out.println("bb1:"+);
-                });
 
 //                System.out.println("numStarsinGame:"+numStarsinGame);
                 break;
@@ -269,6 +347,28 @@ public class GameState {
 
 //        System.out.println("d2:");
     }
+
+    private void gameovereffect(Group g) {
+        Platform.runLater(() -> {
+                    for (int i = 0; i < n; i++) {
+                        gameoverballs.get(i).setVisible(true);
+                        gameovertimeline.get(i).getKeyFrames().clear();
+                        gameoverballs.get(i).setCenterY(CurrentBall.getPosition().get_y() + CurrentBall.getBallShape().getTranslateY());
+                        gameoverballs.get(i).setCenterX(CurrentBall.getPosition().get_x() + CurrentBall.getBallShape().getTranslateX());
+                        gameovertimeline.get(i).getKeyFrames().add(new KeyFrame(Duration.millis(8 * movtime), new KeyValue(gameoverballs.get(i).centerYProperty(), gameoverballs.get(i).getCenterY() + r * Math.sin(Math.toRadians((360 * i) / n)), Interpolator.LINEAR)));
+                        gameovertimeline.get(i).getKeyFrames().add(new KeyFrame(Duration.millis(8 * movtime), new KeyValue(gameoverballs.get(i).centerXProperty(), gameoverballs.get(i).getCenterX() + r * Math.cos(Math.toRadians((360 * i) / n)), Interpolator.LINEAR)));
+                        gameovertimeline.get(i).play();
+                    }
+                });
+        //n=50;
+        //angle 0  to 360
+        // distance travelled=r;
+        //tranlatory motion along rcos angle and rsin angle
+        //radius= Ballcolor.radius/2
+        //setVisible(true);
+        //ColorSwitcher.map(random number)
+    }
+
 
     public long getNumStarsinGame() {
         return numStarsinGame;

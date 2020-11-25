@@ -1,6 +1,8 @@
 package sample;
 import java.util.*;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
@@ -12,6 +14,7 @@ import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.media.AudioClip;
+import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
@@ -22,20 +25,20 @@ import static javafx.scene.media.AudioClip.INDEFINITE;
 
 public class GameMain extends TimerTask {
     public long numStars;
-
+    public int whichtrail;
+    public Trail currentTrail;
 
     private Scene gm_scene;
     private Group root;
     private GameState CurrentGameState;
     public Stage GameMainStage;
     public Main AssociatedMain;
+    public boolean lock=false;
 
 
-    public HashMap<Integer, Achievement> getOwnedTrails() {
-        return OwnedTrails;
-    }
 
-    public HashMap<Integer,Achievement> OwnedTrails;
+
+
     private HashMap<Integer,Achievement> GameAchievements;
     private Task task;
 
@@ -45,66 +48,36 @@ public class GameMain extends TimerTask {
     private final int movtime = 250;
     private Timer timer,trailtimer;
 
+    //made as an indicator for run() method of thread
+    boolean collided_flag;
+    boolean pause_var;
+
     public GameMain(Group root, Main m){
+        whichtrail=0;
         numStars=0;
         this.root = new Group();
         this.AssociatedMain = m;
         timer = new Timer();
         timer.schedule(this, 500, 100);
-        GameAchievements=new  HashMap<>();OwnedTrails=new HashMap<>();
+        GameAchievements=new  HashMap<>();
         for(int i=0;i<3;i++)
-            GameAchievements.put(i,new StarAchievement(((i+1)*30)));
-
-
-        Achievement a=new Achievement();
-        a.text.setText("No trail");
-        OwnedTrails.put(0, a);
-        Image im = new Image("file:notrail.png",false);
-        a.unlocked.setFill(new ImagePattern(im));
-        a.unlocked.setOnMouseClicked(new EventHandler<MouseEvent>()
-        {
-            @Override
-            public void handle(MouseEvent t) {
-                rect.setFill(Color.RED);
-            }
-        });
-        a.Unlock=true;a.text.setPrefColumnCount(10);a.text.setStyle(" -fx-font-weight: bold; -fx-font-size:20;");
-
-         a=new Achievement();
-        a.requirednumber=50;
-        a.text.setText("Generating mist in the space with dash of the ball. Cost " + a.requirednumber+" stars");
-          im = new Image("file:greytrail.jpg",false);
-        a.unlocked.setFill(new ImagePattern(im));
-        OwnedTrails.put(1, a);a.text.setPrefColumnCount(30);
-
-        a=new Achievement();
-        a.requirednumber=50;
-        a.text.setText("Fire Balls signifying the rage of the ball. Cost " + a.requirednumber+" stars");
-          im = new Image("file:firetrail2.jpg",false);
-        a.unlocked.setFill(new ImagePattern(im));
-        OwnedTrails.put(2, a);a.text.setPrefColumnCount(30);//a.text.setStyle(" -fx-font-weight: bold; -fx-font-size:15;");
-
-        a=new Achievement();
-        a.requirednumber=50;
-        a.text.setText("Laser like trail. Similar to nitro boost in race cars. Cost " + a.requirednumber+" stars");
-        im = new Image("file:neontrail.jpg",false);
-        a.unlocked.setFill(new ImagePattern(im));
-        OwnedTrails.put(3, a);a.text.setPrefColumnCount(30);//a.text.setStyle(" -fx-font-weight: bold; -fx-font-size:15;");
-
-
-
+            GameAchievements.put(i,new StarAchievement(((i+1)*5)));
 
     }
 
 
     public void startGame(Stage primaryStage){
-
+        this.lock=false;
+        this.collided_flag = false;
+        this.pause_var = false;
         Group grp = new Group();
         this.root = grp;
-
+        this.GameMainStage = primaryStage;
         InGameMenu igm = new InGameMenu();
         igm.main_page_obj = this.AssociatedMain.getMain_page();
         igm.game_main = this;
+
+
         final AudioClip[] audio = new AudioClip[1];
         task = new Task() {
             @Override
@@ -124,7 +97,7 @@ public class GameMain extends TimerTask {
 
 //        Group root = new Group();
         // set background
-        Rectangle hbox = new Rectangle(screenwidth, screenheight);
+        Rectangle hbox = new Rectangle(1600, screenheight);
         Image im = new Image("file:bg.jpg", false);
         hbox.setFill(new ImagePattern(im));
         root.getChildren().add(hbox);
@@ -132,7 +105,7 @@ public class GameMain extends TimerTask {
 
 //        GameMain gm = new GameMain(root);
 //        Star s=new Star(600,300);
-        GameState g = new GameState();
+        GameState g = new GameState(currentTrail);
         this.setCurrentGameState(g);
 
 
@@ -165,7 +138,7 @@ public class GameMain extends TimerTask {
 
         trailtimer = new Timer();
 
-
+        if(CurrentGameState.BallTrail!=null)
         trailtimer.schedule(this.getCurrentGameState().BallTrail, 500, 200);
 
         //timer checks collions after every 1s
@@ -187,8 +160,13 @@ public class GameMain extends TimerTask {
         scene.addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
+                if(lock)
+                    return;
                 switch (event.getCode()) {
+
                     case UP:
+
+
 //                        System.out.println("up");
 //                        Platform.runLater(() -> {
 //                                    mp_ballup.stop();
@@ -196,11 +174,15 @@ public class GameMain extends TimerTask {
 
 //                                });
                         //g.debug();
-
+                        if(pause_var == true){
+                            continueGame();
+                            pause_var = false;
+                        }
                         if ((600.0f + CurrentGameState.getCurrentBall().getBallShape().getTranslateY() - movedistance) > (screenheight / 2))
                             CurrentGameState.getCurrentBall().MoveBall(root);
                         else {
                             CurrentGameState.getCurrentBall().getTranslateTransition().stop();
+                            if(CurrentGameState.BallTrail!=null)
                             CurrentGameState.BallTrail.atend = true;
 //                            for(int i=0;i< (gm.getCurrentGameState().getCurrentBall().n-1);i++){
 //                                gm.getCurrentGameState().getCurrentBall().t2.get(i).stop();
@@ -231,6 +213,8 @@ public class GameMain extends TimerTask {
                             //g.CurrentBall.translateTransition.play();
                         }
                         removehand();
+
+
                         break;
 
                     case DOWN://todo move to exit from game button button
@@ -347,13 +331,103 @@ public class GameMain extends TimerTask {
 
 
     public void run( ) {
-        if(CurrentGameState != null){
-            CurrentGameState.checkAllcollisions(root);
-            CurrentGameState.RemoveObstacles(root);
+        if(CurrentGameState != null && this.collided_flag == false ){
+            try {
+                CurrentGameState.checkAllcollisions(root,AssociatedMain.getMainStage());
+//                System.out.println("CHECKING ALL COLLISIONS");
+            } catch (Exception e) {
+                Platform.runLater(() -> {
+                    System.out.println("IN RUN ");
+                    Pause();
+                    this.lock=true;
+                    this.collided_flag = true;
+                    this.pause_var = true;
+    //                this.CurrentGameState.coll_flag = true;
+                    this.CurrentGameState.getCurrentBall().setColor(Color.WHITE);
+                    this.CurrentGameState.getCurrentBall().reposition();
+    //                Platform.runLater(() -> {
+                        ObstacleHitMenu obm = new ObstacleHitMenu();
+                        obm.game_main = this;
+                        obm.main_page_obj = this.AssociatedMain.getMain_page();
+                    Timeline wait=new Timeline();
+                    wait.getKeyFrames().add(   new KeyFrame(Duration.millis(2000), new   EventHandler<ActionEvent>() {
+
+                        @Override
+                        public void handle(ActionEvent event) {
+                            try {
+                                CurrentGameState.getCurrentBall().getBallShape().setVisible(true);
+
+                                obm.start(GameMainStage);
+                            } catch (Exception e1) {
+                                e1.printStackTrace();
+                            }
+                        }
+
+                    }
+                    ));
+                    wait.play();
+
+                        e.printStackTrace();
+                });
+
+            }
+        }
+
+        if(CurrentGameState != null && this.collided_flag == false ) {
+            try {
+                CurrentGameState.RemoveObstacles(root, AssociatedMain.getMainStage());
+            } catch (Exception e) {
+                Platform.runLater(() -> {
+                    System.out.println("IN RUN ");
+    //                for(int i = 0 ; i < 100 ; i++) {
+    //                    this.CurrentGameState.getCurrentBall().MoveBall(root);
+    //                }
+                    Pause();
+                    this.CurrentGameState.getCurrentBall().setColor(Color.WHITE);
+                    this.CurrentGameState.getCurrentBall().reposition();
+                    this.lock=true;
+                    this.collided_flag = true;
+                    this.pause_var = true;
+                    this.getCurrentGameState().coll_flag = true;
+    //                Platform.runLater(() -> {
+                        ObstacleHitMenu obm = new ObstacleHitMenu();
+                        obm.game_main = this;
+                        obm.main_page_obj = this.AssociatedMain.getMain_page();
+                    Timeline wait=new Timeline();
+                    wait.getKeyFrames().add(   new KeyFrame(Duration.millis(2000), new   EventHandler<ActionEvent>() {
+
+                        @Override
+                        public void handle(ActionEvent event) {
+                            try {
+                                CurrentGameState.getCurrentBall().getBallShape().setVisible(true);
+
+                                obm.start(GameMainStage);
+                            } catch (Exception e1) {
+                                e1.printStackTrace();
+                            }
+                        }
+
+                    }
+                    ));
+                    wait.play();
+
+                        e.printStackTrace();
+                });
+
+            }
+        }
+        if(CurrentGameState != null && this.collided_flag == false ) {
+            for (Map.Entry<Integer, Achievement> t : GameAchievements.entrySet()) {
+                if (t.getValue().Requirement(numStars))
+                    t.getValue().Unlock = true;
+
+            }
         }
 //        CurrentGameState.AddObjects(grp);
         //System.out.println("Timer ran ");
     }
+
+
     public void Pause(){
         System.out.println("pausing!!");
         for(Star s: CurrentGameState.getSceneStars()) {
@@ -366,6 +440,7 @@ public class GameMain extends TimerTask {
             s.Pause();
         }
         CurrentGameState.getCurrentBall().Pause();
+        if(CurrentGameState.BallTrail!=null)
         CurrentGameState.BallTrail.Pause();
 
     }
@@ -398,6 +473,7 @@ public class GameMain extends TimerTask {
             s.Resume();
         }
         CurrentGameState.getCurrentBall().Resume();
+        if(CurrentGameState.BallTrail!=null)
         CurrentGameState.BallTrail.Resume();
     }
     public Group getGrp() {

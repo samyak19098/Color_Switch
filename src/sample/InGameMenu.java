@@ -256,6 +256,7 @@ public class InGameMenu extends Application {
         System.out.println("GAME WILL BE SAVED !!");
     }
     public void exitToMainPage() throws Exception {
+        main_page_obj.AssociatedMain.getGm().numStars+=main_page_obj.AssociatedMain.getGm().getCurrentGameState().getNumStarsinGame();
         main_page_obj.start(main_page_obj.main_page_stage);
     }
 

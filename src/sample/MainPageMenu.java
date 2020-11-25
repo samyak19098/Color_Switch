@@ -1,5 +1,8 @@
 package sample;
 
+import javafx.animation.Animation;
+import javafx.animation.Interpolator;
+import javafx.animation.RotateTransition;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -9,10 +12,12 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import javafx.util.Duration;
 import java.awt.Desktop;
 import java.net.URI;
 
@@ -20,6 +25,7 @@ import java.io.FileInputStream;
 
 public class MainPageMenu extends Application {
 
+    // privatise !
     HowToPlayPage how_to_play_page_obj = new HowToPlayPage();
     AchievementsPage achievement_page_obj = new AchievementsPage();
     ShopPage shop_page_obj = new ShopPage();

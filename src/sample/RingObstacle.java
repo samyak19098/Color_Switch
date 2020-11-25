@@ -82,7 +82,7 @@ public class RingObstacle extends Obstacle {
                 grp.getChildren().remove(p);
             });
         }
-        System.out.println("notvisible");
+//        System.out.println("notvisible");
     }
     @Override
     protected void WayOfMovement() {
@@ -100,7 +100,7 @@ public class RingObstacle extends Obstacle {
 
     public void rotateRing() {
         Platform.runLater(() -> {
-            System.out.println("rotating");
+//            System.out.println("rotating");
             for (int i = 0; i < timelines.size(); i++) {
                 timelines.get(i).play();
             }

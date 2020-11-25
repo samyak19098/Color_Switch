@@ -112,7 +112,7 @@ public class Main extends Application {
 
             @Override
             public void handle(ActionEvent event) {
-                System.out.println("this is called every 5 seconds on UI thread");
+//                System.out.println("this is called every 5 seconds on UI thread");
                 try {
                     main_page.start(primaryStage);
                 } catch (Exception e) {
@@ -123,9 +123,6 @@ public class Main extends Application {
         }
                     ));
         wait.play();
-
-
-
 
     }
 
