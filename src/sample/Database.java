@@ -17,7 +17,7 @@ public class Database implements Serializable {
 
 
 
-    private final String saving_file = "/Users/rohitritika/Desktop/AP_RESOURCE/game_save.ser";
+    private final String saving_file = "game_save.ser";
 
     public void serialize(GameState gs) throws IOException {
 
