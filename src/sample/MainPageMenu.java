@@ -237,11 +237,14 @@ public class MainPageMenu extends Application {
     }
 
     public void newGame() throws Exception {
+        this.AssociatedMain.getGm().setLoad(false);
        this.AssociatedMain.getGm().startGame(main_page_stage);
     }
 
     public void resumeGame() throws Exception{
         System.out.println("RESUME FUNCTIONALITY");
+        this.AssociatedMain.getGm().loadgame(main_page_stage);
+
     }
 
     public void displayDeveloper() throws Exception{

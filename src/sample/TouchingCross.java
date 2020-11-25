@@ -4,14 +4,17 @@ import javafx.application.Platform;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class TouchingCross extends Obstacle{
+public class TouchingCross extends Obstacle implements Serializable {
 
     private double length;
     private double thickness;
-    private ArrayList<CrossObstacle> crosses = new ArrayList<CrossObstacle>();
+    private   ArrayList<CrossObstacle> crosses = new ArrayList<CrossObstacle>();
     private boolean directionClockwise; // direction of left cross(T = clockwise, F = anti)
+    private double saved_angle_left;
+    private double saved_angle_right;
 
     TouchingCross(String type, double speed, int orientation, double length,double thickness, double centre_x, double centre_y, boolean direction){
         super(type, speed, orientation);
@@ -43,6 +46,19 @@ public class TouchingCross extends Obstacle{
         crosses.get(0).rotateCross();
         crosses.get(1).rotateCross();
     }
+
+    @Override
+    protected void save_attributes(){
+        crosses.get(0).save_attributes();   crosses.get(1).save_attributes();
+    }
+
+    @Override
+    public void load_attributes(){
+        crosses.get(0).load_attributes();   crosses.get(1).load_attributes();
+    }
+
+
+
     @Override
     public void draw() {
 
@@ -81,4 +97,28 @@ public class TouchingCross extends Obstacle{
         crosses.get(0).Pause();crosses.get(1).Pause();
 
     }
+
+
+    public double getLength() {
+        return length;
+    }
+
+    public double getThickness() {
+        return thickness;
+    }
+
+
+
+    public boolean isDirectionClockwise() {
+        return directionClockwise;
+    }
+
+    public double getSaved_angle_left() {
+        return saved_angle_left;
+    }
+
+    public double getSaved_angle_right() {
+        return saved_angle_right;
+    }
+
 }

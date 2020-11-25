@@ -11,19 +11,22 @@ import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 import javafx.util.Duration;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import javafx.scene.shape.*;
 
-public class SquareObstacle extends Obstacle {
+public class SquareObstacle extends Obstacle  implements Serializable {
 
     private double sideLength;
     private boolean directionClockwise;
     private double thickness;
-    private Path squareObject;
-    private ArrayList<Path> sides = new ArrayList<Path>();
-    private ArrayList<Timeline> timelines = new ArrayList<Timeline>();
-    private ArrayList<Rotate> rotate_list = new ArrayList<Rotate>();
+    private transient Path squareObject;
+    private transient ArrayList<Path> sides = new ArrayList<Path>();
+    private transient ArrayList<Timeline> timelines = new ArrayList<Timeline>();
+    private transient ArrayList<Rotate> rotate_list = new ArrayList<Rotate>();
+    private double saved_angle;
+
     SquareObstacle(String type, double speed, int orientation, double centre_x, double centre_y, double side, double thickness, boolean isClockwise) {
         super(type, speed, orientation);
         this.setPosition(new Position(centre_x,centre_y));
@@ -36,12 +39,12 @@ public class SquareObstacle extends Obstacle {
     protected void WayOfMovement() {
         for(int i = 0 ; i < timelines.size(); i++){
             timelines.get(i).setCycleCount(Animation.INDEFINITE);
-            int angle_to_cover;
+            double angle_to_cover;
             if(directionClockwise == true){
-                angle_to_cover = 360;
+                angle_to_cover = 360+saved_angle;
             }
             else{
-                angle_to_cover = -360;
+                angle_to_cover = -360+saved_angle;
             }
             timelines.get(i).getKeyFrames().add(new KeyFrame(Duration.millis((this.getObstacleSpeed())), new KeyValue(rotate_list.get(i).angleProperty(), angle_to_cover)));
         }
@@ -172,6 +175,35 @@ public class SquareObstacle extends Obstacle {
 //        collisionCheck(b);
 
     }
+
+    @Override
+    protected void save_attributes(){
+            this.saved_angle = rotate_list.get(0).getAngle();
+            savedposition.set_x(sides.get(0).getTranslateX());
+            savedposition.set_y(sides.get(0).getTranslateY());
+    }
+
+    @Override
+    public void load_attributes(){
+        sides = new ArrayList<Path>();
+        timelines = new ArrayList<Timeline>();
+     rotate_list = new ArrayList<Rotate>();
+        super.load_attributes();
+        draw();
+        WayOfMovement();
+        for(int i=0;i<4;i++) {
+            tlist.get(i).setToX(savedposition.get_x());
+            tlist.get(i).setToY(savedposition.get_y());
+            tlist.get(i).setCycleCount(1);
+            tlist.get(i).setDuration(Duration.millis(1));
+            tlist.get(i).setOnFinished(null);
+            tlist.get(i).play();
+        }
+        for(int i = 0 ; i  < 4; i++){
+            rotate_list.get(i).setAngle(saved_angle);
+        }
+    }
+
     @Override
     public void removeself(Group grp){
         for(Path p: sides) {
@@ -280,4 +312,38 @@ public class SquareObstacle extends Obstacle {
 
         return sidel/(2* Math.cos( Math.toRadians(ang-(90*(Math.ceil((ang-45)/90))) )) );
     }
+
+
+    public double getSideLength() {
+        return sideLength;
+    }
+
+    public boolean isDirectionClockwise() {
+        return directionClockwise;
+    }
+
+    public double getThickness() {
+        return thickness;
+    }
+
+    public Path getSquareObject() {
+        return squareObject;
+    }
+
+    public ArrayList<Path> getSides() {
+        return sides;
+    }
+
+    public ArrayList<Timeline> getTimelines() {
+        return timelines;
+    }
+
+    public ArrayList<Rotate> getRotate_list() {
+        return rotate_list;
+    }
+
+    public double getSaved_angle() {
+        return saved_angle;
+    }
+
 }

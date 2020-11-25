@@ -6,7 +6,9 @@ import javafx.scene.Group;
 import javafx.scene.shape.Shape;
 import javafx.util.Duration;
 
-public abstract class GameObject   {
+import java.io.Serializable;
+
+public abstract class GameObject  implements Serializable {
     protected  static   double screenwidth=1200;
     protected static  double screenheight=800;
     protected Position savedposition;
@@ -50,6 +52,15 @@ public abstract class GameObject   {
 
     }
 
+    public void load_attributes(){
+        translateTransition=new TranslateTransition();
+        translateTransition.setToX(savedposition.get_x());
+        translateTransition.setToY(savedposition.get_y());
+        translateTransition.setCycleCount(1);
+        translateTransition.setDuration(Duration.millis(1));
+        translateTransition.setOnFinished(null);
+         ;
+    }
 
 
 }

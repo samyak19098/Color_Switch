@@ -10,9 +10,10 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Path;
 import javafx.util.Duration;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class TangentialObstacle extends Obstacle{
+public class TangentialObstacle extends Obstacle implements Serializable {
 
     private double radius;  //radius of inner ring ; R_outer = R_inner + width + 5;
     private double width;
@@ -20,6 +21,9 @@ public class TangentialObstacle extends Obstacle{
     private boolean directionClockwise; // direction of left ring(T = clockwise, F = anti)
     private double angleRing1; //angle by which left right are rotated
     private double angleRing2; //angle by which left right are rotated
+    private double saved_angle_left;
+    private double saved_angle_right;
+
     TangentialObstacle(String type, double speed, int orientation, double radius, double width,double centre_x, double centre_y, boolean directionClockwise, double angle1, double angle2) {
         super(type, speed, orientation);
         this.setPosition(new Position(centre_x, centre_y)); // centre_x,centre_Y position of the point at which both rings meet tangentially side by side
@@ -33,6 +37,16 @@ public class TangentialObstacle extends Obstacle{
     @Override
     public void movedown(Ball b) {
         rings.get(0).movedown(b);        rings.get(1).movedown(b);
+    }
+
+    @Override
+    protected void save_attributes() {
+        rings.get(0).save_attributes(); rings.get(1).save_attributes();
+    }
+
+    @Override
+    public void load_attributes(){
+        rings.get(0).load_attributes(); rings.get(1).load_attributes();
     }
 
     @Override
@@ -86,7 +100,7 @@ public class TangentialObstacle extends Obstacle{
     @Override
     public void removeself(Group grp){
          rings.get(0).removeself(grp);    rings.get(1).removeself(grp);
-        System.out.println("notvisible");
+//        System.out.println("notvisible");
     }
     @Override
     public boolean collisionCheck(Ball b) {
@@ -168,4 +182,38 @@ public class TangentialObstacle extends Obstacle{
     public void Resume(){
         rings.get(0).Resume();rings.get(1).Resume();
     }
+
+
+    public double getRadius() {
+        return radius;
+    }
+
+    public double getWidth() {
+        return width;
+    }
+
+    public ArrayList<RingObstacle> getRings() {
+        return rings;
+    }
+
+    public boolean isDirectionClockwise() {
+        return directionClockwise;
+    }
+
+    public double getAngleRing1() {
+        return angleRing1;
+    }
+
+    public double getAngleRing2() {
+        return angleRing2;
+    }
+
+    public double getSaved_angle_left() {
+        return saved_angle_left;
+    }
+
+    public double getSaved_angle_right() {
+        return saved_angle_right;
+    }
+
 }

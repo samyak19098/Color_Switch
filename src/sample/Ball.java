@@ -10,9 +10,11 @@ import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Shape;
 import javafx.util.Duration;
 import javafx.scene.shape.Circle;
+
+import java.io.Serializable;
 import java.util.*;
 
-public class Ball extends GameObject {
+public class Ball extends GameObject  implements Serializable {
     public final int id;
     private final int movtime=250;//time duration of one move
     private final int movedistance = 100;//distance moved in one move
@@ -41,8 +43,6 @@ public class Ball extends GameObject {
         translateTransition.setNode(BallShape);
         position=new Position(x,y);
         radius=r;
-        ////
-//        savedposition.set_x();
 
     }
     public Ball(Color c, Shape s,double x,double y,double r) {
@@ -139,11 +139,23 @@ public class Ball extends GameObject {
     }
 
     public boolean outofBounds(){
+        System.out.println("position2:" + position);
+        System.out.println("BallShape2:" + BallShape);
         if((position.get_y()+BallShape.getTranslateY())>(screenheight+radius))
                                                     //  600 + 0   >  800+20
             return true;
         return false;
     }
+
+    @Override
+    public void load_attributes(){
+        super.load_attributes();
+        BallColor = ColorSwitcher.map.get(savedcolor) ;
+        BallShape = new Circle(position.get_x(),position.get_y(),radius,BallColor);
+        translateTransition.setNode(BallShape);
+        translateTransition.play();
+
+     }
     @Override
     public void shownOnScreen(Group g) {
         Platform.runLater(() -> {
@@ -164,6 +176,10 @@ public class Ball extends GameObject {
 //
 //    }
 
+    public void save_ball(){
+        savedposition.set_x(BallShape.getTranslateX());
+        savedposition.set_y(BallShape.getTranslateY());
+    }
 
 
     public void setColor(Color c) {
@@ -193,4 +209,3 @@ public class Ball extends GameObject {
         BallShape = s;
     }
 }
-

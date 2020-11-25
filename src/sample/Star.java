@@ -94,7 +94,10 @@ public class Star extends GameObject{
 //        System.out.println("i:" + i);
 //        System.out.println(b.getColor() == quarters.get(i).getFill());
 
-//        System.out.println("ang:" + ang);
+        System.out.println("b:" + b);
+        System.out.println("b.getBallShape():" + b.getBallShape());
+        System.out.println("position:" + position);
+        System.out.println("polygon:" + polygon);
         //cal=distance b/w centers
         double cal = b.getPosition().get_y() + b.getBallShape().getTranslateY() - position.get_y() - polygon.getTranslateY();
 //        System.out.println("quarters.get(i).getTranslateY():" + quarters.get(i).getTranslateY());
@@ -123,6 +126,41 @@ public class Star extends GameObject{
         return false;
     }
 
+    public void save_star(){
+        savedposition.set_x(polygon.getTranslateX());
+        savedposition.set_y(polygon.getTranslateY());
+
+    }
+
+    @Override
+    public void load_attributes(){
+        super.load_attributes();
+        polygon   = new Polygon();
+        Double[] ar=new Double[]{//y-axis is inverted
+                0.0, -2.0,
+                1.0, -1.0,
+                2.0, -1.0,
+                1.0, -0.0,
+                2.0, 2.0,
+                0.0, 1.0,
+                -2.0,2.0,
+                -1.0,-0.0,
+                -2.0,-1.0,
+                -1.0,-1.0,
+                0.0, -2.0};
+        for(int i=0;i<ar.length;i++){
+            ar[i]=ar[i]*20;//scaling
+            if(i%2==0)
+                ar[i]=ar[i]+position.get_x();//displacing
+            else
+                ar[i]=ar[i]+position.get_y();
+        }
+        polygon.getPoints().addAll(ar);
+        polygon.setFill(Color.WHITE);
+        polygon.setStrokeWidth(1.0);
+        translateTransition.setNode(polygon); translateTransition.play();
+
+    }
     public void shownOnScreen(Group g) {
         Platform.runLater(() -> {
             g.getChildren().add(polygon);
@@ -141,3 +179,5 @@ public class Star extends GameObject{
         return translateTransition;
     }
 }
+
+

@@ -1,4 +1,6 @@
 package sample;
+import java.io.IOException;
+import java.io.Serializable;
 import java.util.*;
 
 import javafx.animation.KeyFrame;
@@ -21,9 +23,12 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Duration;
 
+import javax.xml.crypto.Data;
+
 import static javafx.scene.media.AudioClip.INDEFINITE;
 
-public class GameMain extends TimerTask {
+public class GameMain extends TimerTask  implements Serializable {
+
     public long numStars;
     public int whichtrail;
     public Trail currentTrail;
@@ -35,6 +40,8 @@ public class GameMain extends TimerTask {
     public Main AssociatedMain;
     public boolean lock=false;
 
+
+    private boolean load;
 
 
 
@@ -52,7 +59,10 @@ public class GameMain extends TimerTask {
     boolean collided_flag;
     boolean pause_var;
 
+    Database db = new Database();
+
     public GameMain(Group root, Main m){
+        load=false;
         whichtrail=0;
         numStars=0;
         this.root = new Group();
@@ -67,9 +77,6 @@ public class GameMain extends TimerTask {
 
 
     public void startGame(Stage primaryStage){
-        this.lock=false;
-        this.collided_flag = false;
-        this.pause_var = false;
         Group grp = new Group();
         this.root = grp;
         this.GameMainStage = primaryStage;
@@ -86,27 +93,18 @@ public class GameMain extends TimerTask {
                 audio[0] = new AudioClip( "file:background.wav" );
                 audio[0].setVolume(0.5f);
                 audio[0].setCycleCount(s);
-                audio[0].play();
+//                audio[0].play();
                 return null;
             }
         };
 
         Thread thread = new Thread(task);
         thread.start();
-        //======
 
-//        Group root = new Group();
-        // set background
         Rectangle hbox = new Rectangle(1600, screenheight);
         Image im = new Image("file:bg.jpg", false);
         hbox.setFill(new ImagePattern(im));
         root.getChildren().add(hbox);
-
-
-//        GameMain gm = new GameMain(root);
-//        Star s=new Star(600,300);
-        GameState g = new GameState(currentTrail);
-        this.setCurrentGameState(g);
 
 
         Button pause_button = new Button("PAUSE GAME");
@@ -114,6 +112,7 @@ public class GameMain extends TimerTask {
         pause_button.setLayoutX(20);
         pause_button.setLayoutY(50);
         root.getChildren().add(pause_button);
+
         EventHandler<ActionEvent> event_pause_game = new EventHandler<ActionEvent>() {
             public void handle(ActionEvent e) {
 
@@ -130,14 +129,21 @@ public class GameMain extends TimerTask {
             }
         };
         pause_button.setOnAction(event_pause_game);
-
-
         Scene scene = new Scene(root, screenwidth, screenheight);//, Color.BLACK);
         gm_scene = scene;
-        g.shownOnScreen(root);
 
+
+        if(!load){
+
+
+            this.lock=false;
+            this.collided_flag = false;
+            this.pause_var = false;
+            GameState g = new GameState(currentTrail);
+            this.setCurrentGameState(g);
+        }
+        CurrentGameState.shownOnScreen(root);
         trailtimer = new Timer();
-
         if(CurrentGameState.BallTrail!=null)
         trailtimer.schedule(this.getCurrentGameState().BallTrail, 500, 200);
 
@@ -155,8 +161,6 @@ public class GameMain extends TimerTask {
         });
         primaryStage.show();
 
-
-//    private void moveBallOnKeyPress(Scene scene,  GameMain gm,Timer timer,Timer trailtimer){//, MediaPlayer mp_ballup,MediaPlayer mp_button) {
         scene.addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
@@ -327,10 +331,13 @@ public class GameMain extends TimerTask {
                 }
             }
         });
+        if(load){
+            continueGame();
+        }
     }
 
 
-    public void run( ) {
+    public void run() {
         if(CurrentGameState != null && this.collided_flag == false ){
             try {
                 CurrentGameState.checkAllcollisions(root,AssociatedMain.getMainStage());
@@ -442,10 +449,11 @@ public class GameMain extends TimerTask {
         CurrentGameState.getCurrentBall().Pause();
         if(CurrentGameState.BallTrail!=null)
         CurrentGameState.BallTrail.Pause();
+        this.collided_flag = true;
 
     }
     public void continueGame(){//todo shift to InGameMenu
-
+        this.collided_flag = false;
 
         task = new Task() {
             @Override
@@ -454,7 +462,7 @@ public class GameMain extends TimerTask {
                 AudioClip audio = new AudioClip( "file:background.wav" );
                 audio.setVolume(0.5f);
                 audio.setCycleCount(s);
-                audio.play();
+//                audio.play();
                 return null;
             }
         };
@@ -476,6 +484,46 @@ public class GameMain extends TimerTask {
         if(CurrentGameState.BallTrail!=null)
         CurrentGameState.BallTrail.Resume();
     }
+
+    public void savegame() throws IOException {
+
+        for(Obstacle s : CurrentGameState.getSceneObstacles()){
+            s.save_attributes();
+        }
+        for(Star s : CurrentGameState.getSceneStars()){
+            s.save_star();
+        }
+        for(ColorSwitcher s : CurrentGameState.getSceneColorSwitcher()){
+            s.save_color_switcher();
+        }
+        CurrentGameState.getCurrentBall().save_ball();
+
+        db.serialize(CurrentGameState);
+
+    }
+
+    public void loadgame(Stage primaryStage) throws IOException, ClassNotFoundException {
+        this.CurrentGameState = db.deserialize();
+        for(Obstacle s : CurrentGameState.getSceneObstacles()){
+            s.load_attributes();
+        }
+        for(Star s : CurrentGameState.getSceneStars()){
+            s.load_attributes();
+        }
+        for(ColorSwitcher s : CurrentGameState.getSceneColorSwitcher()){
+            s.load_attributes();
+        }
+        CurrentGameState.getCurrentBall().load_attributes();
+
+            CurrentGameState.setHand(new  Hand(screenwidth/2,600+20+100));
+        if(CurrentGameState.removed)
+            removehand();
+        CurrentGameState.load_attributes();
+        load=true;
+        startGame(primaryStage);
+
+
+    }
     public Group getGrp() {
         return root;
     }
@@ -488,6 +536,7 @@ public class GameMain extends TimerTask {
 
     public void removehand() {
         CurrentGameState.getHand().removeself(root);
+        CurrentGameState.removed=true;
     }
     public HashMap<Integer, Achievement> getGameAchievements() {
         return GameAchievements;
@@ -499,4 +548,8 @@ public class GameMain extends TimerTask {
     public Scene getGm_scene() {
         return gm_scene;
     }
+    public void setLoad(boolean load) {
+        this.load=load;
+    }
+
 }

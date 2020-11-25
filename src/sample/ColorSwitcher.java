@@ -10,14 +10,16 @@ import javafx.util.Duration;
 import javafx.scene.image.*;
 import javafx.scene.paint.ImagePattern;
 
+import java.io.Serializable;
 import java.util.*;
-public class ColorSwitcher extends GameObject implements SpecialObject{
+public class ColorSwitcher extends GameObject implements SpecialObject, Serializable {
 
 
     protected transient Circle circle;
 
     static transient HashMap<Integer,Color> map=new HashMap<Integer,Color>();
     static transient HashMap<Color,Integer> getcolormap=new HashMap<Color,Integer>();
+    private double radius;
     static {
         map.put(0,Color.PURPLE);
         map.put(1,Color.CYAN);
@@ -36,11 +38,12 @@ public class ColorSwitcher extends GameObject implements SpecialObject{
     public ColorSwitcher( double x,double y,double radius) {
         //keep the radius same as ball :looks good
         position =new Position(x,y);
+        this.radius = radius;
         circle=new   Circle(x, y, radius,Color.WHITE);
         Image im = new Image("file:sss.png",false);
         circle.setFill(new ImagePattern(im));
 //        BallTrail = t;
-        translateTransition = new TranslateTransition();
+
         translateTransition.setDuration(Duration.millis(movtime));
 
         //Setting the node for the transition
@@ -117,6 +120,24 @@ public class ColorSwitcher extends GameObject implements SpecialObject{
 
         return false;
     }
+
+    public void save_color_switcher(){
+        savedposition.set_x(circle.getTranslateX());
+        savedposition.set_y(circle.getTranslateY());
+    }
+
+    @Override
+    public void load_attributes(){
+        super.load_attributes();
+        circle=new   Circle(position.get_x(), position.get_y(),radius ,Color.WHITE);
+        Image im = new Image("file:sss.png",false);
+        circle.setFill(new ImagePattern(im));
+        translateTransition.setDuration(Duration.millis(1));
+        translateTransition.setNode(circle);
+        translateTransition.play();
+        translateTransition.setDuration(Duration.millis(movtime));
+    }
+
     public Circle getCircle() {
         return circle;
     }

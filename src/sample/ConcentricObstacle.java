@@ -9,17 +9,20 @@ import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 import javafx.util.Duration;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import javafx.scene.shape.*;
 
-public class ConcentricObstacle extends Obstacle{
+public class ConcentricObstacle extends Obstacle implements Serializable {
 
     private double radius;  //radius of inner ring ; R_outer = R_inner + width + 5;
     private double width;
     private ArrayList<RingObstacle> rings = new ArrayList<RingObstacle>();      // rings[0] = inner ring, rings[1] = outer ring;
     private boolean directionClockwise; // direction of inner ring(T = clockwise, F = anti)
     private double angleRing; //angle by which rings are rotated ( generally 45)
+    private double saved_angle_left;
+    private double saved_angle_right;
 
     ConcentricObstacle(String type, double speed, int orientation, double radius, double width, double centre_x, double centre_y, boolean direction, double angle){
         super(type,speed,orientation);
@@ -33,6 +36,17 @@ public class ConcentricObstacle extends Obstacle{
     @Override
     public void movedown(Ball b) {
         rings.get(0).movedown(b);        rings.get(1).movedown(b);
+    }
+
+    @Override
+    protected void save_attributes(){
+
+        rings.get(0).save_attributes(); rings.get(1).save_attributes();
+    }
+
+    @Override
+    public void load_attributes(){
+        rings.get(0).load_attributes(); rings.get(1).load_attributes();
     }
 
     @Override
@@ -113,4 +127,34 @@ public class ConcentricObstacle extends Obstacle{
     public void Resume(){
         rings.get(0).Resume();rings.get(1).Resume();
     }
+
+
+    public double getRadius() {
+        return radius;
+    }
+
+    public double getWidth() {
+        return width;
+    }
+
+    public ArrayList<RingObstacle> getRings() {
+        return rings;
+    }
+
+    public boolean isDirectionClockwise() {
+        return directionClockwise;
+    }
+
+    public double getAngleRing() {
+        return angleRing;
+    }
+
+    public double getSaved_angle_left() {
+        return saved_angle_left;
+    }
+
+    public double getSaved_angle_right() {
+        return saved_angle_right;
+    }
+
 }

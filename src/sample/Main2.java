@@ -35,7 +35,7 @@ import java.io.*;
 
 class Manager extends ImageView implements Serializable {
   public  String name;
-  public Polygon t;
+  public transient  Polygon t;
   public Manager(String n) {  name=n;  t=new Polygon(); }
 
 }
@@ -58,7 +58,7 @@ class Manager extends ImageView implements Serializable {
              in = new ObjectInputStream (
                     new FileInputStream("out.txt"));
              Manager s1 = (Manager) in.readObject();
-             System.out.println("name:"+s1.name);
+             System.out.println("name:"+s1.t);
              } finally {
              in.close();
              }

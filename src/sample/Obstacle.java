@@ -1,15 +1,17 @@
 package sample;
+import java.io.Serializable;
 import java.util.*;
 import javafx.animation.TranslateTransition;
 import javafx.scene.Group;
 import javafx.util.Duration;
 
-public abstract class Obstacle extends GameObject{
+public abstract class Obstacle extends GameObject implements Serializable {
 
     protected String ObstacleType;
     protected double ObstacleSpeed;
     protected int Orientation;
-    protected ArrayList<TranslateTransition> tlist;
+    protected transient ArrayList<TranslateTransition> tlist;
+//    protected double saved_angle;
 
 
     Obstacle(String type, double speed, int orientation){
@@ -31,6 +33,15 @@ public abstract class Obstacle extends GameObject{
     public abstract void movedown(Ball b);
 
 
+    protected abstract void save_attributes();
+    @Override
+    public void load_attributes(){
+        this.tlist=new ArrayList<TranslateTransition>();
+        for(int i=0;i<4;i++){
+            tlist.add(new TranslateTransition());
+
+        }
+    }
     protected abstract void WayOfMovement();
 
     public String getObstacleType() {
@@ -72,6 +83,7 @@ public abstract class Obstacle extends GameObject{
 
 
     }
+
 
 
 }
