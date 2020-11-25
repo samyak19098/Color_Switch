@@ -333,7 +333,12 @@ public class GameState {
         for(Obstacle s: sceneObstacles) {
             if (s.collisionCheck(CurrentBall)) {
                 System.out.println("collided3!!");
-                System.out.println("12");
+                System.out.println(debug);
+                System.out.println(s.getClass());
+                debug+=1;
+//                CurrentBall.getBallShape().setVisible(false);
+//                gameovereffect(g);
+
                 //todo remove obstacles
 //                Platform.runLater(() -> {
 //                            mp_GameOver.stop();
