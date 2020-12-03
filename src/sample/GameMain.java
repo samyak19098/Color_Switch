@@ -16,6 +16,8 @@ import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.media.AudioClip;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
@@ -54,19 +56,29 @@ public class GameMain extends TimerTask  implements Serializable {
     private final int movedistance = 100;//distance moved in one move
     private final int movtime = 250;
     private Timer timer,trailtimer;
-
-    //made as an indicator for run() method of thread
+    Media ballup,button;
+    AudioClip mp_ballup,mp_button,mp_GameOver;
     boolean collided_flag;
     boolean pause_var;
 
     Database db = new Database();
 
     public GameMain(Group root, Main m) {
+//        ballup = new Media(new File("ballup.wav").toURI().toString());
+//        mp_ballup = new MediaPlayer(ballup);
+//        button = new Media(new File("button.wav").toURI().toString());
+//        mp_button = new MediaPlayer(button);
+        mp_ballup = new AudioClip( "file:jump.wav" );
+        mp_ballup.setCycleCount(1);mp_ballup.setVolume(1);
+        mp_GameOver=new AudioClip( "file:GameOver.wav" );
+        mp_GameOver.setCycleCount(1);mp_GameOver.setVolume(1);
+
         GameAchievements=new  HashMap<>();
         for(int i=0;i<3;i++)
             GameAchievements.put(i,new StarAchievement(((i+1)*5)));
-            deserializeGameDetails();
-        gameDetails=new GameDetails();
+//            deserializeGameDetails();
+//        gameDetails=new GameDetails();
+        deserializeGameDetails();
 //        serializeGameDetails();
 //        serialize();
         load=false;
@@ -90,21 +102,6 @@ public class GameMain extends TimerTask  implements Serializable {
         igm.game_main = this;
 
 
-        final AudioClip[] audio = new AudioClip[1];
-        task = new Task() {
-            @Override
-            protected Object call() throws Exception {
-                int s = INDEFINITE;
-                audio[0] = new AudioClip( "file:background.wav" );
-                audio[0].setVolume(0.5f);
-                audio[0].setCycleCount(s);
-//                audio[0].play();
-                return null;
-            }
-        };
-
-        Thread thread = new Thread(task);
-        thread.start();
 
         Rectangle hbox = new Rectangle(1600, screenheight);
         Image im = new Image("file:bg.jpg", false);
@@ -126,7 +123,7 @@ public class GameMain extends TimerTask  implements Serializable {
                 try {
                     igm.start(primaryStage);
                     Pause();
-                    audio[0].stop();
+//                    audio[0].stop();
 
                 } catch (Exception ex) {
                     ex.printStackTrace();
@@ -201,7 +198,7 @@ public class GameMain extends TimerTask  implements Serializable {
             }
         });
         primaryStage.show();
-
+        Timeline timeline=new Timeline();
         scene.addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
@@ -211,14 +208,12 @@ public class GameMain extends TimerTask  implements Serializable {
                 switch (event.getCode()) {
 
                     case UP:
-
-
 //                        System.out.println("up");
-//                        Platform.runLater(() -> {
-//                                    mp_ballup.stop();
-//                                    mp_ballup.play();
-
-//                                });
+                        Platform.runLater(() -> {
+                                    mp_ballup.stop();
+                                    mp_ballup.play();
+//
+                                });
                         //g.debug();
 //                        if(pause_var == true){
 //                            continueGame();
@@ -279,36 +274,8 @@ public class GameMain extends TimerTask  implements Serializable {
                         CurrentGameState.getCurrentBall().getTranslateTransition().setOnFinished(null);
                         CurrentGameState.getCurrentBall().getTranslateTransition().play();
                         break;
-                    case A:
-                        System.out.println("circle.getTranslateX():" + CurrentGameState.getCurrentBall().getBallShape().getTranslateX());
-                        System.out.println("circle.getTranslateY():" + CurrentGameState.getCurrentBall().getBallShape().getTranslateY());
-                        CurrentGameState.getCurrentBall().getTranslateTransition().stop();
-                        CurrentGameState.getCurrentBall().getTranslateTransition().setToX(Double.NaN);
-                        CurrentGameState.getCurrentBall().getTranslateTransition().setToY(Double.NaN);
-                        CurrentGameState.getCurrentBall().getTranslateTransition().setByY(0);
-                        CurrentGameState.getCurrentBall().getTranslateTransition().setByX(-movedistance);
 
-                        //Setting the cycle count for the transition
-                        CurrentGameState.getCurrentBall().getTranslateTransition().setCycleCount(1);
-                        CurrentGameState.getCurrentBall().getTranslateTransition().setDuration(Duration.millis(movtime));
-                        CurrentGameState.getCurrentBall().getTranslateTransition().setOnFinished(null);
-                        CurrentGameState.getCurrentBall().getTranslateTransition().play();
-                        break;
-                    case S:
-                        System.out.println("circle.getTranslateX():" + CurrentGameState.getCurrentBall().getBallShape().getTranslateX());
-                        System.out.println("circle.getTranslateY():" + CurrentGameState.getCurrentBall().getBallShape().getTranslateY());
-                        CurrentGameState.getCurrentBall().getTranslateTransition().stop();
-                        CurrentGameState.getCurrentBall().getTranslateTransition().setToY(Double.NaN);
-                        CurrentGameState.getCurrentBall().getTranslateTransition().setToX(Double.NaN);
-                        CurrentGameState.getCurrentBall().getTranslateTransition().setByX(0);
-                        CurrentGameState.getCurrentBall().getTranslateTransition().setByY(movedistance);
 
-                        //Setting the cycle count for the transition
-                        CurrentGameState.getCurrentBall().getTranslateTransition().setCycleCount(1);
-                        CurrentGameState.getCurrentBall().getTranslateTransition().setDuration(Duration.millis(movtime));
-                        CurrentGameState.getCurrentBall().getTranslateTransition().setOnFinished(null);
-                        CurrentGameState.getCurrentBall().getTranslateTransition().play();
-                        break;
                     case D:
                         System.out.println("circle.getTranslateX():" + CurrentGameState.getCurrentBall().getBallShape().getTranslateX());
                         System.out.println("circle.getTranslateY():" + CurrentGameState.getCurrentBall().getBallShape().getTranslateY());
@@ -367,6 +334,7 @@ public class GameMain extends TimerTask  implements Serializable {
 //                System.out.println("CHECKING ALL COLLISIONS");
             } catch (Exception e) {
                 Platform.runLater(() -> {
+                    mp_GameOver.stop();  mp_GameOver.play();
                     System.out.println("IN RUN ");
                     Pause();
                     this.lock=true;
@@ -408,6 +376,7 @@ public class GameMain extends TimerTask  implements Serializable {
                 CurrentGameState.RemoveObstacles(root, AssociatedMain.getMainStage());
             } catch (Exception e) {
                 Platform.runLater(() -> {
+                    mp_GameOver.stop();  mp_GameOver.play();
                     System.out.println("IN RUN ");
     //                for(int i = 0 ; i < 100 ; i++) {
     //                    this.CurrentGameState.getCurrentBall().MoveBall(root);
@@ -448,7 +417,7 @@ public class GameMain extends TimerTask  implements Serializable {
         }//
         if(CurrentGameState != null && this.collided_flag == false ) {
             for (Map.Entry<Integer, Achievement> t : GameAchievements.entrySet()) {
-                if (t.getValue().Requirement(numStars))
+                if (t.getValue().Requirement(CurrentGameState.getNumStarsinGame()))
                     t.getValue().Unlock = true;
 
             }
@@ -482,11 +451,10 @@ public class GameMain extends TimerTask  implements Serializable {
         task = new Task() {
             @Override
             protected Object call() throws Exception {
+
                 int s = INDEFINITE;
-                AudioClip audio = new AudioClip( "file:background.wav" );
-                audio.setVolume(0.5f);
-                audio.setCycleCount(s);
-//                audio.play();
+
+
                 return null;
             }
         };
@@ -549,6 +517,7 @@ public class GameMain extends TimerTask  implements Serializable {
 
     }
     public void     serializeGameDetails(){
+        System.out.println("Serializing details");
         ShopPage s=AssociatedMain.getMain_page().shop_page_obj;
         gameDetails.numStars=(int)numStars;
         for(int i=0;i<gameDetails.trailsunlocked.size();i++)
@@ -583,6 +552,8 @@ public class GameMain extends TimerTask  implements Serializable {
 
     }
     public void deserializeGameDetails( )   {
+        System.out.println("DESerializing details");
+
         String saving_file = "gamedetails_file.txt";
         ObjectInputStream in = null;
 

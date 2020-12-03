@@ -14,6 +14,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.media.AudioClip;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -25,6 +26,8 @@ import java.net.URI;
 import java.io.FileInputStream;
 import java.util.Optional;
 
+import static javafx.scene.media.AudioClip.INDEFINITE;
+
 public class MainPageMenu extends Application {
 
     // privatise !
@@ -34,10 +37,16 @@ public class MainPageMenu extends Application {
     LoadGamesMenu load_page;
 //    InGameMenu in_game_obj = new InGameMenu();
     Main AssociatedMain;
-
+    static AudioClip mp_button,mp_bgmusic;
     Stage main_page_stage;
 
     MainPageMenu(Main m){
+        mp_bgmusic= new AudioClip( "file:background.wav" );
+        mp_bgmusic.setVolume(0.5);
+        mp_bgmusic.setCycleCount(INDEFINITE);
+        mp_bgmusic.play();
+        mp_button=new AudioClip( "file:button.wav" );
+        mp_button.setCycleCount(1);mp_button.setVolume(1);
         this.AssociatedMain = m;
         this.how_to_play_page_obj.main_page_obj = this;
         this.achievement_page_obj.main_page_obj=this;
@@ -126,6 +135,8 @@ public class MainPageMenu extends Application {
         EventHandler<ActionEvent> event_new_game = new EventHandler<ActionEvent>() {
             public void handle(ActionEvent e)
             {
+                mp_button.stop();
+                mp_button.play();
                 System.out.println("BUTTON 1 PRESSED");
 
                 try {
@@ -140,6 +151,8 @@ public class MainPageMenu extends Application {
         EventHandler<ActionEvent> event_resume_game = new EventHandler<ActionEvent>() {
             public void handle(ActionEvent e)
             {
+                mp_button.stop();
+                mp_button.play();
                 System.out.println("BUTTON 2 PRESSED");
                 try {
                     resumeGame();
@@ -152,6 +165,8 @@ public class MainPageMenu extends Application {
         EventHandler<ActionEvent> event_how_to_play = new EventHandler<ActionEvent>() {
             public void handle(ActionEvent e)
             {
+                mp_button.stop();
+                mp_button.play();
                 System.out.println("BUTTON 3 PRESSED");
                 try {
                     HowToPlay();
@@ -165,6 +180,8 @@ public class MainPageMenu extends Application {
         EventHandler<ActionEvent> event_display_developers = new EventHandler<ActionEvent>() {
             public void handle(ActionEvent e)
             {
+                mp_button.stop();
+                mp_button.play();
                 System.out.println("BUTTON 4 PRESSED");
                 try {
                     displayDeveloper();
@@ -177,6 +194,8 @@ public class MainPageMenu extends Application {
         EventHandler<ActionEvent> event_exit_game = new EventHandler<ActionEvent>() {
             public void handle(ActionEvent e)
             {
+                mp_button.stop();
+                mp_button.play();
                 System.out.println("BUTTON 5 PRESSED");
                 try {
                     exitGame();
@@ -189,8 +208,11 @@ public class MainPageMenu extends Application {
         EventHandler<ActionEvent> event_achievement = new EventHandler<ActionEvent>() {
             public void handle(ActionEvent e)
             {
+                mp_button.stop();
+                mp_button.play();
                 System.out.println("BUTTON 6 PRESSED");
                 try {
+                    MainPageMenu.mp_button.stop();MainPageMenu.mp_button.play();
                     Achieve();
                 } catch (Exception ex) {
                     ex.printStackTrace();
@@ -201,6 +223,8 @@ public class MainPageMenu extends Application {
         EventHandler<ActionEvent> event_feedback = new EventHandler<ActionEvent>() {
             public void handle(ActionEvent e)
             {
+                mp_button.stop();
+                mp_button.play();
                 System.out.println("BUTTON 7 PRESSED");
                 try {//===========https://stackoverflow.com/questions/37926495/desktop-and-desktop-browse-are-supported-but-browse-still-hangs
                     if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
@@ -216,6 +240,8 @@ public class MainPageMenu extends Application {
         EventHandler<ActionEvent> event_shop = new EventHandler<ActionEvent>() {
             public void handle(ActionEvent e)
             {
+                mp_button.stop();
+                mp_button.play();
                 System.out.println("BUTTON 8 PRESSED");
                 try {
                     shop();

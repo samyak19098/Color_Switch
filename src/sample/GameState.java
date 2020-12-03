@@ -8,6 +8,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.control.Label;
+import javafx.scene.media.AudioClip;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
@@ -47,7 +48,7 @@ public class GameState implements Serializable {
     private   Ball CurrentBall;
     private Date DateofSave;
     public boolean removed;
-
+    AudioClip  mp_colorswitchercollect,mp_starcollect;
 
     private final String player_name;
     //collision flag :
@@ -63,6 +64,10 @@ public class GameState implements Serializable {
     private int debug=1;
     public  transient Trail BallTrail;
     public GameState(Trail trail, String name){
+        mp_colorswitchercollect=new AudioClip( "file:colorswitchercollect.wav" );
+        mp_colorswitchercollect.setCycleCount(1);mp_colorswitchercollect.setVolume(1);
+        mp_starcollect=new AudioClip( "file:starcollect.wav" );
+        mp_starcollect.setCycleCount(1);mp_starcollect.setVolume(1);
         player_name  = name;
         coll_flag = false;removed=false;
         n=10;
@@ -276,15 +281,14 @@ public class GameState implements Serializable {
                 for(Star s: sceneStars) {
                     if (s.collisionCheck(CurrentBall)) {
         //                System.out.println("collided1!!");
-
-
-
+                        mp_starcollect.stop();
+                        mp_starcollect.play();
                         incNumStarsinGame();
 
         //                s.polygon.setFill(Color.BLUE);
                         Platform.runLater(() -> {
-        //                    mp_starcollect.stop();
-        //                    mp_starcollect.play();
+
+
                                     s.getPolygon().setVisible(false);
 
                                     sceneStars.remove(s);
@@ -299,8 +303,9 @@ public class GameState implements Serializable {
                     if (s.collisionCheck(CurrentBall)) {
         //                System.out.println("collided2!!");
                         Platform.runLater(() -> {
-        //                    mp_colorswitchercollect.stop();
-        //                    mp_colorswitchercollect.play();
+                            mp_colorswitchercollect.stop();
+                            mp_colorswitchercollect.play();
+
                         s.specialChange(CurrentBall);
         //                s.polygon.setFill(Color.BLUE);
                         s.getCircle().setVisible(false);

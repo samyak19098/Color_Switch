@@ -62,7 +62,7 @@ public class ShopPage extends Application{
         {
             @Override
             public void handle(MouseEvent t) {
-                gm.currentTrail=null;
+                MainPageMenu.mp_button.stop();MainPageMenu.mp_button.play();gm.currentTrail=null;
             }
         });
 
@@ -80,7 +80,7 @@ public class ShopPage extends Application{
             @Override
             public void handle(MouseEvent t) {
 
-                gm.currentTrail=new Trail();
+                MainPageMenu.mp_button.stop();MainPageMenu.mp_button.play();gm.currentTrail=new Trail();
             }
         });
         Achievement finalA = a;
@@ -88,7 +88,7 @@ public class ShopPage extends Application{
         a.locked.setOnMouseClicked(new EventHandler<MouseEvent>()
         {
             @Override
-            public void handle(MouseEvent t) {
+            public void handle(MouseEvent t) {  MainPageMenu.mp_button.stop();MainPageMenu.mp_button.play();
                 if(finalA.requirednumber<=gm.numStars){
                     gm.numStars-= finalA.requirednumber;
                     finalA.Unlock=true;
@@ -114,13 +114,14 @@ public class ShopPage extends Application{
         {
             @Override
             public void handle(MouseEvent t) {
-                gm.currentTrail=new Firetrail();
+                MainPageMenu.mp_button.stop();MainPageMenu.mp_button.play();gm.currentTrail=new Firetrail();
             }
         });
         a.locked.setOnMouseClicked(new EventHandler<MouseEvent>()
         {
             @Override
             public void handle(MouseEvent t) {
+                MainPageMenu.mp_button.stop();MainPageMenu.mp_button.play();
                 if(finalA1.requirednumber<=gm.numStars){
                     gm.numStars-= finalA1.requirednumber;
                     finalA1.Unlock=true;
@@ -146,13 +147,14 @@ public class ShopPage extends Application{
         {
             @Override
             public void handle(MouseEvent t) {
-                gm.currentTrail=new Neontrail();
+                MainPageMenu.mp_button.stop();MainPageMenu.mp_button.play();gm.currentTrail=new Neontrail();
             }
         });
         a.locked.setOnMouseClicked(new EventHandler<MouseEvent>()
         {
             @Override
             public void handle(MouseEvent t) {
+                MainPageMenu.mp_button.stop();MainPageMenu.mp_button.play();
                 if(finalA2.requirednumber<=gm.numStars){
                     gm.numStars-= finalA2.requirednumber;
                     finalA2.Unlock=true;
@@ -252,6 +254,7 @@ public class ShopPage extends Application{
             {
                 System.out.println("BUTTON 1 PRESSED");
                 try {
+                    MainPageMenu.mp_button.stop();MainPageMenu.mp_button.play();
                     backToHome();
 //                    m.start(stage);
 //                    this.newGame();

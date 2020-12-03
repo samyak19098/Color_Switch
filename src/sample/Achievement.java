@@ -40,7 +40,6 @@ public   class Achievement implements Serializable {
         if(a>=requirednumber)
             return true;
         return false;
-
     }
 
 }

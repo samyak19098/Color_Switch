@@ -35,14 +35,14 @@ public class LoadGamesMenu extends Application{
 
     LoadGamesMenu(ArrayList<String> names){
         games_list = new ListView();
-        if(names!=null) {
+//        if(names!=null) {
             for (int i = 0; i < 5; i++)
                 games_list.getItems().add(names.get(i));
-        }
-        else{
-            for (int i = 0; i < 5; i++)
-                games_list.getItems().add("Empty Slot");
-        }
+//        }
+//        else{
+//            for (int i = 0; i < 5; i++)
+//                games_list.getItems().add("Empty Slot");
+//        }
     }
 
 
@@ -63,6 +63,7 @@ public class LoadGamesMenu extends Application{
         Button load_button = new Button("LOAD GAME");
 
         load_button.setOnAction(event -> {
+            MainPageMenu.mp_button.stop();MainPageMenu.mp_button.play();
             ObservableList selectedIndices = list.getSelectionModel().getSelectedIndices();
             for(Object o : selectedIndices){
                 int slot_select = (int)(o);
@@ -90,6 +91,7 @@ public class LoadGamesMenu extends Application{
 
                 System.out.println(list.getItems().get((int)(o)));
                 try {
+                    MainPageMenu.mp_button.stop();MainPageMenu.mp_button.play();
                     save_game_implementation(slot_select);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -130,6 +132,7 @@ public class LoadGamesMenu extends Application{
             {
                 System.out.println("BUTTON 1 PRESSED");
                 try {
+                    MainPageMenu.mp_button.stop();MainPageMenu.mp_button.play();
                     backToHome();
 //                    m.start(stage);
 //                    this.newGame();

@@ -102,13 +102,37 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+//        Media  ballup = new Media(new File("ballup.wav").toURI().toString());
+//        MediaPlayer mp_ballup = new MediaPlayer(ballup);
+//        Media  button = new Media(new File("button.wav").toURI().toString());
+//        MediaPlayer mp_button = new MediaPlayer(button);
+//
+//            Platform.runLater(() -> {
+////                                    mp_ballup.stop();
+//
+//
+//                mp_ballup.play();
+//
+//            });
+//       Task task = new Task() {
+//            @Override
+//            public void run() {
+//
+//                mp_ballup.play();
+//
+//            }
+//        };
+//        Thread backgroundmusicThread = new Thread(task);
+//        backgroundmusicThread.start();
+//        backgroundmusicThread = new Thread(task);
+//        backgroundmusicThread.start();
+//        backgroundmusicThread = new Thread(task);
+//        backgroundmusicThread.start();
+
 
         this.MainStage = primaryStage;
         new LoadingPage().start(primaryStage);
-//        Media ballup = new Media(new File("ballup.mp3").toURI().toString());
-//        MediaPlayer mp_ballup = new MediaPlayer(ballup);
-//        Media button = new Media(new File("button.wav").toURI().toString());
-//        MediaPlayer mp_button = new MediaPlayer(button);
+//
 
         //===========https://stackoverflow.com/questions/31784698/javafx-background-thread-task-should-play-music-in-a-loop-as-background-thread
 //        TimeUnit.SECONDS.sleep(5);
