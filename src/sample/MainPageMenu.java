@@ -12,6 +12,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -24,6 +25,7 @@ import java.awt.Desktop;
 import java.net.URI;
 
 import java.io.FileInputStream;
+import java.util.Optional;
 
 public class MainPageMenu extends Application {
 
@@ -243,8 +245,23 @@ public class MainPageMenu extends Application {
     }
 
     public void newGame() throws Exception {
-        this.AssociatedMain.getGm().setLoad(false);
-       this.AssociatedMain.getGm().startGame(main_page_stage);
+
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("Game Save Name");
+        dialog.setHeaderText("GAME SAVE NAME ");
+        dialog.setContentText("Please enter the game name :");
+        Optional<String> name_string = dialog.showAndWait();
+        String name_inp;
+        if (name_string.isPresent()) {
+            System.out.println("Your name: " + name_string.get());
+            name_inp = name_string.get();
+            this.AssociatedMain.getGm().setLoad(false);
+            this.AssociatedMain.getGm().startGame(main_page_stage, name_inp);
+        }
+        else{
+
+        }
+
     }
 
     public void resumeGame() throws Exception{

@@ -74,7 +74,7 @@ public class GameMain extends TimerTask  implements Serializable {
     }
 
 
-    public void startGame(Stage primaryStage){
+    public void startGame(Stage primaryStage, String name_inp){
         Group grp = new Group();
         this.root = grp;
         this.GameMainStage = primaryStage;
@@ -166,21 +166,6 @@ public class GameMain extends TimerTask  implements Serializable {
             this.lock=false;
             this.collided_flag = false;
             this.pause_var = false;
-            TextInputDialog dialog = new TextInputDialog();
-            dialog.setTitle("Game Save Name");
-            dialog.setHeaderText("GAME SAVE NAME ");
-            dialog.setContentText("Please enter the game name :");
-            Optional<String> name_string = dialog.showAndWait();
-            String name_inp;
-            if (name_string.isPresent()) {
-                System.out.println("Your name: " + name_string.get());
-                name_inp = name_string.get();
-            }
-            else{
-//                dialog.showAndWait();
-                name_inp = "New Player";
-
-            }
 //            games_list.getItems().set(slot, name_string.get());
             GameState g = new GameState(currentTrail, name_inp);
             this.setCurrentGameState(g);
@@ -563,7 +548,7 @@ public class GameMain extends TimerTask  implements Serializable {
             removehand();
         CurrentGameState.load_attributes();
         load=true;
-        startGame(primaryStage);
+        startGame(primaryStage,CurrentGameState.getPlayer_name());
 
 
     }
