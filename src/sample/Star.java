@@ -94,7 +94,10 @@ public class Star extends GameObject{
 //        System.out.println("i:" + i);
 //        System.out.println(b.getColor() == quarters.get(i).getFill());
 
-//        System.out.println("ang:" + ang);
+        System.out.println("b:" + b);
+        System.out.println("b.getBallShape():" + b.getBallShape());
+        System.out.println("position:" + position);
+        System.out.println("polygon:" + polygon);
         //cal=distance b/w centers
         double cal = b.getPosition().get_y() + b.getBallShape().getTranslateY() - position.get_y() - polygon.getTranslateY();
 //        System.out.println("quarters.get(i).getTranslateY():" + quarters.get(i).getTranslateY());
@@ -125,7 +128,7 @@ public class Star extends GameObject{
 
     public void save_star(){
         savedposition.set_x(polygon.getTranslateX());
-        savedposition.set_x(polygon.getTranslateY());
+        savedposition.set_y(polygon.getTranslateY());
 
     }
 
@@ -155,7 +158,8 @@ public class Star extends GameObject{
         polygon.getPoints().addAll(ar);
         polygon.setFill(Color.WHITE);
         polygon.setStrokeWidth(1.0);
-        translateTransition.setNode(polygon);
+        translateTransition.setNode(polygon); translateTransition.play();
+
     }
     public void shownOnScreen(Group g) {
         Platform.runLater(() -> {
@@ -175,3 +179,5 @@ public class Star extends GameObject{
         return translateTransition;
     }
 }
+
+

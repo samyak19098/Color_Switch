@@ -100,7 +100,7 @@ public class TangentialObstacle extends Obstacle implements Serializable {
     @Override
     public void removeself(Group grp){
          rings.get(0).removeself(grp);    rings.get(1).removeself(grp);
-        System.out.println("notvisible");
+//        System.out.println("notvisible");
     }
     @Override
     public boolean collisionCheck(Ball b) {

@@ -6,6 +6,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -74,7 +75,7 @@ public class ObstacleHitMenu extends Application {
             {
                 System.out.println("BUTTON RESTART GAME PRESSED");
                 try {
-                    saveGame();
+                    restartGame();
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
@@ -134,18 +135,30 @@ public class ObstacleHitMenu extends Application {
 
     public void Obstacle_Menu_continueGame(){
         System.out.println("GAME WILL BE CONTINUED !! + COLL FLAG == " +  game_main.collided_flag);
-        game_main.collided_flag = false;
-        game_main.lock = false;
+        if(game_main.getCurrentGameState().getNumStarsinGame() < 5){
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Insufficient Stars");
+            alert.setHeaderText("INSUFFICIENT STARS !! ");
+            alert.setContentText("Sorry ! You do not have sufficient stars to continue ");
+            alert.showAndWait();
+        }
+        else {
+            game_main.collided_flag = false;
+            game_main.lock = false;
 //        game_main.getCurrentGameState().coll_flag = false;
 //        game_main.continueGame();
-        game_main.AssociatedMain.getMainStage().setScene(game_main.getGm_scene());
-        game_main.AssociatedMain.getMainStage().show();
+            game_main.getCurrentGameState().decreaseNumStarsinGame();
+            game_main.AssociatedMain.getMainStage().setScene(game_main.getGm_scene());
+            game_main.AssociatedMain.getMainStage().show();
 //        game_main.Pause();
+        }
 
     }
 
-    public void saveGame(){
-        System.out.println("GAME WILL BE SAVED !!");
+    public void restartGame(){
+//        System.out.println("GAME WILL BE SAVED !!");
+        game_main.setLoad(false);
+        game_main.startGame(game_main.AssociatedMain.getMainStage());
     }
     public void exitToMainPage() throws Exception {
         main_page_obj.AssociatedMain.getGm().numStars+=main_page_obj.AssociatedMain.getGm().getCurrentGameState().getNumStarsinGame();

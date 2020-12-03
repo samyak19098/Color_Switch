@@ -76,6 +76,12 @@ public class CrossObstacle extends Obstacle implements Serializable {
 
     @Override
     public void load_attributes(){
+        bars = new ArrayList<Path>();
+         timelines = new ArrayList<Timeline>();
+         rotate_list = new ArrayList<Rotate>();
+       draw();
+       WayOfMovement();
+        super.load_attributes();
         for(int i=0;i<4;i++) {
             tlist.get(i).setToX(savedposition.get_x());
             tlist.get(i).setToY(savedposition.get_y());
@@ -94,12 +100,12 @@ public class CrossObstacle extends Obstacle implements Serializable {
     protected void WayOfMovement() {
         for(int i = 0 ; i < timelines.size(); i++){
             timelines.get(i).setCycleCount(Animation.INDEFINITE);
-            int angle_to_cover;
+            double angle_to_cover;
             if(directionClockwise == true){
-                angle_to_cover = 360;
+                angle_to_cover = 360+saved_angle;
             }
             else{
-                angle_to_cover = -360;
+                angle_to_cover = -360+saved_angle;
             }
             timelines.get(i).getKeyFrames().add(new KeyFrame(Duration.millis((this.getObstacleSpeed())), new KeyValue(rotate_list.get(i).angleProperty(), angle_to_cover)));
         }

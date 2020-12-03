@@ -46,7 +46,7 @@ import java.util.*;
 import java.io.*;
 import javafx.geometry.*;
 import org.w3c.dom.css.Rect;
-public class Trail  extends TimerTask implements Serializable{
+public class Trail  extends TimerTask  {
 
 
 

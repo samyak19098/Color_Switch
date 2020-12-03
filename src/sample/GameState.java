@@ -27,13 +27,13 @@ import java.text.SimpleDateFormat;
 // any code that involves changes in gui components needs to be enclosed within it
 public class GameState implements Serializable {
 
-    transient Media starcollect = new Media(new File("starcollect.wav").toURI().toString());
-//    MediaPlayer mp_starcollect = new MediaPlayer(starcollect);
-   transient Media colorswitchercollect = new Media(new File("colorswitchercollect.wav").toURI().toString());
-//    MediaPlayer mp_colorswitchercollect = new MediaPlayer(colorswitchercollect);
-    transient Media GameOver = new Media(new File("GameOver.wav").toURI().toString());
+//    transient Media starcollect = new Media(new File("starcollect.wav").toURI().toString());
+////    MediaPlayer mp_starcollect = new MediaPlayer(starcollect);
+//   transient Media colorswitchercollect = new Media(new File("colorswitchercollect.wav").toURI().toString());
+////    MediaPlayer mp_colorswitchercollect = new MediaPlayer(colorswitchercollect);
+//    transient Media GameOver = new Media(new File("GameOver.wav").toURI().toString());
 //    MediaPlayer mp_GameOver = new MediaPlayer(GameOver);
-    private int n,r;
+    private int n,r,savedtrail;
     private final int movtime = 250;
     private transient ArrayList<Circle> gameoverballs;
     private transient ArrayList<Timeline> gameovertimeline;
@@ -44,53 +44,30 @@ public class GameState implements Serializable {
     private static  double speed=6000;
     private transient Label scoretext;
     private long numStarsinGame;
-    private transient Ball CurrentBall;
+    private   Ball CurrentBall;
     private Date DateofSave;
+    public boolean removed;
 
+
+    private final String player_name;
     //collision flag :
     public boolean coll_flag;
 
-    public Hand getHand() {
-        return hand;
-    }
+
 
     private transient Hand hand;
     private static SimpleDateFormat Dateformatter;
-    private  transient ArrayList<Obstacle>   sceneObstacles;
-    private transient ArrayList<Star>   sceneStars;
-    private transient ArrayList<ColorSwitcher>   sceneColorSwitcher;
+    private    ArrayList<Obstacle>   sceneObstacles;
+    private   ArrayList<Star>   sceneStars;
+    private   ArrayList<ColorSwitcher>   sceneColorSwitcher;
     private int debug=1;
-    public transient Trail BallTrail;
-    public GameState(Trail trail){
-        coll_flag = false;
+    public  transient Trail BallTrail;
+    public GameState(Trail trail, String name){
+        player_name  = name;
+        coll_flag = false;removed=false;
         n=10;
-        r=400; gameoverballs=new ArrayList<>();
-        gameovertimeline=new ArrayList<>();
-        for(int i=0;i<n;i++) {
-
-            gameoverballs.add(new Circle(600.0f, 600.0f, 10.0f));gameoverballs.get(i).setVisible(false);
-            gameoverballs.get(i).setFill(ColorSwitcher.map.get((int) (Math.random() * 4)));
-            gameovertimeline.add(new Timeline());
-            gameovertimeline.get(i).setCycleCount(1);
-            //gameovertimeline.get(i).getKeyFrames().add(new KeyFrame(Duration.millis(4*movtime), new KeyValue((gameoverballs.get(i).radiusProperty(), r, Interpolator.LINEAR)));
-            int finalI = i;
-            gameovertimeline.get(i).setOnFinished((new EventHandler<ActionEvent>() {
-                @Override
-                public void handle(ActionEvent event) {
-                    Platform.runLater(() -> {
-                        gameoverballs.get(finalI).setVisible(false);
-//                        gameoverballs.get(i).setCenterY(600);
-//                        gameoverballs.get(i).setCenterX(600);
-
-//                    System.out.println("Hello World2!"+t);
-                    });
-                }
-            }));
-        }
-        scoretext = new Label("Score:"+numStarsinGame);
-        scoretext.setAlignment(Pos.TOP_LEFT);
-        scoretext.setTextFill(Color.WHITE);
-        scoretext.setStyle(" -fx-font-weight: bold; -fx-font-size:20;");
+        r=400;
+        load_attributes();
 //        System.out.println("x:"+scoretext.getLayoutX());
 //        System.out.println("y:"+scoretext.getLayoutY());
 //        System.out.println("hei:"+scoretext.getHeight());
@@ -258,6 +235,13 @@ public class GameState implements Serializable {
             scoretext.setText("Score:" + numStarsinGame);
         });
     }
+
+    public void decreaseNumStarsinGame(){
+        this.numStarsinGame -= 2;
+        Platform.runLater(() -> {
+            scoretext.setText("Score:" + numStarsinGame);
+        });
+    }
     public void shownOnScreen(Group g){
         Platform.runLater(() -> {//
             for (Obstacle o : sceneObstacles)
@@ -272,6 +256,7 @@ public class GameState implements Serializable {
 //            g.getChildren().add(CurrentBall.getBallShape());
 
             g.getChildren().add(scoretext );
+            if(!removed)
             g.getChildren().add(hand.getPolygon() );
             for(int i=0;i<n;i++){
                 g.getChildren().add(gameoverballs.get(i));
@@ -375,6 +360,36 @@ public class GameState implements Serializable {
         //ColorSwitcher.map(random number)
     }
 
+    public void load_attributes(){
+        gameoverballs=new ArrayList<>();
+        gameovertimeline=new ArrayList<>();
+        for(int i=0;i<n;i++) {
+
+            gameoverballs.add(new Circle(600.0f, 600.0f, 10.0f));gameoverballs.get(i).setVisible(false);
+            gameoverballs.get(i).setFill(ColorSwitcher.map.get((int) (Math.random() * 4)));
+            gameovertimeline.add(new Timeline());
+            gameovertimeline.get(i).setCycleCount(1);
+            //gameovertimeline.get(i).getKeyFrames().add(new KeyFrame(Duration.millis(4*movtime), new KeyValue((gameoverballs.get(i).radiusProperty(), r, Interpolator.LINEAR)));
+            int finalI = i;
+            gameovertimeline.get(i).setOnFinished((new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent event) {
+                    Platform.runLater(() -> {
+                        gameoverballs.get(finalI).setVisible(false);
+//                        gameoverballs.get(i).setCenterY(600);
+//                        gameoverballs.get(i).setCenterX(600);
+
+//                    System.out.println("Hello World2!"+t);
+                    });
+                }
+            }));
+        }
+        scoretext = new Label("Score:"+numStarsinGame);
+        scoretext.setAlignment(Pos.TOP_LEFT);
+        scoretext.setTextFill(Color.WHITE);
+        scoretext.setStyle(" -fx-font-weight: bold; -fx-font-size:20;");
+    }
+
 
     public long getNumStarsinGame() {
         return numStarsinGame;
@@ -420,6 +435,17 @@ public class GameState implements Serializable {
 
     public void setSceneColorSwitcher(ArrayList<ColorSwitcher> sceneColorSwitcher) {
         this.sceneColorSwitcher = sceneColorSwitcher;
+    }
+    public Hand getHand() {
+        return hand;
+    }
+
+    public void setHand(Hand hand) {
+        this.hand = hand;
+    }
+
+    public String getPlayer_name() {
+        return player_name;
     }
 
 }

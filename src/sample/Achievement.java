@@ -35,7 +35,7 @@ public   class Achievement {
         Unlock=true;
 //        box=new Rectangle(screenwidth/4,screenheight/4);
     }
-    public    boolean Requirement(long a){
+    public boolean Requirement(long a){
          return true;
     }
 

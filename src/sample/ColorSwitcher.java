@@ -43,7 +43,7 @@ public class ColorSwitcher extends GameObject implements SpecialObject, Serializ
         Image im = new Image("file:sss.png",false);
         circle.setFill(new ImagePattern(im));
 //        BallTrail = t;
-        translateTransition = new TranslateTransition();
+
         translateTransition.setDuration(Duration.millis(movtime));
 
         //Setting the node for the transition
@@ -123,16 +123,19 @@ public class ColorSwitcher extends GameObject implements SpecialObject, Serializ
 
     public void save_color_switcher(){
         savedposition.set_x(circle.getTranslateX());
-        savedposition.set_x(circle.getTranslateY());
+        savedposition.set_y(circle.getTranslateY());
     }
 
     @Override
     public void load_attributes(){
+        super.load_attributes();
         circle=new   Circle(position.get_x(), position.get_y(),radius ,Color.WHITE);
         Image im = new Image("file:sss.png",false);
         circle.setFill(new ImagePattern(im));
-        translateTransition.setDuration(Duration.millis(movtime));
+        translateTransition.setDuration(Duration.millis(1));
         translateTransition.setNode(circle);
+        translateTransition.play();
+        translateTransition.setDuration(Duration.millis(movtime));
     }
 
     public Circle getCircle() {

@@ -9,7 +9,9 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -29,6 +31,7 @@ public class MainPageMenu extends Application {
     HowToPlayPage how_to_play_page_obj = new HowToPlayPage();
     AchievementsPage achievement_page_obj = new AchievementsPage();
     ShopPage shop_page_obj = new ShopPage();
+    LoadGamesMenu load_page = new LoadGamesMenu();
 //    InGameMenu in_game_obj = new InGameMenu();
     Main AssociatedMain;
     Stage main_page_stage;
@@ -40,6 +43,8 @@ public class MainPageMenu extends Application {
         this.achievement_page_obj.gm=m.getGm();
         this.shop_page_obj.main_page_obj=this;
         this.shop_page_obj.gm=m.getGm();
+        this.load_page.main_page_obj = this;
+        this.load_page.gm = m.getGm();
 
 //        this.in_game_obj.main_page_obj = this;
 
@@ -51,6 +56,7 @@ public class MainPageMenu extends Application {
         this.how_to_play_page_obj.mp_stage = stage;
         this.achievement_page_obj.mp_stage = stage;
         this.shop_page_obj.mp_stage = stage;
+        this.load_page.mp_stage = stage;
 
         Group main_page_group = new Group();
 
@@ -237,12 +243,14 @@ public class MainPageMenu extends Application {
     }
 
     public void newGame() throws Exception {
+        this.AssociatedMain.getGm().setLoad(false);
        this.AssociatedMain.getGm().startGame(main_page_stage);
     }
 
     public void resumeGame() throws Exception{
         System.out.println("RESUME FUNCTIONALITY");
-
+//        this.AssociatedMain.getGm().loadgame(main_page_stage);
+        load_page.start((this.main_page_stage));
     }
 
     public void displayDeveloper() throws Exception{
@@ -261,8 +269,15 @@ public class MainPageMenu extends Application {
 
 
     public void exitGame() throws Exception{
-        Platform.exit();
-        System.exit(0);
+        //exit confirm dialog box
+        Alert confirm_alert = new Alert(Alert.AlertType.CONFIRMATION,  "ARE YOU SURE YOU WANT TO EXIT THE GAME ?", ButtonType.YES, ButtonType.NO);
+        confirm_alert.setHeaderText(" EXIT CONFIRMATION ");
+        confirm_alert.setTitle("EXIT CONFIRMATION");
+        confirm_alert.showAndWait();
+        if (confirm_alert.getResult() == ButtonType.YES) {
+            Platform.exit();
+            System.exit(0);
+        }
     }
 
     public static void main(String[] args) {

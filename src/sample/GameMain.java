@@ -12,6 +12,7 @@ import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -41,8 +42,7 @@ public class GameMain extends TimerTask  implements Serializable {
     public boolean lock=false;
 
 
-
-
+    private boolean load;
 
     private HashMap<Integer,Achievement> GameAchievements;
     private Task task;
@@ -60,6 +60,7 @@ public class GameMain extends TimerTask  implements Serializable {
     Database db = new Database();
 
     public GameMain(Group root, Main m){
+        load=false;
         whichtrail=0;
         numStars=0;
         this.root = new Group();
@@ -74,9 +75,6 @@ public class GameMain extends TimerTask  implements Serializable {
 
 
     public void startGame(Stage primaryStage){
-        this.lock=false;
-        this.collided_flag = false;
-        this.pause_var = false;
         Group grp = new Group();
         this.root = grp;
         this.GameMainStage = primaryStage;
@@ -93,34 +91,27 @@ public class GameMain extends TimerTask  implements Serializable {
                 audio[0] = new AudioClip( "file:background.wav" );
                 audio[0].setVolume(0.5f);
                 audio[0].setCycleCount(s);
-                audio[0].play();
+//                audio[0].play();
                 return null;
             }
         };
 
         Thread thread = new Thread(task);
         thread.start();
-        //======
 
-//        Group root = new Group();
-        // set background
         Rectangle hbox = new Rectangle(1600, screenheight);
         Image im = new Image("file:bg.jpg", false);
         hbox.setFill(new ImagePattern(im));
         root.getChildren().add(hbox);
 
 
-//        GameMain gm = new GameMain(root);
-//        Star s=new Star(600,300);
-        GameState g = new GameState(currentTrail);
-        this.setCurrentGameState(g);
-
-
         Button pause_button = new Button("PAUSE GAME");
         pause_button.setPrefSize(100, 50);
         pause_button.setLayoutX(20);
         pause_button.setLayoutY(50);
+        pause_button.setWrapText(true);
         root.getChildren().add(pause_button);
+
         EventHandler<ActionEvent> event_pause_game = new EventHandler<ActionEvent>() {
             public void handle(ActionEvent e) {
 
@@ -138,13 +129,64 @@ public class GameMain extends TimerTask  implements Serializable {
         };
         pause_button.setOnAction(event_pause_game);
 
+        /* ------------------------------------------------------------------------------------------------
+  //      SAVE GAME BUTTON ON GAMEPLAY SCREEN ISSUE
+
+//        Button save_button = new Button("SAVE GAME");
+//        save_button.setPrefSize(100, 50);
+//        save_button.setLayoutX(20);
+//        save_button.setLayoutY(120);
+//        save_button.setWrapText(true);
+//        root.getChildren().add(save_button);
+//
+//        EventHandler<ActionEvent> event_save_game = new EventHandler<ActionEvent>() {
+//            public void handle(ActionEvent e) {
+//
+////                InGameMenu igm = new InGameMenu();
+//                try {
+////                    igm.start(primaryStage);
+////                    Pause();
+//                    savegame();
+////                    audio[0].stop();
+//
+//                } catch (Exception ex) {
+//                    ex.printStackTrace();
+//                }
+//                System.out.println("SAVE BUTTON PRESSED");
+//            }
+//        };
+//        save_button.setOnAction(event_save_game);
+        ------------------------------------------------------------------------------------------------*/
 
         Scene scene = new Scene(root, screenwidth, screenheight);//, Color.BLACK);
         gm_scene = scene;
-        g.shownOnScreen(root);
 
+        //if not a loaded game i.e indeed a new game
+        if(!load){
+            this.lock=false;
+            this.collided_flag = false;
+            this.pause_var = false;
+            TextInputDialog dialog = new TextInputDialog();
+            dialog.setTitle("Game Save Name");
+            dialog.setHeaderText("GAME SAVE NAME ");
+            dialog.setContentText("Please enter the game name :");
+            Optional<String> name_string = dialog.showAndWait();
+            String name_inp;
+            if (name_string.isPresent()) {
+                System.out.println("Your name: " + name_string.get());
+                name_inp = name_string.get();
+            }
+            else{
+//                dialog.showAndWait();
+                name_inp = "New Player";
+
+            }
+//            games_list.getItems().set(slot, name_string.get());
+            GameState g = new GameState(currentTrail, name_inp);
+            this.setCurrentGameState(g);
+        }
+        CurrentGameState.shownOnScreen(root);
         trailtimer = new Timer();
-
         if(CurrentGameState.BallTrail!=null)
         trailtimer.schedule(this.getCurrentGameState().BallTrail, 500, 200);
 
@@ -162,8 +204,6 @@ public class GameMain extends TimerTask  implements Serializable {
         });
         primaryStage.show();
 
-
-//    private void moveBallOnKeyPress(Scene scene,  GameMain gm,Timer timer,Timer trailtimer){//, MediaPlayer mp_ballup,MediaPlayer mp_button) {
         scene.addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
@@ -334,10 +374,13 @@ public class GameMain extends TimerTask  implements Serializable {
                 }
             }
         });
+        if(load){
+            continueGame();
+        }
     }
 
 
-    public void run( ) {
+    public void run() {
         if(CurrentGameState != null && this.collided_flag == false ){
             try {
                 CurrentGameState.checkAllcollisions(root,AssociatedMain.getMainStage());
@@ -449,10 +492,11 @@ public class GameMain extends TimerTask  implements Serializable {
         CurrentGameState.getCurrentBall().Pause();
         if(CurrentGameState.BallTrail!=null)
         CurrentGameState.BallTrail.Pause();
+        this.collided_flag = true;
 
     }
     public void continueGame(){//todo shift to InGameMenu
-
+        this.collided_flag = false;
 
         task = new Task() {
             @Override
@@ -461,7 +505,7 @@ public class GameMain extends TimerTask  implements Serializable {
                 AudioClip audio = new AudioClip( "file:background.wav" );
                 audio.setVolume(0.5f);
                 audio.setCycleCount(s);
-                audio.play();
+//                audio.play();
                 return null;
             }
         };
@@ -484,7 +528,7 @@ public class GameMain extends TimerTask  implements Serializable {
         CurrentGameState.BallTrail.Resume();
     }
 
-    public void savegame() throws IOException {
+    public void savegame(int slot_num) throws IOException {
 
         for(Obstacle s : CurrentGameState.getSceneObstacles()){
             s.save_attributes();
@@ -497,21 +541,30 @@ public class GameMain extends TimerTask  implements Serializable {
         }
         CurrentGameState.getCurrentBall().save_ball();
 
-        db.serialize(CurrentGameState);
+        db.serialize(CurrentGameState, slot_num);
 
     }
 
-    public void loadgame() throws IOException, ClassNotFoundException {
-        this.CurrentGameState = db.deserialize();
+    public void loadgame(Stage primaryStage, int slot_num) throws IOException, ClassNotFoundException {
+        this.CurrentGameState = db.deserialize(slot_num);
         for(Obstacle s : CurrentGameState.getSceneObstacles()){
             s.load_attributes();
         }
         for(Star s : CurrentGameState.getSceneStars()){
-            s.save_star();
+            s.load_attributes();
         }
         for(ColorSwitcher s : CurrentGameState.getSceneColorSwitcher()){
-            s.save_color_switcher();
+            s.load_attributes();
         }
+        CurrentGameState.getCurrentBall().load_attributes();
+
+            CurrentGameState.setHand(new  Hand(screenwidth/2,600+20+100));
+        if(CurrentGameState.removed)
+            removehand();
+        CurrentGameState.load_attributes();
+        load=true;
+        startGame(primaryStage);
+
 
     }
     public Group getGrp() {
@@ -526,6 +579,7 @@ public class GameMain extends TimerTask  implements Serializable {
 
     public void removehand() {
         CurrentGameState.getHand().removeself(root);
+        CurrentGameState.removed=true;
     }
     public HashMap<Integer, Achievement> getGameAchievements() {
         return GameAchievements;
@@ -537,4 +591,8 @@ public class GameMain extends TimerTask  implements Serializable {
     public Scene getGm_scene() {
         return gm_scene;
     }
+    public void setLoad(boolean load) {
+        this.load=load;
+    }
+
 }

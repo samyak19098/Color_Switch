@@ -11,7 +11,7 @@ public class TouchingCross extends Obstacle implements Serializable {
 
     private double length;
     private double thickness;
-    private transient ArrayList<CrossObstacle> crosses = new ArrayList<CrossObstacle>();
+    private   ArrayList<CrossObstacle> crosses = new ArrayList<CrossObstacle>();
     private boolean directionClockwise; // direction of left cross(T = clockwise, F = anti)
     private double saved_angle_left;
     private double saved_angle_right;

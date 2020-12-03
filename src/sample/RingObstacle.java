@@ -27,6 +27,7 @@ public class RingObstacle extends Obstacle  implements Serializable {
     */
     private double radius;
     private double width;
+    private double x;
     private transient ArrayList<Path> quarters = new ArrayList<Path>();
     private transient ArrayList<Timeline> timelines = new ArrayList<Timeline>();
     private transient ArrayList<Rotate> rotate_list = new ArrayList<Rotate>();
@@ -50,9 +51,7 @@ public class RingObstacle extends Obstacle  implements Serializable {
                         //Setting the cycle count for the transition
                         tlist.get(i).setCycleCount(1);
                         tlist.get(i).setDuration(Duration.millis(movtime));
-                        //Setting auto reverse value to false
-                        // translateTransition.setAutoReverse(false);
-//                        System.out.println("move down");
+
                         int finalI = i;
                         tlist.get(i).setOnFinished(new EventHandler<ActionEvent>() {//todo: dont create eventhandler  everytime
                             @Override
@@ -79,6 +78,13 @@ public class RingObstacle extends Obstacle  implements Serializable {
 
     @Override
     public void load_attributes(){
+         quarters = new ArrayList<Path>();
+        timelines = new ArrayList<Timeline>();
+        rotate_list = new ArrayList<Rotate>();
+        super.load_attributes();
+        draw();
+        WayOfMovement();
+
             for(int i=0;i<4;i++) {
                 tlist.get(i).setToX(savedposition.get_x());
                 tlist.get(i).setToY(savedposition.get_y());
@@ -90,6 +96,7 @@ public class RingObstacle extends Obstacle  implements Serializable {
             for(int i = 0 ; i  < 4; i++){
                 rotate_list.get(i).setAngle(saved_angle);
             }
+
     }
 
     @Override
@@ -112,11 +119,11 @@ public class RingObstacle extends Obstacle  implements Serializable {
     protected void WayOfMovement() {
         for (int i = 0; i < timelines.size(); i++) {
             timelines.get(i).setCycleCount(Animation.INDEFINITE);
-            int angle_to_cover;
+            double angle_to_cover;
             if (directionClockwise == true) {
-                angle_to_cover = 360;
+                angle_to_cover = 360+saved_angle;
             } else {
-                angle_to_cover = -360;
+                angle_to_cover = -360+saved_angle;
             }
             timelines.get(i).getKeyFrames().add(new KeyFrame(Duration.millis((this.getObstacleSpeed())), new KeyValue(rotate_list.get(i).angleProperty(), angle_to_cover)));
         }

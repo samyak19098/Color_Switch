@@ -17,9 +17,11 @@ public class Database implements Serializable {
 
 
 
-    private final String saving_file = "game_save.ser";
+//    private final String saving_file = "game_save.ser";
 
-    public void serialize(GameState gs) throws IOException {
+    public void serialize(GameState gs, int slot_num) throws IOException {
+
+        String saving_file = "save_file" + slot_num +".ser";
 
         ObjectOutputStream out = null;
         try {
@@ -37,14 +39,18 @@ public class Database implements Serializable {
         }
     }
 
-    public GameState deserialize() throws IOException, ClassNotFoundException{
+    public GameState deserialize(int slot_num) throws IOException, ClassNotFoundException{
 
+        String saving_file = "save_file" + slot_num +".ser";
         ObjectInputStream in = null;
         GameState loaded;
         try {
             in = new ObjectInputStream(new FileInputStream(saving_file));
             loaded = (GameState) in.readObject();
         } finally {
+            if(in == null) {
+                System.out.println("in is nulll");
+            }
             in.close();
         }
         return loaded;

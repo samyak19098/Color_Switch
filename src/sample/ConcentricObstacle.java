@@ -18,7 +18,7 @@ public class ConcentricObstacle extends Obstacle implements Serializable {
 
     private double radius;  //radius of inner ring ; R_outer = R_inner + width + 5;
     private double width;
-    private transient ArrayList<RingObstacle> rings = new ArrayList<RingObstacle>();      // rings[0] = inner ring, rings[1] = outer ring;
+    private ArrayList<RingObstacle> rings = new ArrayList<RingObstacle>();      // rings[0] = inner ring, rings[1] = outer ring;
     private boolean directionClockwise; // direction of inner ring(T = clockwise, F = anti)
     private double angleRing; //angle by which rings are rotated ( generally 45)
     private double saved_angle_left;

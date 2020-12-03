@@ -59,7 +59,7 @@ public abstract class GameObject  implements Serializable {
         translateTransition.setCycleCount(1);
         translateTransition.setDuration(Duration.millis(1));
         translateTransition.setOnFinished(null);
-        translateTransition.play();
+
     }
 
 

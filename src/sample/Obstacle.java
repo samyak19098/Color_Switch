@@ -34,6 +34,14 @@ public abstract class Obstacle extends GameObject implements Serializable {
 
 
     protected abstract void save_attributes();
+    @Override
+    public void load_attributes(){
+        this.tlist=new ArrayList<TranslateTransition>();
+        for(int i=0;i<4;i++){
+            tlist.add(new TranslateTransition());
+
+        }
+    }
     protected abstract void WayOfMovement();
 
     public String getObstacleType() {
