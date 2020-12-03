@@ -27,11 +27,11 @@ import java.text.SimpleDateFormat;
 // any code that involves changes in gui components needs to be enclosed within it
 public class GameState implements Serializable {
 
-    transient Media starcollect = new Media(new File("starcollect.wav").toURI().toString());
-//    MediaPlayer mp_starcollect = new MediaPlayer(starcollect);
-   transient Media colorswitchercollect = new Media(new File("colorswitchercollect.wav").toURI().toString());
-//    MediaPlayer mp_colorswitchercollect = new MediaPlayer(colorswitchercollect);
-    transient Media GameOver = new Media(new File("GameOver.wav").toURI().toString());
+//    transient Media starcollect = new Media(new File("starcollect.wav").toURI().toString());
+////    MediaPlayer mp_starcollect = new MediaPlayer(starcollect);
+//   transient Media colorswitchercollect = new Media(new File("colorswitchercollect.wav").toURI().toString());
+////    MediaPlayer mp_colorswitchercollect = new MediaPlayer(colorswitchercollect);
+//    transient Media GameOver = new Media(new File("GameOver.wav").toURI().toString());
 //    MediaPlayer mp_GameOver = new MediaPlayer(GameOver);
     private int n,r,savedtrail;
     private final int movtime = 250;
@@ -48,6 +48,8 @@ public class GameState implements Serializable {
     private Date DateofSave;
     public boolean removed;
 
+
+    private final String player_name;
     //collision flag :
     public boolean coll_flag;
 
@@ -60,7 +62,8 @@ public class GameState implements Serializable {
     private   ArrayList<ColorSwitcher>   sceneColorSwitcher;
     private int debug=1;
     public  transient Trail BallTrail;
-    public GameState(Trail trail){
+    public GameState(Trail trail, String name){
+        player_name  = name;
         coll_flag = false;removed=false;
         n=10;
         r=400;
@@ -228,6 +231,13 @@ public class GameState implements Serializable {
 
     public void incNumStarsinGame( ) {
         this.numStarsinGame +=1;
+        Platform.runLater(() -> {
+            scoretext.setText("Score:" + numStarsinGame);
+        });
+    }
+
+    public void decreaseNumStarsinGame(){
+        this.numStarsinGame -= 2;
         Platform.runLater(() -> {
             scoretext.setText("Score:" + numStarsinGame);
         });
@@ -432,6 +442,10 @@ public class GameState implements Serializable {
 
     public void setHand(Hand hand) {
         this.hand = hand;
+    }
+
+    public String getPlayer_name() {
+        return player_name;
     }
 
 }
