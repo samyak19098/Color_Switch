@@ -14,8 +14,9 @@ public   class Achievement implements Serializable {
     protected  static   double screenwidth=1200;
     protected static  double screenheight=800;
     protected TextArea text;
-    public Rectangle unlocked,locked;
-    public  boolean Unlock;
+
+    private Rectangle unlocked,locked;
+    private boolean Unlock;
     public Date DateofUnlock;
     public SimpleDateFormat DateFormatter;
 
@@ -33,7 +34,7 @@ public   class Achievement implements Serializable {
         unlocked.setFill(new ImagePattern(im));
           im = new Image("file:locked2.jpg",false);
         locked.setFill(new ImagePattern(im));
-        Unlock=true;
+        Unlock=false;
 //        box=new Rectangle(screenwidth/4,screenheight/4);
     }
     public boolean Requirement(long a){
@@ -41,6 +42,46 @@ public   class Achievement implements Serializable {
             return true;
         return false;
 
+    }
+
+    public void setUnlock(boolean unlock) {
+        Unlock = unlock;
+    }
+
+    public void setDateofUnlock(Date dateofUnlock) {
+        DateofUnlock = dateofUnlock;
+    }
+
+    public TextArea getText() {
+        return text;
+    }
+
+
+    public boolean getUnlock() {
+        return Unlock;
+    }
+
+
+    public Rectangle getUnlocked() {
+        return unlocked;
+    }
+
+    public Rectangle getLocked() {
+        return locked;
+    }
+
+
+    public void setUnlocked(Rectangle unlocked) {
+        this.unlocked = unlocked;
+    }
+
+    public void setLocked(Rectangle locked) {
+        this.locked = locked;
+    }
+
+
+    public Date getDateofUnlock() {
+        return DateofUnlock;
     }
 
 }

@@ -29,6 +29,17 @@ public class Database implements Serializable {
             out.writeObject(gs);
 
         }
+        catch(FileNotFoundException e){
+//            try {
+//                File myfile = new File(saving_file);
+//                myfile.createNewFile()   ;
+//
+//            } catch (IOException e1) {
+//                e.printStackTrace();
+//            }
+
+            e.printStackTrace();
+        }
         catch(Exception e){
             e.printStackTrace();
         }
@@ -43,15 +54,31 @@ public class Database implements Serializable {
 
         String saving_file = "save_file" + slot_num +".ser";
         ObjectInputStream in = null;
-        GameState loaded;
+        GameState loaded = null;
         try {
             in = new ObjectInputStream(new FileInputStream(saving_file));
             loaded = (GameState) in.readObject();
-        } finally {
+        }
+        
+        catch(FileNotFoundException e){
+//            try {
+//                File myfile = new File(saving_file);
+//                myfile.createNewFile()   ;
+//
+//            } catch (IOException e1) {
+//                e.printStackTrace();
+//            }
+
+            e.printStackTrace();
+        }
+        
+        finally {
             if(in == null) {
                 System.out.println("in is nulll");
             }
-            in.close();
+            else {
+                in.close();
+            }
         }
         return loaded;
     }

@@ -51,49 +51,54 @@ public class ShopPage extends Application{
         OwnedTrails=new HashMap<>();
         Achievement a=new Achievement();
         System.out.println("gm"+gm);
-        System.out.println("gameDetails"+gm.gameDetails);
-        a.Unlock=gm.gameDetails.trailsunlocked.get(0);
+        System.out.println("gameDetails"+gm.getGameDetails());
+        a.setUnlock(gm.getGameDetails().getTrailsunlocked().get(0));
         Achievement finalA0 = a;
         a.text.setText("No trail");
         OwnedTrails.put(0, a);
         Image im = new Image("file:notrail.png",false);
-        a.unlocked.setFill(new ImagePattern(im));
-        a.unlocked.setOnMouseClicked(new EventHandler<MouseEvent>()
+        a.getUnlocked().setFill(new ImagePattern(im));
+        a.getUnlocked().setOnMouseClicked(new EventHandler<MouseEvent>()
         {
             @Override
             public void handle(MouseEvent t) {
-                gm.currentTrail=null;
+                MainPageMenu.mp_button.stop();MainPageMenu.mp_button.play();
+                gm.setCurrentTrail(null);
             }
         });
 
 
-        a.Unlock=true;a.text.setPrefColumnCount(10);a.text.setStyle(" -fx-font-weight: bold; -fx-font-size:20;");
+        a.setUnlock(true);a.text.setPrefColumnCount(10);a.text.setStyle(" -fx-font-weight: bold; -fx-font-size:20;");
 
         a=new Achievement();
-        a.Unlock=gm.gameDetails.trailsunlocked.get(1);
+        a.setUnlock(gm.getGameDetails().getTrailsunlocked().get(1));
         a.requirednumber=5;
         a.text.setText("Generating mist in the space with dash of the ball. Cost " + a.requirednumber+" stars");
         im = new Image("file:greytrail.jpg",false);
-        a.unlocked.setFill(new ImagePattern(im));
-        a.unlocked.setOnMouseClicked(new EventHandler<MouseEvent>()
+        a.getUnlocked().setFill(new ImagePattern(im));
+        a.getUnlocked().setOnMouseClicked(new EventHandler<MouseEvent>()
         {
             @Override
             public void handle(MouseEvent t) {
-
-                gm.currentTrail=new Trail();
+                MainPageMenu.mp_button.stop();MainPageMenu.mp_button.play();
+                gm.setCurrentTrail(new Trail());
             }
         });
         Achievement finalA = a;
 
-        a.locked.setOnMouseClicked(new EventHandler<MouseEvent>()
+        a.getLocked().setOnMouseClicked(new EventHandler<MouseEvent>()
         {
             @Override
-            public void handle(MouseEvent t) {
-                if(finalA.requirednumber<=gm.numStars){
-                    gm.numStars-= finalA.requirednumber;
-                    finalA.Unlock=true;
-                    help_page_group.getChildren().remove(finalA.locked);  help_page_group.getChildren().add(finalA.unlocked);
-                    totalstars.setText("Your Stars:"+main_page_obj.AssociatedMain.getGm().numStars);
+            public void handle(MouseEvent t) {  MainPageMenu.mp_button.stop();MainPageMenu.mp_button.play();
+                if(finalA.requirednumber<=gm.getNumStars()){
+
+                    long to_set = gm.getNumStars() - finalA.requirednumber;
+                    gm.setNumStars(to_set);
+//                    gm.numStars-= finalA.requirednumber;
+//                    finalA.Unlock=true;
+                    finalA.setUnlock(true);
+                    help_page_group.getChildren().remove(finalA.getLocked());  help_page_group.getChildren().add(finalA.getUnlocked());
+                    totalstars.setText("Your Stars:"+main_page_obj.AssociatedMain.getGm().getNumStars());
                 }
                 else{
                     alert.show();
@@ -104,28 +109,32 @@ public class ShopPage extends Application{
                 OwnedTrails.put(1, a);a.text.setPrefColumnCount(30);
 
         a=new Achievement();
-        a.Unlock=gm.gameDetails.trailsunlocked.get(2);
+        a.setUnlock(gm.getGameDetails().getTrailsunlocked().get(2));
         Achievement finalA1 = a;
         a.requirednumber=5;
         a.text.setText("Fire Balls signifying the rage of the ball. Cost " + a.requirednumber+" stars");
         im = new Image("file:firetrail2.jpg",false);
-        a.unlocked.setFill(new ImagePattern(im));
-        a.unlocked.setOnMouseClicked(new EventHandler<MouseEvent>()
+        a.getUnlocked().setFill(new ImagePattern(im));
+        a.getUnlocked().setOnMouseClicked(new EventHandler<MouseEvent>()
         {
             @Override
             public void handle(MouseEvent t) {
-                gm.currentTrail=new Firetrail();
+                MainPageMenu.mp_button.stop();MainPageMenu.mp_button.play();
+                gm.setCurrentTrail(new Firetrail());
             }
         });
-        a.locked.setOnMouseClicked(new EventHandler<MouseEvent>()
+        a.getLocked().setOnMouseClicked(new EventHandler<MouseEvent>()
         {
             @Override
             public void handle(MouseEvent t) {
-                if(finalA1.requirednumber<=gm.numStars){
-                    gm.numStars-= finalA1.requirednumber;
-                    finalA1.Unlock=true;
-                    help_page_group.getChildren().remove(finalA1.locked);  help_page_group.getChildren().add(finalA1.unlocked);
-                    totalstars.setText("Your Stars:"+main_page_obj.AssociatedMain.getGm().numStars);
+                MainPageMenu.mp_button.stop();MainPageMenu.mp_button.play();
+                if(finalA1.requirednumber<=gm.getNumStars()){
+                    long to_set = gm.getNumStars() - finalA1.requirednumber;
+                    gm.setNumStars(to_set);
+//                    gm.numStars-= finalA1.requirednumber;
+                    finalA1.setUnlock(true);
+                    help_page_group.getChildren().remove(finalA1.getLocked());  help_page_group.getChildren().add(finalA1.getUnlocked());
+                    totalstars.setText("Your Stars:"+main_page_obj.AssociatedMain.getGm().getNumStars());
                 }
                 else{
                     alert.show();
@@ -136,28 +145,32 @@ public class ShopPage extends Application{
         OwnedTrails.put(2, a);a.text.setPrefColumnCount(30);//a.text.setStyle(" -fx-font-weight: bold; -fx-font-size:15;");
 
         a=new Achievement();
-        a.Unlock=gm.gameDetails.trailsunlocked.get(3);
+        a.setUnlock(gm.getGameDetails().getTrailsunlocked().get(3));
         Achievement finalA2 = a;
         a.requirednumber=5;
         a.text.setText("Laser like trail. Similar to nitro boost in race cars. Cost " + a.requirednumber+" stars");
         im = new Image("file:neontrail.jpg",false);
-        a.unlocked.setFill(new ImagePattern(im));
-        a.unlocked.setOnMouseClicked(new EventHandler<MouseEvent>()
+        a.getUnlocked().setFill(new ImagePattern(im));
+        a.getUnlocked().setOnMouseClicked(new EventHandler<MouseEvent>()
         {
             @Override
             public void handle(MouseEvent t) {
-                gm.currentTrail=new Neontrail();
+                MainPageMenu.mp_button.stop();MainPageMenu.mp_button.play();
+                gm.setCurrentTrail(new Neontrail());
             }
         });
-        a.locked.setOnMouseClicked(new EventHandler<MouseEvent>()
+        a.getLocked().setOnMouseClicked(new EventHandler<MouseEvent>()
         {
             @Override
             public void handle(MouseEvent t) {
-                if(finalA2.requirednumber<=gm.numStars){
-                    gm.numStars-= finalA2.requirednumber;
-                    finalA2.Unlock=true;
-                    help_page_group.getChildren().remove(finalA2.locked);  help_page_group.getChildren().add(finalA2.unlocked);
-                    totalstars.setText("Your Stars:"+main_page_obj.AssociatedMain.getGm().numStars);
+                MainPageMenu.mp_button.stop();MainPageMenu.mp_button.play();
+                if(finalA2.requirednumber<=gm.getNumStars()){
+                    long to_set = gm.getNumStars() - finalA2.requirednumber;
+                    gm.setNumStars(to_set);
+//                    gm.numStars-= finalA2.requirednumber;
+                    finalA2.setUnlock(true);
+                    help_page_group.getChildren().remove(finalA2.getLocked());  help_page_group.getChildren().add(finalA2.getUnlocked());
+                    totalstars.setText("Your Stars:"+main_page_obj.AssociatedMain.getGm().getNumStars());
 
                 } else{
                     alert.show();
@@ -172,7 +185,7 @@ public class ShopPage extends Application{
 
     @Override
     public void start(Stage HelpStage) throws Exception {
-        totalstars.setText("Your Stars:"+main_page_obj.AssociatedMain.getGm().numStars);
+        totalstars.setText("Your Stars:"+main_page_obj.AssociatedMain.getGm().getNumStars());
         this.shop_page_stage = HelpStage;
           help_page_group= new Group();
 
@@ -225,12 +238,12 @@ public class ShopPage extends Application{
         int i=0;
         for(Map.Entry<Integer,Achievement> t:  OwnedTrails.entrySet()) {
 
-            if(t.getValue().Unlock)
-                tmp=t.getValue().unlocked;
+            if(t.getValue().getUnlock())
+                tmp=t.getValue().getUnlocked();
             else
-                tmp=t.getValue().locked;
-            t.getValue().unlocked.setLayoutY(380+(i*tmp.getHeight()));
-            t.getValue().locked.setLayoutY(380+(i*tmp.getHeight()));
+                tmp=t.getValue().getLocked();
+            t.getValue().getUnlocked().setLayoutY(380+(i*tmp.getHeight()));
+            t.getValue().getLocked().setLayoutY(380+(i*tmp.getHeight()));
 //            System.out.println("get:"+tmp.getHeight());
             //tmp.setLayoutY(380+(i*tmp.getHeight()));
             help_page_group.getChildren().add(tmp);
@@ -252,6 +265,7 @@ public class ShopPage extends Application{
             {
                 System.out.println("BUTTON 1 PRESSED");
                 try {
+                    MainPageMenu.mp_button.stop();MainPageMenu.mp_button.play();
                     backToHome();
 //                    m.start(stage);
 //                    this.newGame();

@@ -39,6 +39,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.image.*;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
 import javafx.animation.PathTransition.OrientationType;
 
@@ -103,6 +104,7 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
 
+//        primaryStage.initStyle(StageStyle.UNDECORATED);
         this.MainStage = primaryStage;
         new LoadingPage().start(primaryStage);
 //        Media ballup = new Media(new File("ballup.mp3").toURI().toString());

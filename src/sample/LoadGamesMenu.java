@@ -35,6 +35,7 @@ public class LoadGamesMenu extends Application{
 
     LoadGamesMenu(ArrayList<String> names){
         games_list = new ListView();
+        System.out.println("names.get(0) "+names.get(0));
 //        if(names!=null) {
             for (int i = 0; i < 5; i++)
                 games_list.getItems().add(names.get(i));
@@ -63,6 +64,7 @@ public class LoadGamesMenu extends Application{
         Button load_button = new Button("LOAD GAME");
 
         load_button.setOnAction(event -> {
+            MainPageMenu.mp_button.stop();MainPageMenu.mp_button.play();
             ObservableList selectedIndices = list.getSelectionModel().getSelectedIndices();
             for(Object o : selectedIndices){
                 int slot_select = (int)(o);
@@ -90,6 +92,7 @@ public class LoadGamesMenu extends Application{
 
                 System.out.println(list.getItems().get((int)(o)));
                 try {
+                    MainPageMenu.mp_button.stop();MainPageMenu.mp_button.play();
                     save_game_implementation(slot_select);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -130,6 +133,7 @@ public class LoadGamesMenu extends Application{
             {
                 System.out.println("BUTTON 1 PRESSED");
                 try {
+                    MainPageMenu.mp_button.stop();MainPageMenu.mp_button.play();
                     backToHome();
 //                    m.start(stage);
 //                    this.newGame();
@@ -173,10 +177,16 @@ public class LoadGamesMenu extends Application{
                 Optional<ButtonType> result = alert.showAndWait();
                 if (result.get() == continue_button) {
                     this.gm.continueGame();
-                    this.gm.AssociatedMain.getMainStage().setScene(gm.getGm_scene());
-                    this.gm.AssociatedMain.getMainStage().show();
+                    this.gm.getAssociatedMain().getMainStage().setScene(gm.getGm_scene());
+                    this.gm.getAssociatedMain().getMainStage().show();
+//                    this.gm.AssociatedMain.getMainStage().setScene(gm.getGm_scene());
+//                    this.gm.AssociatedMain.getMainStage().show();
                 } else if (result.get() == main_menu_button) {
-                    this.main_page_obj.AssociatedMain.getGm().numStars += main_page_obj.AssociatedMain.getGm().getCurrentGameState().getNumStarsinGame();
+
+                    long to_set = this.main_page_obj.AssociatedMain.getGm().getNumStars() + main_page_obj.AssociatedMain.getGm().getCurrentGameState().getNumStarsinGame();
+                    this.main_page_obj.AssociatedMain.getGm().setNumStars(to_set);
+
+//                    this.main_page_obj.AssociatedMain.getGm().numStars += main_page_obj.AssociatedMain.getGm().getCurrentGameState().getNumStarsinGame();
                     main_page_obj.AssociatedMain.getGm().setCurrentGameState(null);
                     this.main_page_obj.start(main_page_obj.main_page_stage);
                 }
@@ -202,7 +212,8 @@ public class LoadGamesMenu extends Application{
 //
 //        Optional<ButtonType> result = alert.showAndWait();
 //        if (result.get() == ButtonType.OK){
-        if(games_list.getItems().get(slot) == "Empty Slot"){
+        System.out.println(games_list.getItems().get(slot));
+        if(((String)games_list.getItems().get(slot)).equals("Empty Slot")){
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Information");
             alert.setHeaderText(null);
@@ -217,7 +228,9 @@ public class LoadGamesMenu extends Application{
 
     public void backToHome() throws Exception {
         if(main_page_obj.AssociatedMain.getGm().getCurrentGameState()!=null) {
-            this.main_page_obj.AssociatedMain.getGm().numStars += main_page_obj.AssociatedMain.getGm().getCurrentGameState().getNumStarsinGame();
+            long to_set = this.main_page_obj.AssociatedMain.getGm().getNumStars() + main_page_obj.AssociatedMain.getGm().getCurrentGameState().getNumStarsinGame();
+            this.main_page_obj.AssociatedMain.getGm().setNumStars(to_set);
+//            this.main_page_obj.AssociatedMain.getGm().numStars += main_page_obj.AssociatedMain.getGm().getCurrentGameState().getNumStarsinGame();
             main_page_obj.AssociatedMain.getGm().setCurrentGameState(null);
         }
         main_page_obj.start(mp_stage);

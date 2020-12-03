@@ -136,7 +136,7 @@ public class Trail  extends TimerTask  {
 
                 b.getBallShape().setVisible(true);
                     });
-            t1.get(b.id).play();
+            t1.get(b.getId()).play();
 //            System.out.println("atend:"+atend);
             if(atend)
                 b.atendtrail();
@@ -156,7 +156,7 @@ public class Trail  extends TimerTask  {
         pausetrail=true;
         for (Ball var : list) {
             var.Pause();
-            t1.get(var.id).pause();
+            t1.get(var.getId()).pause();
         }
 
     }
@@ -170,7 +170,7 @@ public class Trail  extends TimerTask  {
         pausetrail=false;
         for (Ball var : list) {
             var.Resume();
-            t1.get(var.id).play();
+            t1.get(var.getId()).play();
         }
     }
     public boolean getAtend() {

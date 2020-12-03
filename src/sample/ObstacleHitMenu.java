@@ -135,7 +135,7 @@ public class ObstacleHitMenu extends Application {
 
 
     public void Obstacle_Menu_continueGame(){
-        System.out.println("GAME WILL BE CONTINUED !! + COLL FLAG == " +  game_main.collided_flag);
+        System.out.println("GAME WILL BE CONTINUED !! + COLL FLAG == " +  game_main.getCollided_flag());
         if(false){//game_main.getCurrentGameState().getNumStarsinGame() < 5){
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Insufficient Stars");
@@ -144,13 +144,16 @@ public class ObstacleHitMenu extends Application {
             alert.showAndWait();
         }
         else {
-            game_main.collided_flag = false;
-            game_main.lock = false;
+            game_main.setCollided_flag(false);
+            game_main.setLock(false);
+//            game_main.lock = false;
 //        game_main.getCurrentGameState().coll_flag = false;
         game_main.continueGame();
 //            game_main.getCurrentGameState().decreaseNumStarsinGame();
-            game_main.AssociatedMain.getMainStage().setScene(game_main.getGm_scene());
-            game_main.AssociatedMain.getMainStage().show();
+            game_main.getAssociatedMain().getMainStage().setScene(game_main.getGm_scene());
+            game_main.getAssociatedMain().getMainStage().show();
+//            game_main.AssociatedMain.getMainStage().setScene(game_main.getGm_scene());
+//            game_main.AssociatedMain.getMainStage().show();
 //        game_main.Pause();
         }
 
@@ -159,10 +162,14 @@ public class ObstacleHitMenu extends Application {
     public void restartGame(){
 //        System.out.println("GAME WILL BE SAVED !!");
         game_main.setLoad(false);
-        game_main.startGame(game_main.AssociatedMain.getMainStage(), game_main.getCurrentGameState().getPlayer_name());
+        game_main.startGame(game_main.getAssociatedMain().getMainStage(), game_main.getCurrentGameState().getPlayer_name());
+//        game_main.startGame(game_main.AssociatedMain.getMainStage(), game_main.getCurrentGameState().getPlayer_name());
     }
     public void exitToMainPage() throws Exception {
-        main_page_obj.AssociatedMain.getGm().numStars+=main_page_obj.AssociatedMain.getGm().getCurrentGameState().getNumStarsinGame();
+        long to_set = main_page_obj.AssociatedMain.getGm().getNumStars() + main_page_obj.AssociatedMain.getGm().getCurrentGameState().getNumStarsinGame();
+        main_page_obj.AssociatedMain.getGm().setNumStars(to_set);
+//        main_page_obj.AssociatedMain.getGm().numStars+=main_page_obj.AssociatedMain.getGm().getCurrentGameState().getNumStarsinGame();
+
 //        for(Map.Entry<Integer,Achievement> t: main_page_obj.AssociatedMain.getGm().getGameAchievements().entrySet()) {
 //            if (t.getValue().Requirement(main_page_obj.AssociatedMain.getGm().numStars)) {
 //                t.getValue().Unlock=true;

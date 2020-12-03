@@ -84,6 +84,7 @@ public class HowToPlayPage extends Application{
             {
                 System.out.println("BUTTON 1 PRESSED");
                 try {
+                    MainPageMenu.mp_button.stop();MainPageMenu.mp_button.play();
                     backToHome();
 //                    m.start(stage);
 //                    this.newGame();
