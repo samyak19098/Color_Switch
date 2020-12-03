@@ -47,6 +47,9 @@ public class TangentialObstacle extends Obstacle implements Serializable {
     @Override
     public void load_attributes(){
         rings.get(0).load_attributes(); rings.get(1).load_attributes();
+        rings.get(1).getQuarters().get(3).setFill(Color.DEEPPINK);
+        rings.get(1).getQuarters().get(1).setFill(Color.YELLOW);
+
     }
 
     @Override

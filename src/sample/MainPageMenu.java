@@ -16,6 +16,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
 import javafx.util.Duration;
 import java.awt.Desktop;
@@ -29,10 +30,11 @@ public class MainPageMenu extends Application {
     // privatise !
     HowToPlayPage how_to_play_page_obj = new HowToPlayPage();
     AchievementsPage achievement_page_obj = new AchievementsPage();
-    ShopPage shop_page_obj = new ShopPage();
-    LoadGamesMenu load_page = new LoadGamesMenu();
+    ShopPage shop_page_obj;
+    LoadGamesMenu load_page;
 //    InGameMenu in_game_obj = new InGameMenu();
     Main AssociatedMain;
+
     Stage main_page_stage;
 
     MainPageMenu(Main m){
@@ -40,8 +42,10 @@ public class MainPageMenu extends Application {
         this.how_to_play_page_obj.main_page_obj = this;
         this.achievement_page_obj.main_page_obj=this;
         this.achievement_page_obj.gm=m.getGm();
+        shop_page_obj=new ShopPage(m.getGm());
         this.shop_page_obj.main_page_obj=this;
-        this.shop_page_obj.gm=m.getGm();
+
+        load_page= new LoadGamesMenu(AssociatedMain.getGm().gameDetails.playernames);
         this.load_page.main_page_obj = this;
         this.load_page.gm = m.getGm();
 
@@ -246,9 +250,23 @@ public class MainPageMenu extends Application {
         TextInputDialog dialog = new TextInputDialog();
         dialog.setTitle("Game Save Name");
         dialog.setHeaderText("GAME SAVE NAME ");
-        dialog.setContentText("Please enter the game name :");
-//        dialog.init
-        Optional<String> name_string = dialog.showAndWait();
+        dialog.setContentText("Please enter the Player name :");
+        dialog.initStyle(StageStyle.UNDECORATED);
+
+        Optional<String> name_string=null;
+        while(name_string==null  || name_string.get().equals("Empty Slot") ||name_string.get().equals("")){
+
+            //cancel or cross
+            // empty string
+            //Empty Slot
+            //normal name then ok
+            name_string=dialog.showAndWait();
+            if(name_string.isEmpty())
+                break;
+
+            System.out.println("name_string:"+name_string);
+//            System.out.println("name_string2:"+name_string.get());
+        }
         String name_inp;
         if (name_string.isPresent()) {
             System.out.println("Your name: " + name_string.get());
@@ -290,6 +308,7 @@ public class MainPageMenu extends Application {
         confirm_alert.setTitle("EXIT CONFIRMATION");
         confirm_alert.showAndWait();
         if (confirm_alert.getResult() == ButtonType.YES) {
+            AssociatedMain.getGm().serializeGameDetails();
             Platform.exit();
             System.exit(0);
         }

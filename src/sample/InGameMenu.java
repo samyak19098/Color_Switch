@@ -23,6 +23,7 @@ import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
 
 import javax.imageio.ImageIO;
 
@@ -258,7 +259,14 @@ public class InGameMenu extends Application {
         this.main_page_obj.load_page.start(main_page_obj.main_page_stage);
     }
     public void exitToMainPage() throws Exception {
+
         main_page_obj.AssociatedMain.getGm().numStars+=main_page_obj.AssociatedMain.getGm().getCurrentGameState().getNumStarsinGame();
+//        for(Map.Entry<Integer,Achievement> t: main_page_obj.AssociatedMain.getGm().getGameAchievements().entrySet()) {
+//            if (t.getValue().Requirement(main_page_obj.AssociatedMain.getGm().numStars)) {
+//                t.getValue().Unlock=true;
+//            }
+//        }
+        main_page_obj.AssociatedMain.getGm().setCurrentGameState(null);
         main_page_obj.start(main_page_obj.main_page_stage);
     }
 

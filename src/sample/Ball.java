@@ -35,6 +35,7 @@ public class Ball extends GameObject  implements Serializable {
 
         this.id=id;
         BallColor = c;
+        System.out.println("c:"+c);
         savedcolor=ColorSwitcher.getcolormap.get(BallColor);
         BallShape=new Circle(x,y,r,c);
 //        BallShape.setVisible(false);
@@ -139,8 +140,8 @@ public class Ball extends GameObject  implements Serializable {
     }
 
     public boolean outofBounds(){
-        System.out.println("position2:" + position);
-        System.out.println("BallShape2:" + BallShape);
+//        System.out.println("position2:" + position);
+//        System.out.println("BallShape2:" + BallShape);
         if((position.get_y()+BallShape.getTranslateY())>(screenheight+radius))
                                                     //  600 + 0   >  800+20
             return true;

@@ -26,11 +26,13 @@ public class ColorSwitcher extends GameObject implements SpecialObject, Serializ
         map.put(2,Color.DEEPPINK);
         map.put(3,Color.YELLOW);
         map.put(4,Color.WHITE);
+        map.put(5,Color.GREY);
         getcolormap.put(Color.PURPLE,0);
         getcolormap.put(Color.CYAN,1);
         getcolormap.put(Color.DEEPPINK,2);
         getcolormap.put(Color.YELLOW,3);
         getcolormap.put(Color.WHITE,4);
+        getcolormap.put(Color.GREY,5);
     }
     public ColorSwitcher(int x){
 

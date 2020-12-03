@@ -33,7 +33,7 @@ public class GameState implements Serializable {
 ////    MediaPlayer mp_colorswitchercollect = new MediaPlayer(colorswitchercollect);
 //    transient Media GameOver = new Media(new File("GameOver.wav").toURI().toString());
 //    MediaPlayer mp_GameOver = new MediaPlayer(GameOver);
-    private int n,r,savedtrail;
+    private int n,r;
     private final int movtime = 250;
     private transient ArrayList<Circle> gameoverballs;
     private transient ArrayList<Timeline> gameovertimeline;
@@ -76,18 +76,7 @@ public class GameState implements Serializable {
         sceneStars=new ArrayList<Star>();
         sceneColorSwitcher=new ArrayList<ColorSwitcher>();
         CurrentBall=new Ball(Color.DEEPPINK,600.0f,600.0f,20.0f,-1);
-        if(trail==null) {
-            BallTrail=trail;
-        }
-        else if(trail instanceof Firetrail){
-                BallTrail=new Firetrail(CurrentBall);
-        }
-        else if(trail instanceof Neontrail){
-            BallTrail=new Neontrail(CurrentBall);
-        }
-         else if(trail instanceof Trail){
-                 BallTrail=new Trail(CurrentBall);
-                 }
+        setBallTrail(trail);
         hand=new Hand(screenwidth/2,600+20+100);
         RingObstacle ringObstacle = new RingObstacle("Ring", speed, 0, 100,20, screenwidth/2, initialhobstacle, true);
         ringObstacle.draw();
@@ -235,7 +224,20 @@ public class GameState implements Serializable {
             scoretext.setText("Score:" + numStarsinGame);
         });
     }
-
+    public void setBallTrail(Trail trail ) {
+        if(trail==null) {
+            BallTrail=trail;
+        }
+        else if(trail instanceof Firetrail){
+            BallTrail=new Firetrail(CurrentBall);
+        }
+        else if(trail instanceof Neontrail){
+            BallTrail=new Neontrail(CurrentBall);
+        }
+        else if(trail instanceof Trail){
+            BallTrail=new Trail(CurrentBall);
+        }
+    }
     public void decreaseNumStarsinGame(){
         this.numStarsinGame -= 2;
         Platform.runLater(() -> {

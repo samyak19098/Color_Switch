@@ -38,7 +38,8 @@ public class ShopPage extends Application{
     Stage mp_stage;
     Group help_page_group;
 
-    public ShopPage(){
+    public ShopPage(GameMain oldgm){
+        gm=oldgm;
         totalstars =new Text();
         totalstars.setLayoutX(30);
         totalstars.setLayoutY(screenheight/4);
@@ -49,6 +50,9 @@ public class ShopPage extends Application{
 
         OwnedTrails=new HashMap<>();
         Achievement a=new Achievement();
+        System.out.println("gm"+gm);
+        System.out.println("gameDetails"+gm.gameDetails);
+        a.Unlock=gm.gameDetails.trailsunlocked.get(0);
         Achievement finalA0 = a;
         a.text.setText("No trail");
         OwnedTrails.put(0, a);
@@ -66,6 +70,7 @@ public class ShopPage extends Application{
         a.Unlock=true;a.text.setPrefColumnCount(10);a.text.setStyle(" -fx-font-weight: bold; -fx-font-size:20;");
 
         a=new Achievement();
+        a.Unlock=gm.gameDetails.trailsunlocked.get(1);
         a.requirednumber=5;
         a.text.setText("Generating mist in the space with dash of the ball. Cost " + a.requirednumber+" stars");
         im = new Image("file:greytrail.jpg",false);
@@ -99,6 +104,7 @@ public class ShopPage extends Application{
                 OwnedTrails.put(1, a);a.text.setPrefColumnCount(30);
 
         a=new Achievement();
+        a.Unlock=gm.gameDetails.trailsunlocked.get(2);
         Achievement finalA1 = a;
         a.requirednumber=5;
         a.text.setText("Fire Balls signifying the rage of the ball. Cost " + a.requirednumber+" stars");
@@ -130,6 +136,7 @@ public class ShopPage extends Application{
         OwnedTrails.put(2, a);a.text.setPrefColumnCount(30);//a.text.setStyle(" -fx-font-weight: bold; -fx-font-size:15;");
 
         a=new Achievement();
+        a.Unlock=gm.gameDetails.trailsunlocked.get(3);
         Achievement finalA2 = a;
         a.requirednumber=5;
         a.text.setText("Laser like trail. Similar to nitro boost in race cars. Cost " + a.requirednumber+" stars");

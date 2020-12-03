@@ -1,6 +1,5 @@
 package sample;
-import java.io.IOException;
-import java.io.Serializable;
+import java.io.*;
 import java.util.*;
 
 import javafx.animation.KeyFrame;
@@ -27,9 +26,12 @@ import javafx.util.Duration;
 import javax.xml.crypto.Data;
 
 import static javafx.scene.media.AudioClip.INDEFINITE;
-
+//lock : used to stop detection of arrow keys b/w time of start of splitting of ball and time of appearance of game over menu
+//collided_flag: is true when run() should not execute,otherwise false
+//pause_var: If true, then after first upkey press , the game will start.No where used
+//Trail: it is not meant to be saved. It is to be chosen from shop.
 public class GameMain extends TimerTask  implements Serializable {
-
+    public GameDetails gameDetails;
     public long numStars;
     public int whichtrail;
     public Trail currentTrail;
@@ -59,7 +61,15 @@ public class GameMain extends TimerTask  implements Serializable {
 
     Database db = new Database();
 
-    public GameMain(Group root, Main m){
+    public GameMain(Group root, Main m) {
+        GameAchievements=new  HashMap<>();
+        for(int i=0;i<3;i++)
+            GameAchievements.put(i,new StarAchievement(((i+1)*5)));
+//            deserializeGameDetails();
+//        gameDetails=new GameDetails();
+        deserializeGameDetails();
+//        serializeGameDetails();
+//        serialize();
         load=false;
         whichtrail=0;
         numStars=0;
@@ -67,9 +77,7 @@ public class GameMain extends TimerTask  implements Serializable {
         this.AssociatedMain = m;
         timer = new Timer();
         timer.schedule(this, 500, 100);
-        GameAchievements=new  HashMap<>();
-        for(int i=0;i<3;i++)
-            GameAchievements.put(i,new StarAchievement(((i+1)*5)));
+
 
     }
 
@@ -162,13 +170,19 @@ public class GameMain extends TimerTask  implements Serializable {
         gm_scene = scene;
 
         //if not a loaded game i.e indeed a new game
+        this.lock=false;
+        this.collided_flag = false;
         if(!load){
-            this.lock=false;
-            this.collided_flag = false;
-            this.pause_var = false;
+
+
+//            this.pause_var = false;
 //            games_list.getItems().set(slot, name_string.get());
             GameState g = new GameState(currentTrail, name_inp);
-            this.setCurrentGameState(g);
+            CurrentGameState=g;
+        }else{
+            CurrentGameState.setBallTrail(currentTrail);
+//            this.pause_var = true;
+
         }
         CurrentGameState.shownOnScreen(root);
         trailtimer = new Timer();
@@ -192,6 +206,7 @@ public class GameMain extends TimerTask  implements Serializable {
         scene.addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
+                System.out.println("lock"+lock);
                 if(lock)
                     return;
                 switch (event.getCode()) {
@@ -206,10 +221,10 @@ public class GameMain extends TimerTask  implements Serializable {
 
 //                                });
                         //g.debug();
-                        if(pause_var == true){
-                            continueGame();
-                            pause_var = false;
-                        }
+//                        if(pause_var == true){
+//                            continueGame();
+//                            pause_var = false;
+//                        }
                         if ((600.0f + CurrentGameState.getCurrentBall().getBallShape().getTranslateY() - movedistance) > (screenheight / 2))
                             CurrentGameState.getCurrentBall().MoveBall(root);
                         else {
@@ -249,25 +264,6 @@ public class GameMain extends TimerTask  implements Serializable {
 
                         break;
 
-                    case DOWN://todo move to exit from game button button
-                        System.out.println("downkey");
-                        timer.cancel();
-                        timer.purge();
-                        break;
-                    case LEFT:
-                        System.out.println("leftkey");
-//                        s.getPolygon().setVisible(false);
-//                        gm.getCurrentGameState().getSceneColorSwitcher().remove(s);
-//                        gm.getGrp().getChildren().remove(s);
-//                        gm.getCurrentGameState().getSceneStars().remove(s);
-//                        primaryStage.show();
-                        break;
-                    case RIGHT:
-                        System.out.println("rightkey");
-//                        scoretext.setText(""+1);
-
-//                          primaryStage.show();
-                        break;
                     case W:
 
                         System.out.println("circle.getTranslateX():" + CurrentGameState.getCurrentBall().getBallShape().getTranslateX());
@@ -376,7 +372,7 @@ public class GameMain extends TimerTask  implements Serializable {
                     Pause();
                     this.lock=true;
                     this.collided_flag = true;
-                    this.pause_var = true;
+//                    this.pause_var = true;
     //                this.CurrentGameState.coll_flag = true;
                     this.CurrentGameState.getCurrentBall().setColor(Color.WHITE);
                     this.CurrentGameState.getCurrentBall().reposition();
@@ -420,9 +416,9 @@ public class GameMain extends TimerTask  implements Serializable {
                     Pause();
                     this.CurrentGameState.getCurrentBall().setColor(Color.WHITE);
                     this.CurrentGameState.getCurrentBall().reposition();
-                    this.lock=true;
+                    this.lock=true;//
                     this.collided_flag = true;
-                    this.pause_var = true;
+//                    this.pause_var = true;
                     this.getCurrentGameState().coll_flag = true;
     //                Platform.runLater(() -> {
                         ObstacleHitMenu obm = new ObstacleHitMenu();
@@ -450,7 +446,7 @@ public class GameMain extends TimerTask  implements Serializable {
                 });
 
             }
-        }
+        }//
         if(CurrentGameState != null && this.collided_flag == false ) {
             for (Map.Entry<Integer, Achievement> t : GameAchievements.entrySet()) {
                 if (t.getValue().Requirement(numStars))
@@ -478,6 +474,7 @@ public class GameMain extends TimerTask  implements Serializable {
         if(CurrentGameState.BallTrail!=null)
         CurrentGameState.BallTrail.Pause();
         this.collided_flag = true;
+//        this.pause_var=true;
 
     }
     public void continueGame(){//todo shift to InGameMenu
@@ -552,6 +549,81 @@ public class GameMain extends TimerTask  implements Serializable {
 
 
     }
+    public void     serializeGameDetails(){
+        System.out.println("Serializing details");
+        ShopPage s=AssociatedMain.getMain_page().shop_page_obj;
+        gameDetails.numStars=(int)numStars;
+        for(int i=0;i<gameDetails.trailsunlocked.size();i++)
+            gameDetails.trailsunlocked.set(i,s.OwnedTrails.get(i).Unlock );
+        for(int i=0;i<gameDetails.achievementsunlocked.size();i++)
+            gameDetails.achievementsunlocked.set(i,GameAchievements.get(i).Unlock);
+
+        for(int i=0;i< gameDetails.playernames.size();i++)
+        gameDetails.playernames.set(i, (String) AssociatedMain.getMain_page().load_page.games_list.getItems().get(i));
+
+
+        String saving_file = "gamedetails_file.txt";
+
+        ObjectOutputStream out = null;
+        try {
+            out = new ObjectOutputStream(new FileOutputStream(saving_file));
+            out.writeObject(gameDetails);
+
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+        finally {
+            if (out != null) {
+                try {
+                    out.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+    }
+    public void deserializeGameDetails( )   {
+        System.out.println("DESerializing details");
+
+        String saving_file = "gamedetails_file.txt";
+        ObjectInputStream in = null;
+
+        try {
+
+            in = new ObjectInputStream(new FileInputStream(saving_file));
+            gameDetails = (GameDetails) in.readObject();
+        }
+
+        catch( ClassNotFoundException e){
+            e.printStackTrace();
+
+        }
+         catch(IOException  e){
+             e.printStackTrace();
+        }
+        finally {
+            if(in == null) {
+                System.out.println("in is nulll");
+            }
+            try {
+                in.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        int j=0;
+        numStars=gameDetails.numStars;
+        for(Map.Entry<Integer,Achievement> t: GameAchievements.entrySet()) {
+
+
+            t.getValue().Unlock=gameDetails.achievementsunlocked.get(j);
+            System.out.println("B"+t.getValue().Unlock);
+            j++;
+        }
+
+    }
     public Group getGrp() {
         return root;
     }
@@ -579,5 +651,6 @@ public class GameMain extends TimerTask  implements Serializable {
     public void setLoad(boolean load) {
         this.load=load;
     }
+
 
 }

@@ -94,10 +94,10 @@ public class Star extends GameObject{
 //        System.out.println("i:" + i);
 //        System.out.println(b.getColor() == quarters.get(i).getFill());
 
-        System.out.println("b:" + b);
-        System.out.println("b.getBallShape():" + b.getBallShape());
-        System.out.println("position:" + position);
-        System.out.println("polygon:" + polygon);
+//        System.out.println("b:" + b);
+//        System.out.println("b.getBallShape():" + b.getBallShape());
+//        System.out.println("position:" + position);
+//        System.out.println("polygon:" + polygon);
         //cal=distance b/w centers
         double cal = b.getPosition().get_y() + b.getBallShape().getTranslateY() - position.get_y() - polygon.getTranslateY();
 //        System.out.println("quarters.get(i).getTranslateY():" + quarters.get(i).getTranslateY());

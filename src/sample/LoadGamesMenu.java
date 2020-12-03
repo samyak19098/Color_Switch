@@ -20,6 +20,7 @@ import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Optional;
 
@@ -32,13 +33,16 @@ public class LoadGamesMenu extends Application{
     Stage mp_stage;
     ListView games_list;
 
-    LoadGamesMenu(){
+    LoadGamesMenu(ArrayList<String> names){
         games_list = new ListView();
-        games_list.getItems().add("Empty Slot 1");
-        games_list.getItems().add("Empty Slot 2");
-        games_list.getItems().add("Empty Slot 3");
-        games_list.getItems().add("Empty Slot 4");
-        games_list.getItems().add("Empty Slot 5");
+//        if(names!=null) {
+            for (int i = 0; i < 5; i++)
+                games_list.getItems().add(names.get(i));
+//        }
+//        else{
+//            for (int i = 0; i < 5; i++)
+//                games_list.getItems().add("Empty Slot");
+//        }
     }
 
 
@@ -149,32 +153,42 @@ public class LoadGamesMenu extends Application{
 
 
     public void save_game_implementation(int slot) throws Exception {
-
+            if(this.gm.getCurrentGameState()!=null) {
 //            System.out.println("Your name: " + name_string.get());
-            games_list.getItems().set(slot, this.gm.getCurrentGameState().getPlayer_name());
-            this.gm.savegame(slot + 1);
+                games_list.getItems().set(slot, this.gm.getCurrentGameState().getPlayer_name());
+                this.gm.savegame(slot + 1);
 
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("Proceeding Choices");
-            alert.setHeaderText("Game saved succesfully !");
-            alert.setContentText("Choose where to proceed :");
-
-            ButtonType continue_button = new ButtonType("Resume Game");
-            ButtonType main_menu_button = new ButtonType("Exit to Main Menu");
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("Proceeding Choices");
+                alert.setHeaderText("Game saved succesfully !");
+                alert.setContentText("Choose where to proceed :");
+            alert.initStyle(StageStyle.UNDECORATED);
+                ButtonType continue_button = new ButtonType("Resume Game");
+                ButtonType main_menu_button = new ButtonType("Exit to Main Menu");
 //            ButtonType buttonTypeThree = new ButtonType("Three");
-            ButtonType cancel_button = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
+//                ButtonType cancel_button = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
 
-            alert.getButtonTypes().setAll(continue_button, main_menu_button, cancel_button);
+                alert.getButtonTypes().setAll(continue_button, main_menu_button);
 
-            Optional<ButtonType> result = alert.showAndWait();
-            if (result.get() == continue_button){
-                this.gm.continueGame();
-                this.gm.AssociatedMain.getMainStage().setScene(gm.getGm_scene());
-                this.gm.AssociatedMain.getMainStage().show();
+                Optional<ButtonType> result = alert.showAndWait();
+                if (result.get() == continue_button) {
+                    this.gm.continueGame();
+                    this.gm.AssociatedMain.getMainStage().setScene(gm.getGm_scene());
+                    this.gm.AssociatedMain.getMainStage().show();
+                } else if (result.get() == main_menu_button) {
+                    this.main_page_obj.AssociatedMain.getGm().numStars += main_page_obj.AssociatedMain.getGm().getCurrentGameState().getNumStarsinGame();
+                    main_page_obj.AssociatedMain.getGm().setCurrentGameState(null);
+                    this.main_page_obj.start(main_page_obj.main_page_stage);
+                }
             }
-            else if (result.get() == main_menu_button) {
-                this.main_page_obj.AssociatedMain.getGm().numStars+=main_page_obj.AssociatedMain.getGm().getCurrentGameState().getNumStarsinGame();
-                this.main_page_obj.start(main_page_obj.main_page_stage);
+            else{
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Information");
+                alert.setHeaderText(null);
+                alert.setContentText("No game to save");
+                alert.initStyle(StageStyle.UNDECORATED);
+                alert.showAndWait();
+
             }
         }
 
@@ -188,7 +202,7 @@ public class LoadGamesMenu extends Application{
 //
 //        Optional<ButtonType> result = alert.showAndWait();
 //        if (result.get() == ButtonType.OK){
-        if(games_list.getItems().get(slot + 1) == "Empty Slot"){
+        if(games_list.getItems().get(slot) == "Empty Slot"){
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Information");
             alert.setHeaderText(null);
@@ -202,6 +216,10 @@ public class LoadGamesMenu extends Application{
     }
 
     public void backToHome() throws Exception {
+        if(main_page_obj.AssociatedMain.getGm().getCurrentGameState()!=null) {
+            this.main_page_obj.AssociatedMain.getGm().numStars += main_page_obj.AssociatedMain.getGm().getCurrentGameState().getNumStarsinGame();
+            main_page_obj.AssociatedMain.getGm().setCurrentGameState(null);
+        }
         main_page_obj.start(mp_stage);
     }
     public static void main(String[] args) {
