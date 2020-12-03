@@ -28,6 +28,8 @@ import javax.xml.crypto.Data;
 
 import static javafx.scene.media.AudioClip.INDEFINITE;
 //lock : used to stop detection of arrow keys b/w time of start of splitting of ball and time of appearance of game over menu
+//collided_flag: is true when run() should not execute,otherwise false
+//pause_var: If true, then after first upkey press , the game will start.No where used
 public class GameMain extends TimerTask  implements Serializable {
 
     public long numStars;
@@ -163,13 +165,17 @@ public class GameMain extends TimerTask  implements Serializable {
 
         //if not a loaded game i.e indeed a new game
         this.lock=false;
+        this.collided_flag = false;
         if(!load){
 
-            this.collided_flag = false;
-            this.pause_var = false;
+
+//            this.pause_var = false;
 //            games_list.getItems().set(slot, name_string.get());
             GameState g = new GameState(currentTrail, name_inp);
             CurrentGameState=g;
+        }else{
+//            this.pause_var = true;
+
         }
         CurrentGameState.shownOnScreen(root);
         trailtimer = new Timer();
@@ -194,8 +200,8 @@ public class GameMain extends TimerTask  implements Serializable {
             @Override
             public void handle(KeyEvent event) {
                 System.out.println("lock"+lock);
-//                if(lock)
-//                    return;
+                if(lock)
+                    return;
                 switch (event.getCode()) {
 
                     case UP:
@@ -208,10 +214,10 @@ public class GameMain extends TimerTask  implements Serializable {
 
 //                                });
                         //g.debug();
-                        if(pause_var == true){
-                            continueGame();
-                            pause_var = false;
-                        }
+//                        if(pause_var == true){
+//                            continueGame();
+//                            pause_var = false;
+//                        }
                         if ((600.0f + CurrentGameState.getCurrentBall().getBallShape().getTranslateY() - movedistance) > (screenheight / 2))
                             CurrentGameState.getCurrentBall().MoveBall(root);
                         else {
@@ -378,7 +384,7 @@ public class GameMain extends TimerTask  implements Serializable {
                     Pause();
                     this.lock=true;
                     this.collided_flag = true;
-                    this.pause_var = true;
+//                    this.pause_var = true;
     //                this.CurrentGameState.coll_flag = true;
                     this.CurrentGameState.getCurrentBall().setColor(Color.WHITE);
                     this.CurrentGameState.getCurrentBall().reposition();
@@ -424,7 +430,7 @@ public class GameMain extends TimerTask  implements Serializable {
                     this.CurrentGameState.getCurrentBall().reposition();
                     this.lock=true;//
                     this.collided_flag = true;
-                    this.pause_var = true;
+//                    this.pause_var = true;
                     this.getCurrentGameState().coll_flag = true;
     //                Platform.runLater(() -> {
                         ObstacleHitMenu obm = new ObstacleHitMenu();
@@ -480,6 +486,7 @@ public class GameMain extends TimerTask  implements Serializable {
         if(CurrentGameState.BallTrail!=null)
         CurrentGameState.BallTrail.Pause();
         this.collided_flag = true;
+//        this.pause_var=true;
 
     }
     public void continueGame(){//todo shift to InGameMenu
