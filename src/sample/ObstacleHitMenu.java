@@ -158,7 +158,7 @@ public class ObstacleHitMenu extends Application {
     public void restartGame(){
 //        System.out.println("GAME WILL BE SAVED !!");
         game_main.setLoad(false);
-        game_main.startGame(game_main.AssociatedMain.getMainStage());
+        game_main.startGame(game_main.AssociatedMain.getMainStage(), game_main.getCurrentGameState().getPlayer_name());
     }
     public void exitToMainPage() throws Exception {
         main_page_obj.AssociatedMain.getGm().numStars+=main_page_obj.AssociatedMain.getGm().getCurrentGameState().getNumStarsinGame();
