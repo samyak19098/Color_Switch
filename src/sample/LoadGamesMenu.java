@@ -16,6 +16,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -180,13 +181,22 @@ public class LoadGamesMenu extends Application{
 
 
     public void load_game(int slot) throws IOException, ClassNotFoundException {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("CONFIRM LOAD");
-        alert.setHeaderText("LOAD GAME CONFIRMATION");
-        alert.setContentText("Do you want to load the selected game ? You will lose any unsaved progress.");
-
-        Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == ButtonType.OK){
+//        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+//        alert.setTitle("CONFIRM LOAD");
+//        alert.setHeaderText("LOAD GAME CONFIRMATION");
+//        alert.setContentText("Do you want to load the selected game ? You will lose any unsaved progress.");
+//
+//        Optional<ButtonType> result = alert.showAndWait();
+//        if (result.get() == ButtonType.OK){
+        if(games_list.getItems().get(slot + 1) == "Empty Slot"){
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Information");
+            alert.setHeaderText(null);
+            alert.setContentText("No saved game present at the slot");
+            alert.initStyle(StageStyle.UNDECORATED);
+            alert.showAndWait();
+        }
+        else{
             this.gm.loadgame(this.main_page_obj.main_page_stage, slot + 1);
         }
     }
