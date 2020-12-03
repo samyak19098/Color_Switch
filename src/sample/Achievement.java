@@ -5,10 +5,11 @@ import javafx.scene.image.Image;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public   class Achievement {
+public   class Achievement implements Serializable {
     protected int requirednumber;
     protected  static   double screenwidth=1200;
     protected static  double screenheight=800;
@@ -36,7 +37,10 @@ public   class Achievement {
 //        box=new Rectangle(screenwidth/4,screenheight/4);
     }
     public boolean Requirement(long a){
-         return true;
+        if(a>=requirednumber)
+            return true;
+        return false;
+
     }
 
 }

@@ -35,6 +35,7 @@ public class Ball extends GameObject  implements Serializable {
 
         this.id=id;
         BallColor = c;
+        System.out.println("c:"+c);
         savedcolor=ColorSwitcher.getcolormap.get(BallColor);
         BallShape=new Circle(x,y,r,c);
 //        BallShape.setVisible(false);

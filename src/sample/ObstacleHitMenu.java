@@ -16,6 +16,7 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
 import java.io.FileInputStream;
+import java.util.Map;
 
 public class ObstacleHitMenu extends Application {
 
@@ -135,7 +136,7 @@ public class ObstacleHitMenu extends Application {
 
     public void Obstacle_Menu_continueGame(){
         System.out.println("GAME WILL BE CONTINUED !! + COLL FLAG == " +  game_main.collided_flag);
-        if(game_main.getCurrentGameState().getNumStarsinGame() < 5){
+        if(false){//game_main.getCurrentGameState().getNumStarsinGame() < 5){
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Insufficient Stars");
             alert.setHeaderText("INSUFFICIENT STARS !! ");
@@ -146,8 +147,8 @@ public class ObstacleHitMenu extends Application {
             game_main.collided_flag = false;
             game_main.lock = false;
 //        game_main.getCurrentGameState().coll_flag = false;
-//        game_main.continueGame();
-            game_main.getCurrentGameState().decreaseNumStarsinGame();
+        game_main.continueGame();
+//            game_main.getCurrentGameState().decreaseNumStarsinGame();
             game_main.AssociatedMain.getMainStage().setScene(game_main.getGm_scene());
             game_main.AssociatedMain.getMainStage().show();
 //        game_main.Pause();
@@ -162,6 +163,11 @@ public class ObstacleHitMenu extends Application {
     }
     public void exitToMainPage() throws Exception {
         main_page_obj.AssociatedMain.getGm().numStars+=main_page_obj.AssociatedMain.getGm().getCurrentGameState().getNumStarsinGame();
+//        for(Map.Entry<Integer,Achievement> t: main_page_obj.AssociatedMain.getGm().getGameAchievements().entrySet()) {
+//            if (t.getValue().Requirement(main_page_obj.AssociatedMain.getGm().numStars)) {
+//                t.getValue().Unlock=true;
+//            }
+//        }
         main_page_obj.AssociatedMain.getGm().setCurrentGameState(null);
         System.out.println("GAME WILL BE EXITED TO MAIN PAGE !!");
         main_page_obj.start(main_page_obj.main_page_stage);

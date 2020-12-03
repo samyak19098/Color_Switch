@@ -20,6 +20,7 @@ import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Optional;
 
@@ -32,11 +33,16 @@ public class LoadGamesMenu extends Application{
     Stage mp_stage;
     ListView games_list;
 
-    LoadGamesMenu(){
+    LoadGamesMenu(ArrayList<String> names){
         games_list = new ListView();
-        for(int i=0;i<5;i++)
-        games_list.getItems().add("Empty Slot");
-
+        if(names!=null) {
+            for (int i = 0; i < 5; i++)
+                games_list.getItems().add(names.get(i));
+        }
+        else{
+            for (int i = 0; i < 5; i++)
+                games_list.getItems().add("Empty Slot");
+        }
     }
 
 

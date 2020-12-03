@@ -30,10 +30,11 @@ public class MainPageMenu extends Application {
     // privatise !
     HowToPlayPage how_to_play_page_obj = new HowToPlayPage();
     AchievementsPage achievement_page_obj = new AchievementsPage();
-    ShopPage shop_page_obj = new ShopPage();
-    LoadGamesMenu load_page = new LoadGamesMenu();
+    ShopPage shop_page_obj;
+    LoadGamesMenu load_page;
 //    InGameMenu in_game_obj = new InGameMenu();
     Main AssociatedMain;
+
     Stage main_page_stage;
 
     MainPageMenu(Main m){
@@ -41,8 +42,10 @@ public class MainPageMenu extends Application {
         this.how_to_play_page_obj.main_page_obj = this;
         this.achievement_page_obj.main_page_obj=this;
         this.achievement_page_obj.gm=m.getGm();
+        shop_page_obj=new ShopPage(m.getGm());
         this.shop_page_obj.main_page_obj=this;
-        this.shop_page_obj.gm=m.getGm();
+
+        load_page= new LoadGamesMenu(AssociatedMain.getGm().gameDetails.playernames);
         this.load_page.main_page_obj = this;
         this.load_page.gm = m.getGm();
 
@@ -305,6 +308,7 @@ public class MainPageMenu extends Application {
         confirm_alert.setTitle("EXIT CONFIRMATION");
         confirm_alert.showAndWait();
         if (confirm_alert.getResult() == ButtonType.YES) {
+            AssociatedMain.getGm().serializeGameDetails();
             Platform.exit();
             System.exit(0);
         }
