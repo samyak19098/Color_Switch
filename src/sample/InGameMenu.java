@@ -29,9 +29,9 @@ import javax.imageio.ImageIO;
 
 public class InGameMenu extends Application {
 
-    MainPageMenu main_page_obj;
-    Stage in_game_stage;
-    GameMain game_main;
+    private MainPageMenu main_page_obj;
+    private Stage in_game_stage;
+    private GameMain game_main;
 
 //    InGameMenu(Stage InGameStage){
 //        Group in_game_group = new Group();
@@ -149,21 +149,21 @@ public class InGameMenu extends Application {
         game_paused_text.setX(300);
         game_paused_text.setLayoutY(100);
 
-        RingObstacle save_ring = new RingObstacle("Ring", 6000, 0, 110, 15, 270, 410, true);
-        Button save_game_button = new Button("SAVE GAME");
-        save_game_button.setPrefSize(150,50);
-        save_game_button.setLayoutX(195);
-        save_game_button.setLayoutY(385);
-        save_ring.draw();
-        save_ring.WayOfMovement();
-        save_ring.rotateRing();
-        save_ring.shownOnScreen(in_game_group);
+//        RingObstacle save_ring = new RingObstacle("Ring", 6000, 0, 110, 15, 270, 410, true);
+//        Button save_game_button = new Button("SAVE GAME");
+//        save_game_button.setPrefSize(150,50);
+//        save_game_button.setLayoutX(195);
+//        save_game_button.setLayoutY(385);
+//        save_ring.draw();
+//        save_ring.WayOfMovement();
+//        save_ring.rotateRing();
+//        save_ring.shownOnScreen(in_game_group);
 
 
-        RingObstacle continue_ring = new RingObstacle("Ring", 6000, 0, 110, 15, 580, 410, true);
+        RingObstacle continue_ring = new RingObstacle("Ring", 6000, 0, 110, 15, 430, 410, true);
         Button continue_game_button = new Button("CONTINUE GAME");
         continue_game_button.setPrefSize(150,50);
-        continue_game_button.setLayoutX(505);
+        continue_game_button.setLayoutX(355);
         continue_game_button.setLayoutY(385);
         continue_ring.draw();
         continue_ring.WayOfMovement();
@@ -171,10 +171,10 @@ public class InGameMenu extends Application {
         continue_ring.shownOnScreen(in_game_group);
 
 
-        RingObstacle exit_to_main_ring = new RingObstacle("Ring", 6000, 0, 110, 15, 890, 410, true);
+        RingObstacle exit_to_main_ring = new RingObstacle("Ring", 6000, 0, 110, 15, 740, 410, true);
         Button exit_to_main_button = new Button("EXIT TO MAIN MENU");
         exit_to_main_button.setPrefSize(150,50);
-        exit_to_main_button.setLayoutX(815);
+        exit_to_main_button.setLayoutX(665);
         exit_to_main_button.setLayoutY(385);
         exit_to_main_ring.draw();
         exit_to_main_ring.WayOfMovement();
@@ -182,19 +182,19 @@ public class InGameMenu extends Application {
         exit_to_main_ring.shownOnScreen(in_game_group);
 
 
-
-        EventHandler<ActionEvent> event_save_game = new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent e)
-            {
-                System.out.println("BUTTON SAVE GAME PRESSED");
-                try {
-                    saveGame();
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-
-            }
-        };
+//
+//        EventHandler<ActionEvent> event_save_game = new EventHandler<ActionEvent>() {
+//            public void handle(ActionEvent e)
+//            {
+//                System.out.println("BUTTON SAVE GAME PRESSED");
+//                try {
+//                    saveGame();
+//                } catch (Exception ex) {
+//                    ex.printStackTrace();
+//                }
+//
+//            }
+//        };
 
         EventHandler<ActionEvent> event_continue_game = new EventHandler<ActionEvent>() {
             public void handle(ActionEvent e)
@@ -222,13 +222,13 @@ public class InGameMenu extends Application {
             }
         };
 
-        save_game_button.setOnAction(event_save_game);
+//        save_game_button.setOnAction(event_save_game);
         continue_game_button.setOnAction(event_continue_game);
         exit_to_main_button.setOnAction(event_exit_to_main);
 
 
 
-        in_game_group.getChildren().addAll(game_paused_text, save_game_button, continue_game_button, exit_to_main_button);
+        in_game_group.getChildren().addAll(game_paused_text,continue_game_button, exit_to_main_button);
 
         Scene scene = new Scene(in_game_group,1200,800, Color.BLACK);
         InGameStage.setScene(scene);
@@ -249,8 +249,8 @@ public class InGameMenu extends Application {
     public void continueGame(){
         System.out.println("GAME WILL BE CONTINUED !!");
         game_main.continueGame();
-        game_main.AssociatedMain.getMainStage().setScene(game_main.getGm_scene());
-        game_main.AssociatedMain.getMainStage().show();
+        game_main.getAssociatedMain().getMainStage().setScene(game_main.getGm_scene());
+        game_main.getAssociatedMain().getMainStage().show();
     }
 
     public void saveGame() throws Exception {
@@ -260,7 +260,9 @@ public class InGameMenu extends Application {
     }
     public void exitToMainPage() throws Exception {
 
-        main_page_obj.AssociatedMain.getGm().numStars+=main_page_obj.AssociatedMain.getGm().getCurrentGameState().getNumStarsinGame();
+        long to_set = main_page_obj.AssociatedMain.getGm().getNumStars() + main_page_obj.AssociatedMain.getGm().getCurrentGameState().getNumStarsinGame();
+        main_page_obj.AssociatedMain.getGm().setNumStars(to_set);
+//        main_page_obj.AssociatedMain.getGm().setNumStars();+=main_page_obj.AssociatedMain.getGm().getCurrentGameState().getNumStarsinGame();
 //        for(Map.Entry<Integer,Achievement> t: main_page_obj.AssociatedMain.getGm().getGameAchievements().entrySet()) {
 //            if (t.getValue().Requirement(main_page_obj.AssociatedMain.getGm().numStars)) {
 //                t.getValue().Unlock=true;
@@ -268,6 +270,30 @@ public class InGameMenu extends Application {
 //        }
         main_page_obj.AssociatedMain.getGm().setCurrentGameState(null);
         main_page_obj.start(main_page_obj.main_page_stage);
+    }
+
+    public MainPageMenu getMain_page_obj() {
+        return main_page_obj;
+    }
+
+    public void setMain_page_obj(MainPageMenu main_page_obj) {
+        this.main_page_obj = main_page_obj;
+    }
+
+    public Stage getIn_game_stage() {
+        return in_game_stage;
+    }
+
+    public void setIn_game_stage(Stage in_game_stage) {
+        this.in_game_stage = in_game_stage;
+    }
+
+    public GameMain getGame_main() {
+        return game_main;
+    }
+
+    public void setGame_main(GameMain game_main) {
+        this.game_main = game_main;
     }
 
     public static void main(String args[]){

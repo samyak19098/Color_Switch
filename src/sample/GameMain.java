@@ -33,20 +33,31 @@ import static javafx.scene.media.AudioClip.INDEFINITE;
 //pause_var: If true, then after first upkey press , the game will start.No where used
 //Trail: it is not meant to be saved. It is to be chosen from shop.
 public class GameMain extends TimerTask  implements Serializable {
-    public GameDetails gameDetails;
-    public long numStars;
-    public int whichtrail;
-    public Trail currentTrail;
+
+    private GameDetails gameDetails;
+    private long numStars;
+    private int whichtrail;
+    private Trail currentTrail;
 
     private Scene gm_scene;
     private Group root;
     private GameState CurrentGameState;
-    public Stage GameMainStage;
-    public Main AssociatedMain;
-    public boolean lock=false;
+    private Stage GameMainStage;
+    private Main AssociatedMain;
 
+    // FLAGS :
+    //lock : used to stop detection of arrow keys b/w time of start of splitting of ball and time of appearance of game over menu
+    //collided_flag: is true when run() should not execute,otherwise false
+    //pause_var: If true, then after first upkey press , the game will start.No where used
 
+    //When a game is loaded, the ball will be stationary and wait for a user input
+    //When we resume from the InGameMenu or Continue Game using stars option, ball will immideatly resume mottion and not wait for any key input.
+
+    private boolean lock=false;
     private boolean load;
+    //made as an indicator for run() method of thread
+    private boolean collided_flag;
+    private boolean pause_var;
 
     private HashMap<Integer,Achievement> GameAchievements;
     private Task task;
@@ -56,31 +67,25 @@ public class GameMain extends TimerTask  implements Serializable {
     private final int movedistance = 100;//distance moved in one move
     private final int movtime = 250;
     private Timer timer,trailtimer;
-    Media ballup,button;
-    AudioClip mp_ballup,mp_button,mp_GameOver;
-    boolean collided_flag;
-    boolean pause_var;
+    private Database db = new Database();
+//    Media ballup,button;
 
-    Database db = new Database();
+    AudioClip mp_ballup,mp_button,mp_GameOver;
 
     public GameMain(Group root, Main m) {
-//        ballup = new Media(new File("ballup.wav").toURI().toString());
-//        mp_ballup = new MediaPlayer(ballup);
-//        button = new Media(new File("button.wav").toURI().toString());
-//        mp_button = new MediaPlayer(button);
+
         mp_ballup = new AudioClip( "file:jump.wav" );
         mp_ballup.setCycleCount(1);mp_ballup.setVolume(1);
         mp_GameOver=new AudioClip( "file:GameOver.wav" );
         mp_GameOver.setCycleCount(1);mp_GameOver.setVolume(1);
 
-        GameAchievements=new  HashMap<>();
-        for(int i=0;i<3;i++)
+        GameAchievements = new  HashMap<>();
+        for(int i=0;i<3;i++){
             GameAchievements.put(i,new StarAchievement(((i+1)*5)));
-//            deserializeGameDetails();
+        }
 //        gameDetails=new GameDetails();
         deserializeGameDetails();
-//        serializeGameDetails();
-//        serialize();
+
         load=false;
         whichtrail=0;
         numStars=0;
@@ -98,8 +103,8 @@ public class GameMain extends TimerTask  implements Serializable {
         this.root = grp;
         this.GameMainStage = primaryStage;
         InGameMenu igm = new InGameMenu();
-        igm.main_page_obj = this.AssociatedMain.getMain_page();
-        igm.game_main = this;
+        igm.setMain_page_obj(this.AssociatedMain.getMain_page());
+        igm.setGame_main(this);
 
 
 
@@ -133,34 +138,34 @@ public class GameMain extends TimerTask  implements Serializable {
         };
         pause_button.setOnAction(event_pause_game);
 
-        /* ------------------------------------------------------------------------------------------------
+//        /* ------------------------------------------------------------------------------------------------
   //      SAVE GAME BUTTON ON GAMEPLAY SCREEN ISSUE
 
-//        Button save_button = new Button("SAVE GAME");
-//        save_button.setPrefSize(100, 50);
-//        save_button.setLayoutX(20);
-//        save_button.setLayoutY(120);
-//        save_button.setWrapText(true);
-//        root.getChildren().add(save_button);
-//
-//        EventHandler<ActionEvent> event_save_game = new EventHandler<ActionEvent>() {
-//            public void handle(ActionEvent e) {
-//
-////                InGameMenu igm = new InGameMenu();
-//                try {
-////                    igm.start(primaryStage);
-////                    Pause();
-//                    savegame();
-////                    audio[0].stop();
-//
-//                } catch (Exception ex) {
-//                    ex.printStackTrace();
-//                }
-//                System.out.println("SAVE BUTTON PRESSED");
-//            }
-//        };
-//        save_button.setOnAction(event_save_game);
-        ------------------------------------------------------------------------------------------------*/
+        Button save_button = new Button("SAVE GAME");
+        save_button.setPrefSize(100, 50);
+        save_button.setLayoutX(20);
+        save_button.setLayoutY(120);
+        save_button.setWrapText(true);
+        root.getChildren().add(save_button);
+
+        EventHandler<ActionEvent> event_save_game = new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent e) {
+
+//                InGameMenu igm = new InGameMenu();
+                try {
+//                    igm.start(primaryStage);
+//                    Pause();
+                        save_button_handle_function();
+//                    audio[0].stop();
+
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+                System.out.println("SAVE BUTTON PRESSED");
+            }
+        };
+        save_button.setOnAction(event_save_game);
+//        ------------------------------------------------------------------------------------------------*/
 
         Scene scene = new Scene(root, screenwidth, screenheight);//, Color.BLACK);
         gm_scene = scene;
@@ -198,7 +203,7 @@ public class GameMain extends TimerTask  implements Serializable {
             }
         });
         primaryStage.show();
-        Timeline timeline=new Timeline();
+
         scene.addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
@@ -208,6 +213,8 @@ public class GameMain extends TimerTask  implements Serializable {
                 switch (event.getCode()) {
 
                     case UP:
+
+
 //                        System.out.println("up");
                         Platform.runLater(() -> {
                                     mp_ballup.stop();
@@ -418,7 +425,7 @@ public class GameMain extends TimerTask  implements Serializable {
         if(CurrentGameState != null && this.collided_flag == false ) {
             for (Map.Entry<Integer, Achievement> t : GameAchievements.entrySet()) {
                 if (t.getValue().Requirement(CurrentGameState.getNumStarsinGame()))
-                    t.getValue().Unlock = true;
+                    t.getValue().setUnlock(true);
 
             }
         }
@@ -447,20 +454,6 @@ public class GameMain extends TimerTask  implements Serializable {
     }
     public void continueGame(){//todo shift to InGameMenu
         this.collided_flag = false;
-
-        task = new Task() {
-            @Override
-            protected Object call() throws Exception {
-
-                int s = INDEFINITE;
-
-
-                return null;
-            }
-        };
-
-        Thread thread = new Thread(task);
-        thread.start();
 
         System.out.println("continuing !!");
         for(Star s: CurrentGameState.getSceneStars()) {
@@ -516,26 +509,42 @@ public class GameMain extends TimerTask  implements Serializable {
 
 
     }
-    public void     serializeGameDetails(){
+
+    public void serializeGameDetails(){
         System.out.println("Serializing details");
         ShopPage s=AssociatedMain.getMain_page().shop_page_obj;
-        gameDetails.numStars=(int)numStars;
-        for(int i=0;i<gameDetails.trailsunlocked.size();i++)
-            gameDetails.trailsunlocked.set(i,s.OwnedTrails.get(i).Unlock );
-        for(int i=0;i<gameDetails.achievementsunlocked.size();i++)
-            gameDetails.achievementsunlocked.set(i,GameAchievements.get(i).Unlock);
+        gameDetails.setNumStars((int)numStars);
+//        numStars=(int)numStars;
+        for(int i=0;i<gameDetails.getTrailsunlocked().size();i++) {
+            gameDetails.getTrailsunlocked().set(i, s.OwnedTrails.get(i).getUnlock());
+        }
+        for(int i=0;i<gameDetails.getAchievementsunlocked().size();i++) {
+            gameDetails.getAchievementsunlocked().set(i, GameAchievements.get(i).getUnlock());
+        }
 
-        for(int i=0;i< gameDetails.playernames.size();i++)
-        gameDetails.playernames.set(i, (String) AssociatedMain.getMain_page().load_page.games_list.getItems().get(i));
+        for(int i=0;i< gameDetails.getPlayernames().size();i++) {
+            gameDetails.getPlayernames().set(i, (String) AssociatedMain.getMain_page().load_page.games_list.getItems().get(i));
+        }
 
-
-        String saving_file = "gamedetails_file.txt";
+        String saving_file = "gamedetails_file.ser";
 
         ObjectOutputStream out = null;
         try {
             out = new ObjectOutputStream(new FileOutputStream(saving_file));
+            System.out.println("Serializing details2");
             out.writeObject(gameDetails);
+            System.out.println("Serializing details3");
 
+        }
+        catch(FileNotFoundException e){
+//            try {
+//                File myfile = new File(saving_file);
+//                myfile.createNewFile()   ;
+//
+//            } catch (IOException e1) {
+//                e.printStackTrace();
+//            }
+            e.printStackTrace();
         }
         catch(Exception e){
             e.printStackTrace();
@@ -544,6 +553,7 @@ public class GameMain extends TimerTask  implements Serializable {
             if (out != null) {
                 try {
                     out.close();
+                    System.out.println("Serializing details4");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -554,7 +564,7 @@ public class GameMain extends TimerTask  implements Serializable {
     public void deserializeGameDetails( )   {
         System.out.println("DESerializing details");
 
-        String saving_file = "gamedetails_file.txt";
+        String saving_file = "gamedetails_file.ser";
         ObjectInputStream in = null;
 
         try {
@@ -562,7 +572,16 @@ public class GameMain extends TimerTask  implements Serializable {
             in = new ObjectInputStream(new FileInputStream(saving_file));
             gameDetails = (GameDetails) in.readObject();
         }
-
+        catch(FileNotFoundException e){
+//            try {
+//                File myfile = new File(saving_file);
+//                myfile.createNewFile()   ;
+//
+//            } catch (IOException e1) {
+//                e.printStackTrace();
+//            }
+            e.printStackTrace();
+        }
         catch( ClassNotFoundException e){
             e.printStackTrace();
 
@@ -574,37 +593,45 @@ public class GameMain extends TimerTask  implements Serializable {
             if(in == null) {
                 System.out.println("in is nulll");
             }
-            try {
-                in.close();
-            } catch (IOException e) {
-                e.printStackTrace();
+
+            else {
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
             }
         }
         int j=0;
-        numStars=gameDetails.numStars;
+        numStars=gameDetails.getNumStars();
         for(Map.Entry<Integer,Achievement> t: GameAchievements.entrySet()) {
 
-
-            t.getValue().Unlock=gameDetails.achievementsunlocked.get(j);
-            System.out.println("B"+t.getValue().Unlock);
+            t.getValue().setUnlock(gameDetails.getAchievementsunlocked().get(j));
+            System.out.println("ACHIEVEMENT  : "  + gameDetails.getAchievementsunlocked().get(j));
+//            t.getValue().Unlock=gameDetails.achievementsunlocked.get(j);
+            System.out.println("B"+t.getValue().getUnlock());
             j++;
         }
 
     }
-    public Group getGrp() {
-        return root;
-    }
-    public GameState getCurrentGameState() {
-        return CurrentGameState;
-    }
-    public void setCurrentGameState(GameState currentGameState) {
-        CurrentGameState = currentGameState;
+
+    public void save_button_handle_function()throws Exception{
+//        public void saveGame() throws Exception {
+            System.out.println("GAME WILL BE SAVED !!");
+//        game_main.savegame();
+            Pause();
+            this.AssociatedMain.getMain_page().load_page.start(this.AssociatedMain.getMain_page().main_page_stage);
+
     }
 
     public void removehand() {
         CurrentGameState.getHand().removeself(root);
         CurrentGameState.removed=true;
     }
+
+    //Getters and Setters :
+
     public HashMap<Integer, Achievement> getGameAchievements() {
         return GameAchievements;
     }
@@ -617,6 +644,71 @@ public class GameMain extends TimerTask  implements Serializable {
     }
     public void setLoad(boolean load) {
         this.load=load;
+    }
+    public GameDetails getGameDetails() {
+        return gameDetails;
+    }
+
+    public long getNumStars() {
+        return numStars;
+    }
+
+    public void setNumStars(long numStars) {
+        this.numStars = numStars;
+    }
+
+    public Trail getCurrentTrail() {
+        return currentTrail;
+    }
+
+    public void setCurrentTrail(Trail currentTrail) {
+        this.currentTrail = currentTrail;
+    }
+
+
+    public Main getAssociatedMain() {
+        return AssociatedMain;
+    }
+
+    public boolean getLock() {
+        return lock;
+    }
+
+    public void setLock(boolean lock) {
+        this.lock = lock;
+    }
+
+    public boolean getLoad() {
+        return load;
+    }
+
+    public boolean getCollided_flag() {
+        return collided_flag;
+    }
+
+    public void setCollided_flag(boolean collided_flag) {
+        this.collided_flag = collided_flag;
+    }
+
+    public boolean getPause_var() {
+        return pause_var;
+    }
+
+    public void setPause_var(boolean pause_var) {
+        this.pause_var = pause_var;
+    }
+
+    public void setGameAchievements(HashMap<Integer, Achievement> gameAchievements) {
+        GameAchievements = gameAchievements;
+    }
+    public Group getGrp() {
+        return root;
+    }
+    public GameState getCurrentGameState() {
+        return CurrentGameState;
+    }
+    public void setCurrentGameState(GameState currentGameState) {
+        CurrentGameState = currentGameState;
     }
 
 

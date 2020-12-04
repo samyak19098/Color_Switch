@@ -48,11 +48,13 @@ public class GameState implements Serializable {
     private   Ball CurrentBall;
     private Date DateofSave;
     public boolean removed;
-    AudioClip  mp_colorswitchercollect,mp_starcollect;
+    transient AudioClip  mp_colorswitchercollect,mp_starcollect;
 
     private final String player_name;
     //collision flag :
     public boolean coll_flag;
+
+//    private int xx;
 
 
 
@@ -368,6 +370,10 @@ public class GameState implements Serializable {
     }
 
     public void load_attributes(){
+        mp_colorswitchercollect=new AudioClip( "file:colorswitchercollect.wav" );
+        mp_colorswitchercollect.setCycleCount(1);mp_colorswitchercollect.setVolume(1);
+        mp_starcollect=new AudioClip( "file:starcollect.wav" );
+        mp_starcollect.setCycleCount(1);mp_starcollect.setVolume(1);
         gameoverballs=new ArrayList<>();
         gameovertimeline=new ArrayList<>();
         for(int i=0;i<n;i++) {

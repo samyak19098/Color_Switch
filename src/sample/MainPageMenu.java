@@ -49,12 +49,14 @@ public class MainPageMenu extends Application {
         mp_button.setCycleCount(1);mp_button.setVolume(1);
         this.AssociatedMain = m;
         this.how_to_play_page_obj.main_page_obj = this;
-        this.achievement_page_obj.main_page_obj=this;
-        this.achievement_page_obj.gm=m.getGm();
+        this.achievement_page_obj.setMain_page_obj(this);
+        this.achievement_page_obj.setGm(m.getGm());
+//        this.achievement_page_obj.main_page_obj=this;
+//        this.achievement_page_obj.gm=m.getGm();
         shop_page_obj=new ShopPage(m.getGm());
         this.shop_page_obj.main_page_obj=this;
 
-        load_page= new LoadGamesMenu(AssociatedMain.getGm().gameDetails.playernames);
+        load_page= new LoadGamesMenu(AssociatedMain.getGm().getGameDetails().getPlayernames());
         this.load_page.main_page_obj = this;
         this.load_page.gm = m.getGm();
 
@@ -66,7 +68,8 @@ public class MainPageMenu extends Application {
 
         this.main_page_stage = stage;
         this.how_to_play_page_obj.mp_stage = stage;
-        this.achievement_page_obj.mp_stage = stage;
+//        this.achievement_page_obj.mp_stage = stage;
+        this.achievement_page_obj.setMp_stage(stage);
         this.shop_page_obj.mp_stage = stage;
         this.load_page.mp_stage = stage;
 

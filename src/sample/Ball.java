@@ -15,16 +15,14 @@ import java.io.Serializable;
 import java.util.*;
 
 public class Ball extends GameObject  implements Serializable {
-    public final int id;
-    private final int movtime=250;//time duration of one move
+
+    private final int id;
+    private final int movtime = 250;//time duration of one move
     private final int movedistance = 100;//distance moved in one move
     private transient Color BallColor;
     private transient Shape BallShape;
     private int savedcolor;
     private double radius;
-    public int n=10;
-
-
 
 
     public Ball(Color c, Shape s) {
@@ -209,4 +207,8 @@ public class Ball extends GameObject  implements Serializable {
     public void setShape(Shape s) {
         BallShape = s;
     }
+    public int getId() {
+        return id;
+    }
+
 }
