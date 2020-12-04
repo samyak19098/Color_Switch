@@ -123,6 +123,10 @@ public class GameState implements Serializable {
                             concentricObstacle.rotateConcentric();
                             concentricObstacle.shownOnScreen(grp);
                             sceneObstacles.add(concentricObstacle);
+                            SuperColorSwitcher scs=new SuperColorSwitcher(screenwidth/2,initialhColorSwitcher-screenheight-(2*15),20);
+                            scs.shownOnScreen(grp);
+
+                            sceneColorSwitcher.add(scs);
 
                         } else if (s.getObstacleType().equals("Square")) {
                             TangentialObstacle tangentialObstacle = new TangentialObstacle("Tangential", speed, 0, 170, 20, screenwidth / 2, initialhobstacle - screenheight, true, 45, 225);
@@ -174,10 +178,7 @@ public class GameState implements Serializable {
                         ringObstacle.rotateRing();
                         ringObstacle.shownOnScreen(grp);
                         sceneObstacles.add(ringObstacle);
-                        SuperColorSwitcher scs=new SuperColorSwitcher(screenwidth/2,initialhColorSwitcher-screenheight-(2*20),20);
-                        scs.shownOnScreen(grp);
 
-                        sceneColorSwitcher.add(scs);
 
                         }
                         else if (s.getObstacleType().equals("touchingcross")) {
