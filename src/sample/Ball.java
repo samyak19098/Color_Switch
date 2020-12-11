@@ -171,9 +171,7 @@ public class Ball extends GameObject  implements Serializable {
 
     }
 
-//    public void setTrail(Trail t) {
-//
-//    }
+
 
     public void save_ball(){
         savedposition.set_x(BallShape.getTranslateX());
@@ -206,6 +204,9 @@ public class Ball extends GameObject  implements Serializable {
     }
     public void setShape(Shape s) {
         BallShape = s;
+    }
+    public Shape getShape() {
+        return BallShape ;
     }
     public int getId() {
         return id;

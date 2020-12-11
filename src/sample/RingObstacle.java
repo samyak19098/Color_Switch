@@ -18,20 +18,22 @@ import javafx.scene.shape.*;
 
 public class RingObstacle extends Obstacle  implements Serializable {
 
+
+
     /*
-    radius - radius of the ring obstacle
-    width - thickness of the ring obstacle
-    list quarters : list of all the 4 quarters of the ring; the i'th element of the list represents the (i + 1)'th quarter where 0 <= i <= 3
-    list timelines and rotate : list of timeline and rotate objects of the corresponding quarters; indexing and quarter number are related in the same way as above
-    direction : represents direction of rotation ; clockwise = true & anticlockwise = false
-    */
+        radius - radius of the ring obstacle
+        width - thickness of the ring obstacle
+        list quarters : list of all the 4 quarters of the ring; the i'th element of the list represents the (i + 1)'th quarter where 0 <= i <= 3
+        list timelines and rotate : list of timeline and rotate objects of the corresponding quarters; indexing and quarter number are related in the same way as above
+        direction : represents direction of rotation ; clockwise = true & anticlockwise = false
+        */
     private double radius;
     private double width;
     private double x;
     private transient ArrayList<Path> quarters = new ArrayList<Path>();
     private transient ArrayList<Timeline> timelines = new ArrayList<Timeline>();
     private transient ArrayList<Rotate> rotate_list = new ArrayList<Rotate>();
-    private boolean directionClockwise;
+
     private double saved_angle;
 
     RingObstacle(String type, double speed, int orientation, double radius, double width, double centre_x, double centre_y, boolean direction) {
@@ -116,7 +118,7 @@ public class RingObstacle extends Obstacle  implements Serializable {
 //        System.out.println("notvisible");
     }
     @Override
-    protected void WayOfMovement() {
+    public void WayOfMovement() {
         for (int i = 0; i < timelines.size(); i++) {
             timelines.get(i).setCycleCount(Animation.INDEFINITE);
             double angle_to_cover;
@@ -271,10 +273,7 @@ public class RingObstacle extends Obstacle  implements Serializable {
                 timelines.get(i).pause();
                 tlist.get(i).pause();
             }
-//            for (int i = 0; i < rotate_list.size(); i++) {
-//                System.out.println("angle of ring " + (i));
-//                System.out.println(":" + rotate_list.get(i).getAngle());
-//            }
+
         });
 
     }
@@ -284,12 +283,7 @@ public class RingObstacle extends Obstacle  implements Serializable {
         //otherwise false
 
         int i = -1;
-//        System.out.println("will do");
-//        System.out.println("b.getShape().getTranslateX():" + b.getBallShape().getTranslateX());
-//        System.out.println("b.getShape().getTranslateY():" + b.getBallShape().getTranslateY());
-//        System.out.println("b.getPosition().get_x():" + b.getPosition().get_x());
-//        System.out.println("b.getPosition().get_y():" + b.getPosition().get_y());
-//        System.out.println("b.getPosition().getRadius():" + b.getRadius());
+
 
         //matching color
         for (i = 0; i < 4; i++) {
@@ -297,31 +291,24 @@ public class RingObstacle extends Obstacle  implements Serializable {
                 break;
             }
         }
-//        System.out.println("i:" + i);
-//        System.out.println(b.getColor() == quarters.get(i).getFill());
+
         double ang = rotate_list.get(i).getAngle();
-//        System.out.println("ang:" + ang);
+
         //cal=distance b/w centers
         double cal = b.getPosition().get_y() + b.getBallShape().getTranslateY() - position.get_y() - quarters.get(i).getTranslateY();
-//        System.out.println("quarters.get(i).getTranslateY():" + quarters.get(i).getTranslateY());
-//        System.out.println("cal:" + cal);
+
         if(directionClockwise)
         ang += (i * 90);
         else
             ang -= (i * 90);
-//        System.out.println("ang2:" + ang);
+
         //So that angle is b/w 0 and 360
 
         ang = adjust(ang);
 
-//        System.out.println("ang3:" + ang);
+
         if (cal > 0) {//when ball is near bottom of obstacle
-//            System.out.println("(radius - b.getRadius()) <= (cal):" +( (radius - b.getRadius()) <= (cal)));
-//            System.out.println("(radius + b.getRadius()) >= (cal):" +( (radius + b.getRadius()) >= (cal)));
-//            System.out.println("1:" + ((radius - b.getRadius()) <= (cal)));
-//            System.out.println("2:" + (cal <= (radius + b.getRadius()+width)));
-//            System.out.println("2.1:" +cal);
-//                    System.out.println("2.2:" +(radius + b.getRadius()+width));
+
             if (((radius - b.getRadius()) <= (cal)) && (cal <= (radius + b.getRadius()+width))) {
 
                 if (((90) <= ang) && (ang < 180))
@@ -332,15 +319,14 @@ public class RingObstacle extends Obstacle  implements Serializable {
         }
         if (cal < 0) {//when ball is near top of obstacle
             if (((radius - b.getRadius()) <= (-cal)) && ((-cal) <= (radius + b.getRadius()+width))) {
-//                System.out.println("3:" + ((radius - b.getRadius()) <= (-cal)));
-//                System.out.println("4:" + ((-cal) <= (radius + b.getRadius())));
+
                 if ((270 <= ang) && (ang < 360))
                     return false;
                 else
                     return true;
             }
         }
-        //System.out.println("b.getShape().getTranslateY():"+b.getBallShape().getr());
+
         return false;
     }
 
@@ -372,5 +358,11 @@ public class RingObstacle extends Obstacle  implements Serializable {
     public ArrayList<Path> getQuarters() {
         return quarters;
     }
+    public void setRadius(double r) {
+        this.radius = r;
+    }
 
+    public void setWidth(double w) {
+        this.width = w;
+    }
 }

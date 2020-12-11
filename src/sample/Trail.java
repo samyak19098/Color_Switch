@@ -97,7 +97,7 @@ public class Trail  extends TimerTask  {
                     ((Circle) a.getBallShape()).setRadius(parentball.getRadius());
                     });
                     q.add(a);
-//                    System.out.println("Hello World2!"+t);
+
                 }
             }));
         }
@@ -122,22 +122,17 @@ public class Trail  extends TimerTask  {
     public void run() {
 
         if (!q.isEmpty() && pausetrail==false) {
-//            System.out.println("Hello World!"+t);
+
             t++;
             Ball b = q.remove();
-//            b.atend();
+
             Platform.runLater(() -> {
 
                         ((Circle) b.getBallShape()).setCenterY(parentball.getBallShape().getTranslateY() + parentball.getPosition().get_y());
-//                System.out.println("a:"+parentball.getBallShape().getTranslateY());
-//                System.out.println("b:"+parentball.getPosition().get_y());
-//                System.out.println("c:"+b.getBallShape().getTranslateY());
-//                System.out.println("d:"+((Circle)b.getBallShape()).getCenterY());
-
                 b.getBallShape().setVisible(true);
                     });
             t1.get(b.getId()).play();
-//            System.out.println("atend:"+atend);
+
             if(atend)
                 b.atendtrail();
         }
@@ -150,7 +145,7 @@ public class Trail  extends TimerTask  {
 
         //They all need TranslateTransition that will be called when objects move down
 
-        //System.out.println("Timer ran ");
+
     }
     public void Pause(){
         pausetrail=true;

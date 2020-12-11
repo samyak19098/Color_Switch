@@ -18,8 +18,12 @@ import javafx.scene.shape.*;
 
 public class SquareObstacle extends Obstacle  implements Serializable {
 
+
+
     private double sideLength;
-    private boolean directionClockwise;
+
+
+
     private double thickness;
     private transient Path squareObject;
     private transient ArrayList<Path> sides = new ArrayList<Path>();
@@ -27,7 +31,7 @@ public class SquareObstacle extends Obstacle  implements Serializable {
     private transient ArrayList<Rotate> rotate_list = new ArrayList<Rotate>();
     private double saved_angle;
 
-    SquareObstacle(String type, double speed, int orientation, double centre_x, double centre_y, double side, double thickness, boolean isClockwise) {
+    public SquareObstacle(String type, double speed, int orientation, double centre_x, double centre_y, double side, double thickness, boolean isClockwise) {
         super(type, speed, orientation);
         this.setPosition(new Position(centre_x,centre_y));
         this.sideLength = side;
@@ -36,7 +40,7 @@ public class SquareObstacle extends Obstacle  implements Serializable {
     }
 
     @Override
-    protected void WayOfMovement() {
+    public void WayOfMovement() {
         for(int i = 0 ; i < timelines.size(); i++){
             timelines.get(i).setCycleCount(Animation.INDEFINITE);
             double angle_to_cover;
@@ -147,7 +151,7 @@ public class SquareObstacle extends Obstacle  implements Serializable {
 
     @Override
     public void movedown(Ball b) {
-//        System.out.println("sq move down");
+
             Platform.runLater(() -> {
                 for (int i = 0; i < 4; i++) {
                     tlist.get(i).stop();
@@ -159,7 +163,7 @@ public class SquareObstacle extends Obstacle  implements Serializable {
                     tlist.get(i).setDuration(Duration.millis(movtime));
                     //Setting auto reverse value to false
                     // translateTransition.setAutoReverse(false);
-//                        System.out.println("move down");
+
                     int finalI=i;
                     tlist.get(i).setOnFinished(new EventHandler<ActionEvent>() {//todo: dont create eventhandler  everytime
                         @Override
@@ -172,7 +176,6 @@ public class SquareObstacle extends Obstacle  implements Serializable {
                     tlist.get(i).play();
                 }
             });
-//        collisionCheck(b);
 
     }
 
@@ -228,10 +231,6 @@ public class SquareObstacle extends Obstacle  implements Serializable {
                 timelines.get(i).pause();
                 tlist.get(i).pause();
             }
-//            for (int i = 0; i < rotate_list.size(); i++) {
-//                System.out.println("angle of ring " + (i));
-//                System.out.println(":" + rotate_list.get(i).getAngle());
-//            }
         });
 
     }
@@ -251,12 +250,6 @@ public class SquareObstacle extends Obstacle  implements Serializable {
         //returns true  if collision occurs
         //otherwise false
         int i = -1;
-        //System.out.println("will do");
-//        System.out.println("b.getShape().getTranslateX():" + b.getBallShape().getTranslateX());
-//        System.out.println("b.getShape().getTranslateY():" + b.getBallShape().getTranslateY());
-//        System.out.println("b.getPosition().get_x():" + b.getPosition().get_x());
-//        System.out.println("b.getPosition().get_y():" + b.getPosition().get_y());
-//        System.out.println("b.getPosition().getRadius():" + b.getRadius());
 
         //matching color
         for (i = 0; i < 4; i++) {
@@ -264,31 +257,22 @@ public class SquareObstacle extends Obstacle  implements Serializable {
                 break;
             }
         }
-//        System.out.println("i:" + i);
-//        System.out.println(b.getColor() == quarters.get(i).getFill());
+
         double ang = rotate_list.get(i).getAngle();
-//        System.out.println("ang:" + ang);
+
         //cal=distance b/w centers
         double cal = b.getPosition().get_y() + b.getBallShape().getTranslateY() - position.get_y() - sides.get(i).getTranslateY();
-//        System.out.println("quarters.get(i).getTranslateY():" + quarters.get(i).getTranslateY());
-//        System.out.println("cal:" + cal);
+
         ang += (i * 90);
         ang = adjust(ang);
-//        System.out.println("ang2:" + ang);
+
         //So that angle is b/w 0 and 360
 
-//        System.out.println("ang3:" + ang);
+
         if (cal > 0) {//when ball is near bottom of obstacle
-//            System.out.println("  (cal):" +  (cal));
-//            System.out.println("sideLength:" +(sideLength));
-//            System.out.println("(effectiveside(ang,sideLength)):" +(effectiveside(ang,sideLength)));
-//            System.out.println("b.getRadius():" + b.getRadius());
-//
-//            System.out.println("(effectiveside(ang,sideLength+thickness):" +effectiveside(ang,sideLength+thickness));
-//                    System.out.println("2.2:" +(radius + b.getRadius()+width));
 
                 if ((((effectiveside(ang,sideLength)) - b.getRadius()) <= (cal)) && (cal <= ((effectiveside(ang,sideLength+thickness)) + b.getRadius()))){
-//                    System.out.println("ang1:" + ang);
+
                     if (((45) <= ang) && (ang < 135))//same color
                         return false;
                 else
@@ -297,14 +281,13 @@ public class SquareObstacle extends Obstacle  implements Serializable {
         }
         if (cal < 0) {//when ball is near top of obstacle
             if ((((effectiveside(ang,sideLength)) - b.getRadius()) <= (-cal)) && ((-cal) <= ((effectiveside(ang,sideLength+thickness)) + b.getRadius() ))) {
-//                System.out.println("ang2:" + ang);
+
                 if (((225) <= ang) && (ang < 315))
                     return false;
                 else
                     return true;
             }
         }
-        //System.out.println("b.getShape().getTranslateY():"+b.getBallShape().getr());
         return false;
     }
     public double effectiveside(double ang,double sidel){
@@ -345,5 +328,10 @@ public class SquareObstacle extends Obstacle  implements Serializable {
     public double getSaved_angle() {
         return saved_angle;
     }
-
+    public void setSideLength(double d) {
+        this.sideLength = d;
+    }
+    public void setThickness(double d) {
+        this.thickness = d;
+    }
 }

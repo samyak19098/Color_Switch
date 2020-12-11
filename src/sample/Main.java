@@ -121,7 +121,7 @@ public class Main extends Application {
             public void handle(ActionEvent event) {
 //                System.out.println("this is called every 5 seconds on UI thread");
                 try {
-                    main_page.start(primaryStage);
+                    main_page.start(MainStage);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

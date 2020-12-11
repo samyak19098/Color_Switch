@@ -3,19 +3,19 @@ package sample;
 import java.io.Serializable;
 
 public class Position implements Serializable {
-    double x_pos;
-    double y_pos;
+    private double x_pos;
+    private double y_pos;
 
-    Position(double x, double y){
+    public Position(double x, double y){
         this.x_pos = x;
         this.y_pos = y;
     }
 
-    public void set_x(double x){
-        this.x_pos = x;
+    public void set_x(double x_set){
+        this.x_pos = x_set;
     }
-    public void set_y(double y){
-        this.y_pos = y;
+    public void set_y(double y_set){
+        this.y_pos = y_set;
     }
     public double get_x(){
         return this.x_pos;

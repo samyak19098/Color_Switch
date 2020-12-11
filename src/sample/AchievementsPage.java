@@ -20,7 +20,7 @@ import java.io.FileInputStream;
 import java.util.Map;
 
 public class AchievementsPage extends Application{
-    protected static  double screenheight=800;
+    private static  double screenheight=800;
     private static double screenwidth = 1200;
     private MainPageMenu main_page_obj;
     private GameMain gm;

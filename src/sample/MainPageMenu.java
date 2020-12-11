@@ -28,19 +28,19 @@ import java.util.Optional;
 
 import static javafx.scene.media.AudioClip.INDEFINITE;
 
-public class MainPageMenu extends Application {
+public class MainPageMenu extends Menu {
 
     // privatise !
-    HowToPlayPage how_to_play_page_obj = new HowToPlayPage();
-    AchievementsPage achievement_page_obj = new AchievementsPage();
-    ShopPage shop_page_obj;
-    LoadGamesMenu load_page;
+    protected HowToPlayPage how_to_play_page_obj = new HowToPlayPage();
+    protected AchievementsPage achievement_page_obj = new AchievementsPage();
+    protected ShopPage shop_page_obj;
+    protected LoadGamesMenu load_page;
 //    InGameMenu in_game_obj = new InGameMenu();
-    Main AssociatedMain;
-    static AudioClip mp_button,mp_bgmusic;
-    Stage main_page_stage;
+    protected Main AssociatedMain;
+    protected static AudioClip mp_button,mp_bgmusic;
+    protected Stage main_page_stage;
 
-    MainPageMenu(Main m){
+    public MainPageMenu(Main m){
         mp_bgmusic= new AudioClip( "file:background.wav" );
         mp_bgmusic.setVolume(0.5);
         mp_bgmusic.setCycleCount(INDEFINITE);
@@ -345,6 +345,14 @@ public class MainPageMenu extends Application {
 
     public static void main(String[] args) {
         launch(args);
+    }
+    @Override
+    public void showMenu(){
+        try {
+            start(new Stage());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }

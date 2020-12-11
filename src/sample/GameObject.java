@@ -20,7 +20,9 @@ public abstract class GameObject  implements Serializable {
     public abstract void shownOnScreen(Group g);
 
     public abstract void draw();
-    public abstract boolean collisionCheck(Ball b);
+    public   boolean collisionCheck(Ball b){
+        return true;
+    }
     public Position getPosition(){
         return this.position;
     }

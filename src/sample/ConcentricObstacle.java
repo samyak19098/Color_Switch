@@ -19,18 +19,18 @@ public class ConcentricObstacle extends Obstacle implements Serializable {
     private double radius;  //radius of inner ring ; R_outer = R_inner + width + 5;
     private double width;
     private ArrayList<RingObstacle> rings = new ArrayList<RingObstacle>();      // rings[0] = inner ring, rings[1] = outer ring;
-    private boolean directionClockwise; // direction of inner ring(T = clockwise, F = anti)
+     // direction of inner ring(T = clockwise, F = anti)
     private double angleRing; //angle by which rings are rotated ( generally 45)
     private double saved_angle_left;
     private double saved_angle_right;
 
-    ConcentricObstacle(String type, double speed, int orientation, double radius, double width, double centre_x, double centre_y, boolean direction, double angle){
+    ConcentricObstacle(String type, double speed, int orientation, double rad, double width, double centre_x, double centre_y, boolean direction, double anglering){
         super(type,speed,orientation);
         this.setPosition(new Position(centre_x,centre_y));
-        this.radius = radius;
+        this.radius = rad;
         this.width = width;
         this.directionClockwise = direction;
-        this.angleRing = angle;
+        this.angleRing = anglering;
     }
 
     @Override
@@ -143,6 +143,18 @@ public class ConcentricObstacle extends Obstacle implements Serializable {
 
     public boolean isDirectionClockwise() {
         return directionClockwise;
+    }
+
+    public void setRadius(double r) {
+        this.radius = r;
+    }
+
+    public void setWidth(double r) {
+        this.width = r;
+    }
+
+    public void setAngleRing(double r) {
+        this.angleRing = r;
     }
 
     public double getAngleRing() {

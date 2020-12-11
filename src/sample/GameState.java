@@ -28,18 +28,14 @@ import java.text.SimpleDateFormat;
 // any code that involves changes in gui components needs to be enclosed within it
 public class GameState implements Serializable {
 
-//    transient Media starcollect = new Media(new File("starcollect.wav").toURI().toString());
-////    MediaPlayer mp_starcollect = new MediaPlayer(starcollect);
-//   transient Media colorswitchercollect = new Media(new File("colorswitchercollect.wav").toURI().toString());
-////    MediaPlayer mp_colorswitchercollect = new MediaPlayer(colorswitchercollect);
-//    transient Media GameOver = new Media(new File("GameOver.wav").toURI().toString());
-//    MediaPlayer mp_GameOver = new MediaPlayer(GameOver);
+
     private int n,r;
+    private Obstaclefactory factory;
     private final int movtime = 250;
     private transient ArrayList<Circle> gameoverballs;
     private transient ArrayList<Timeline> gameovertimeline;
     private static  double screenwidth=1200;
-    private static  double initialhColorSwitcher=250;
+    private static  double initialhColorSwitcher=270;
     private static  double initialhobstacle=50;
     private static  double screenheight=800;
     private static  double speed=6000;
@@ -47,25 +43,36 @@ public class GameState implements Serializable {
     private long numStarsinGame;
     private   Ball CurrentBall;
     private Date DateofSave;
-    public boolean removed;
-    transient AudioClip  mp_colorswitchercollect,mp_starcollect;
-
+    private boolean removed;
+    private transient AudioClip  mp_colorswitchercollect,mp_starcollect;
     private final String player_name;
     //collision flag :
-    public boolean coll_flag;
+    private boolean coll_flag;
 
 //    private int xx;
 
 
 
     private transient Hand hand;
+
+
+
     private static SimpleDateFormat Dateformatter;
     private    ArrayList<Obstacle>   sceneObstacles;
     private   ArrayList<Star>   sceneStars;
     private   ArrayList<ColorSwitcher>   sceneColorSwitcher;
+
+
+
+    private   transient  ArrayList<SuperColorSwitcher>   sceneSuperColorSwitcher;
     private int debug=1;
-    public  transient Trail BallTrail;
+
+
+
+    private  transient Trail BallTrail;
+    public GameState(){player_name="player1";}
     public GameState(Trail trail, String name){
+        factory=new Obstaclefactory();
         mp_colorswitchercollect=new AudioClip( "file:colorswitchercollect.wav" );
         mp_colorswitchercollect.setCycleCount(1);mp_colorswitchercollect.setVolume(1);
         mp_starcollect=new AudioClip( "file:starcollect.wav" );
@@ -115,81 +122,15 @@ public class GameState implements Serializable {
 //                    System.out.println("len1:" + sceneObstacles.size());
                     //                System.out.println(""+s.getPosition().get_y());
                     Platform.runLater(() -> {
-                        if (s.getObstacleType().equals("Ring")) {
-
-                            ConcentricObstacle concentricObstacle = new ConcentricObstacle("Concentric", speed, 0, 100, 20, screenwidth / 2, initialhobstacle - screenheight, true, 45);
-                            concentricObstacle.draw();
-                            concentricObstacle.WayOfMovement();
-                            concentricObstacle.rotateConcentric();
-                            concentricObstacle.shownOnScreen(grp);
-                            sceneObstacles.add(concentricObstacle);
-                            SuperColorSwitcher scs=new SuperColorSwitcher(screenwidth/2,initialhColorSwitcher-screenheight-(2*15),20);
-                            scs.shownOnScreen(grp);
-
-                            sceneColorSwitcher.add(scs);
-
-                        } else if (s.getObstacleType().equals("Square")) {
-                            TangentialObstacle tangentialObstacle = new TangentialObstacle("Tangential", speed, 0, 170, 20, screenwidth / 2, initialhobstacle - screenheight, true, 45, 225);
-                            tangentialObstacle.draw();
-                            tangentialObstacle.WayOfMovement();
-                            tangentialObstacle.rotateTangential();
-                            tangentialObstacle.shownOnScreen(grp);//tangentialObstacle.Pause();//tangentialObstacle.Resume();
-                            sceneObstacles.add(tangentialObstacle);
-
-                    }
-                    else if(s.getObstacleType().equals("Concentric")){
-                        VerTanObstacle vertanObstacle= new VerTanObstacle("VerTan",speed,0,100, 20, screenwidth/2,initialhobstacle-screenheight ,true,45);
-                        vertanObstacle.draw();
-                        vertanObstacle.WayOfMovement();
-                        vertanObstacle.rotateConcentric();
-                        vertanObstacle.shownOnScreen(grp);
-//                        vertanObstacle.Pause();
-                        sceneObstacles.add(vertanObstacle);
-//
-//
-//
-                    }
-                    else if(s.getObstacleType().equals("Tangential")){
-                             CrossObstacle crossObstacle=new CrossObstacle("cross",speed,0,screenwidth*0.2,20,screenwidth *0.6, initialhobstacle - screenheight,true);
-                            crossObstacle.draw();
-                            crossObstacle.WayOfMovement();
-                            crossObstacle.rotateCross();
-                            crossObstacle.shownOnScreen(grp);
-                            sceneObstacles.add(crossObstacle);
-////                            crossObstacle.Pause();
-
-//
-                    }
-                    else if(s.getObstacleType().equals("VerTan")){
-                            TouchingCross touchingcrossObstacle=new TouchingCross("touchingcross",speed,0,screenwidth*0.2,20,screenwidth/2, initialhobstacle - screenheight,true);
-                            touchingcrossObstacle.draw();
-                            touchingcrossObstacle.WayOfMovement();
-                            touchingcrossObstacle.rotateTouchingCross();
-                            touchingcrossObstacle.shownOnScreen(grp);
-                            sceneObstacles.add(touchingcrossObstacle);
-//
-//
+                        if (s.getObstacleType().equals("cross")) {
+                            if(speed>1010)
+                            speed -= 2000;//more difficulty
                         }
-                        else if (s.getObstacleType().equals("cross")) {
-                        speed-=5;//more difficulty
-                        RingObstacle ringObstacle = new RingObstacle("Ring", speed, 0, 100,20, screenwidth/2, initialhobstacle-screenheight, true);
-                        ringObstacle.draw();
-                        ringObstacle.WayOfMovement();
-                        ringObstacle.rotateRing();
-                        ringObstacle.shownOnScreen(grp);
-                        sceneObstacles.add(ringObstacle);
+                        sceneObstacles.add(factory.createObstacle(  s.getObstacleType(),   speed,   grp,  screenwidth,  screenheight,  initialhColorSwitcher,  initialhobstacle,   sceneObstacles,   sceneColorSwitcher));
 
 
-                        }
-                        else if (s.getObstacleType().equals("touchingcross")) {
-                            SquareObstacle squareObstacle = new SquareObstacle("Square",speed,0,screenwidth/2,initialhobstacle-screenheight  ,175 ,20 ,true);
-                            squareObstacle.draw();
-                            squareObstacle.WayOfMovement();
-                            squareObstacle.rotateSquare();
-                            squareObstacle.shownOnScreen(grp);
-                            sceneObstacles.add(squareObstacle);
 
-                        }
+
                         Star newstar = new Star(screenwidth / 2, initialhobstacle - screenheight);
                         newstar.shownOnScreen(grp);
                         sceneStars.add(newstar);
@@ -408,47 +349,47 @@ public class GameState implements Serializable {
     public long getNumStarsinGame() {
         return numStarsinGame;
     }
-    public void setNumStarsinGame(long numStarsinGame) {
-        this.numStarsinGame = numStarsinGame;
+    public void setNumStarsinGame(long s) {
+        this.numStarsinGame = s;
     }
     public Ball getCurrentBall() {
         return CurrentBall;
     }
 
-    public void setCurrentBall(Ball currentBall) {
-        CurrentBall = currentBall;
+    public void setCurrentBall(Ball b) {
+        CurrentBall = b;
     }
 
     public Date getDateofSave() {
         return DateofSave;
     }
 
-    public void setDateofSave(Date dateofSave) {
-        DateofSave = dateofSave;
+    public void setDateofSave(Date d) {
+        DateofSave = d;
     }
 
     public ArrayList<Obstacle> getSceneObstacles() {
         return sceneObstacles;
     }
 
-    public void setSceneObstacles(ArrayList<Obstacle> sceneObstacles) {
-        this.sceneObstacles = sceneObstacles;
+    public void setSceneObstacles(ArrayList<Obstacle> c) {
+        this.sceneObstacles = c;
     }
 
     public ArrayList<Star> getSceneStars() {
         return sceneStars;
     }
 
-    public void setSceneStars(ArrayList<Star> sceneStars) {
-        this.sceneStars = sceneStars;
+    public void setSceneStars(ArrayList<Star> c) {
+        this.sceneStars = c;
     }
 
     public ArrayList<ColorSwitcher> getSceneColorSwitcher() {
         return sceneColorSwitcher;
     }
 
-    public void setSceneColorSwitcher(ArrayList<ColorSwitcher> sceneColorSwitcher) {
-        this.sceneColorSwitcher = sceneColorSwitcher;
+    public void setSceneColorSwitcher(ArrayList<ColorSwitcher> c) {
+        this.sceneColorSwitcher = c;
     }
     public Hand getHand() {
         return hand;
@@ -461,5 +402,31 @@ public class GameState implements Serializable {
     public String getPlayer_name() {
         return player_name;
     }
+    public void setRemoved(boolean removed) {
+        this.removed = removed;
+    }
 
+    public boolean getRemoved() {
+        return removed;
+    }
+    public ArrayList<SuperColorSwitcher> getSceneSuperColorSwitcher() {
+        return sceneSuperColorSwitcher;
+    }
+
+    public void setSceneSuperColorSwitcher(ArrayList<SuperColorSwitcher> d) {
+        this.sceneSuperColorSwitcher = d;
+    }
+    public static SimpleDateFormat getDateformatter() {
+        return Dateformatter;
+    }
+
+    public static void setDateformatter(SimpleDateFormat d) {
+        Dateformatter = d;
+    }
+    public void setcoll_flag(boolean s){
+        coll_flag=s;
+    }
+    public Trail getBallTrail() {
+        return BallTrail;
+    }
 }

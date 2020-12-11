@@ -17,8 +17,8 @@ public   class Achievement implements Serializable {
 
     private Rectangle unlocked,locked;
     private boolean Unlock;
-    public Date DateofUnlock;
-    public SimpleDateFormat DateFormatter;
+    private Date DateofUnlock;
+    private SimpleDateFormat DateFormatter;
 
     public Achievement(){
         text=new TextArea();
