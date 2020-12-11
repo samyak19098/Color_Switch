@@ -271,66 +271,6 @@ public class GameMain extends TimerTask  implements Serializable {
                             //g.CurrentBall.translateTransition.play();
                         }
                         removehand();
-
-
-                        break;
-
-                    case W:
-
-                        System.out.println("circle.getTranslateX():" + CurrentGameState.getCurrentBall().getBallShape().getTranslateX());
-                        System.out.println("circle.getTranslateY():" + CurrentGameState.getCurrentBall().getBallShape().getTranslateY());
-                        CurrentGameState.getCurrentBall().getTranslateTransition().stop();
-                        CurrentGameState.getCurrentBall().getTranslateTransition().setToY(Double.NaN);
-                        CurrentGameState.getCurrentBall().getTranslateTransition().setToX(Double.NaN);
-                        CurrentGameState.getCurrentBall().getTranslateTransition().setByX(0);
-                        CurrentGameState.getCurrentBall().getTranslateTransition().setByY(-movedistance);
-
-                        //Setting the cycle count for the transition
-                        CurrentGameState.getCurrentBall().getTranslateTransition().setCycleCount(1);
-                        CurrentGameState.getCurrentBall().getTranslateTransition().setDuration(Duration.millis(movtime));
-                        CurrentGameState.getCurrentBall().getTranslateTransition().setOnFinished(null);
-                        CurrentGameState.getCurrentBall().getTranslateTransition().play();
-                        break;
-
-
-                    case D:
-                        System.out.println("circle.getTranslateX():" + CurrentGameState.getCurrentBall().getBallShape().getTranslateX());
-                        System.out.println("circle.getTranslateY():" + CurrentGameState.getCurrentBall().getBallShape().getTranslateY());
-                        CurrentGameState.getCurrentBall().getTranslateTransition().stop();
-                        CurrentGameState.getCurrentBall().getTranslateTransition().setToX(Double.NaN);
-                        CurrentGameState.getCurrentBall().getTranslateTransition().setToY(Double.NaN);
-                        CurrentGameState.getCurrentBall().getTranslateTransition().setByY(0);
-                        CurrentGameState.getCurrentBall().getTranslateTransition().setByX(movedistance);
-
-                        //Setting the cycle count for the transition
-                        CurrentGameState.getCurrentBall().getTranslateTransition().setCycleCount(1);
-                        CurrentGameState.getCurrentBall().getTranslateTransition().setDuration(Duration.millis(movtime));
-                        CurrentGameState.getCurrentBall().getTranslateTransition().setOnFinished(null);
-                        CurrentGameState.getCurrentBall().getTranslateTransition().play();
-                        break;
-                    case P://pause
-//                        Platform.runLater(() -> {
-//                                    mp_button.stop();
-//                                    mp_button.play();
-//                                });
-//                        gm.getCurrentGameState().getSceneObstacles().get(1).Pause();
-//                        timer.cancel();
-//                        trailtimer.cancel();
-                        Pause();
-                        break;
-
-
-                    case R://continue
-//                        Platform.runLater(() -> {
-//                            mp_button.stop();
-//                            mp_button.play();
-//                        });
-//                        gm.getCurrentGameState().getSceneObstacles().get(1).Resume();
-//                        timer = new Timer();
-//                        trailtimer = new Timer();
-//                        timer.schedule(gm, 500, 100);
-//                        trailtimer.schedule(gm.getCurrentGameState().BallTrail, 500, 150);
-                        continueGame();
                         break;
                     default:
                         System.out.println("defaultkey");
