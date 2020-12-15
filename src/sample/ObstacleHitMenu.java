@@ -18,12 +18,14 @@ import javafx.stage.WindowEvent;
 import java.io.FileInputStream;
 import java.util.Map;
 
-public class ObstacleHitMenu extends Application {
+public class ObstacleHitMenu extends Menu {
 
     MainPageMenu main_page_obj;
     Stage ob_hit_stage;
     GameMain game_main;
+    public ObstacleHitMenu(){
 
+    }
     @Override
     public void start(Stage HitMenuStage) throws Exception {
         this.ob_hit_stage = HitMenuStage;
@@ -76,6 +78,10 @@ public class ObstacleHitMenu extends Application {
             {
                 System.out.println("BUTTON RESTART GAME PRESSED");
                 try {
+                    Platform.runLater(() -> {
+                        MainPageMenu.mp_button.stop();
+                        MainPageMenu.mp_button.play();
+                    });
                     restartGame();
                 } catch (Exception ex) {
                     ex.printStackTrace();
@@ -89,7 +95,11 @@ public class ObstacleHitMenu extends Application {
             {
                 System.out.println("BUTTON CONTINUE GAME PRESSED");
                 try {
-                    Obstacle_Menu_continueGame();
+                    Platform.runLater(() -> {
+                        MainPageMenu.mp_button.stop();
+                        MainPageMenu.mp_button.play();
+                    });
+                    resurrect();
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
@@ -102,6 +112,10 @@ public class ObstacleHitMenu extends Application {
             {
                 System.out.println("BUTTON EXIT TO MAIN MENU PRESSED");
                 try {
+                    Platform.runLater(() -> {
+                        MainPageMenu.mp_button.stop();
+                        MainPageMenu.mp_button.play();
+                    });
                     exitToMainPage();
                 } catch (Exception ex) {
                     ex.printStackTrace();
@@ -134,28 +148,34 @@ public class ObstacleHitMenu extends Application {
     }
 
 
-    public void Obstacle_Menu_continueGame(){
-        System.out.println("GAME WILL BE CONTINUED !! + COLL FLAG == " +  game_main.getCollided_flag());
-        if(false){//game_main.getCurrentGameState().getNumStarsinGame() < 5){
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Insufficient Stars");
-            alert.setHeaderText("INSUFFICIENT STARS !! ");
-            alert.setContentText("Sorry ! You do not have sufficient stars to continue ");
-            alert.showAndWait();
-        }
-        else {
-            game_main.setCollided_flag(false);
-            game_main.setLock(false);
+    public void resurrect(){
+        Platform.runLater(() -> {
+            System.out.println("GAME WILL BE CONTINUED !! + COLL FLAG == " + game_main.getCollided_flag());
+            if ( game_main.getCurrentGameState().getNumStarsinGame() < 2){
+                try{
+                    throw new StarsNotSufficientException();
+                }
+                catch(StarsNotSufficientException e) {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Insufficient Stars");
+                    alert.setHeaderText("INSUFFICIENT STARS !! ");
+                    alert.setContentText("Sorry ! You do not have sufficient stars to continue ");
+                    alert.showAndWait();
+                }
+            } else {
+                game_main.setCollided_flag(false);
+                game_main.setLock(false);
 //            game_main.lock = false;
 //        game_main.getCurrentGameState().coll_flag = false;
-        game_main.continueGame();
-//            game_main.getCurrentGameState().decreaseNumStarsinGame();
-            game_main.getAssociatedMain().getMainStage().setScene(game_main.getGm_scene());
-            game_main.getAssociatedMain().getMainStage().show();
+                game_main.continueGame();
+            game_main.getCurrentGameState().decreaseNumStarsinGame();
+                game_main.getAssociatedMain().getMainStage().setScene(game_main.getGm_scene());
+                game_main.getAssociatedMain().getMainStage().show();
 //            game_main.AssociatedMain.getMainStage().setScene(game_main.getGm_scene());
 //            game_main.AssociatedMain.getMainStage().show();
 //        game_main.Pause();
-        }
+            }
+        });
 
     }
 
@@ -170,11 +190,7 @@ public class ObstacleHitMenu extends Application {
         main_page_obj.AssociatedMain.getGm().setNumStars(to_set);
 //        main_page_obj.AssociatedMain.getGm().numStars+=main_page_obj.AssociatedMain.getGm().getCurrentGameState().getNumStarsinGame();
 
-//        for(Map.Entry<Integer,Achievement> t: main_page_obj.AssociatedMain.getGm().getGameAchievements().entrySet()) {
-//            if (t.getValue().Requirement(main_page_obj.AssociatedMain.getGm().numStars)) {
-//                t.getValue().Unlock=true;
-//            }
-//        }
+
         main_page_obj.AssociatedMain.getGm().setCurrentGameState(null);
         System.out.println("GAME WILL BE EXITED TO MAIN PAGE !!");
         main_page_obj.start(main_page_obj.main_page_stage);
@@ -183,5 +199,13 @@ public class ObstacleHitMenu extends Application {
 
     public static void main(String args[]){
         launch(args);
+    }
+    @Override
+    public void showMenu(){
+        try {
+            start(new Stage());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

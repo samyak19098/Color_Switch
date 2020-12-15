@@ -6,9 +6,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -22,6 +20,7 @@ import javafx.stage.WindowEvent;
 import javafx.scene.effect.DropShadow;
 
 import java.io.FileInputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,9 +36,67 @@ public class ShopPage extends Application{
     Stage shop_page_stage;
     Stage mp_stage;
     Group help_page_group;
+    ArrayList<RadioButton> whichtrail;
+    ToggleGroup selectedtrail;
 
     public ShopPage(GameMain oldgm){
         gm=oldgm;
+        selectedtrail=new ToggleGroup();
+        whichtrail=new ArrayList<>();
+        for(int i=0;i<4;i++){
+            whichtrail.add(new RadioButton());
+            whichtrail.get(i).setToggleGroup(selectedtrail);
+//            int finalI = i;
+//            whichtrail.get(i).setOnMouseClicked(new EventHandler<MouseEvent>() {
+//                @Override
+//                public void handle(MouseEvent mouseEvent) {
+//                    if( whichtrail.get(finalI).isSelected()) {
+//                        whichtrail.get(finalI).setSelected(false);
+//                        for(int i=0;i<4;i++){
+//                            if(i)
+//                        }
+//                    }
+//                    else{
+//                        whichtrail.get(finalI).setSelected(true);
+//                    }
+//                    System.out.println("aaa");
+//                }
+//            });
+
+//            whichtrail.get(i).setLayoutX();
+//            whichtrail.get(i).setLayoutY();
+
+        }
+        whichtrail.get(0).setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
+                gm.setCurrentTrail(null);
+                System.out.println("bbb");
+            }
+        });
+        whichtrail.get(1).setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
+                gm.setCurrentTrail(new Trail());
+                System.out.println("bbb");
+            }
+        });
+        whichtrail.get(2).setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
+                gm.setCurrentTrail(new Firetrail());
+                System.out.println("bbb");
+            }
+        });
+        whichtrail.get(3).setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
+                gm.setCurrentTrail(new Neontrail());
+                System.out.println("bbb");
+            }
+        });
+        whichtrail.get(0).fire();
+
         totalstars =new Text();
         totalstars.setLayoutX(30);
         totalstars.setLayoutY(screenheight/4);
@@ -62,13 +119,13 @@ public class ShopPage extends Application{
         {
             @Override
             public void handle(MouseEvent t) {
+                whichtrail.get(0).fire();
                 MainPageMenu.mp_button.stop();MainPageMenu.mp_button.play();
                 gm.setCurrentTrail(null);
             }
         });
-
-
         a.setUnlock(true);a.text.setPrefColumnCount(10);a.text.setStyle(" -fx-font-weight: bold; -fx-font-size:20;");
+        whichtrail.get(0).fire();
 
         a=new Achievement();
         a.setUnlock(gm.getGameDetails().getTrailsunlocked().get(1));
@@ -80,8 +137,11 @@ public class ShopPage extends Application{
         {
             @Override
             public void handle(MouseEvent t) {
+                Platform.runLater(() -> {
+                whichtrail.get(1).fire();
                 MainPageMenu.mp_button.stop();MainPageMenu.mp_button.play();
                 gm.setCurrentTrail(new Trail());
+                });
             }
         });
         Achievement finalA = a;
@@ -89,21 +149,25 @@ public class ShopPage extends Application{
         a.getLocked().setOnMouseClicked(new EventHandler<MouseEvent>()
         {
             @Override
-            public void handle(MouseEvent t) {  MainPageMenu.mp_button.stop();MainPageMenu.mp_button.play();
-                if(finalA.requirednumber<=gm.getNumStars()){
+            public void handle(MouseEvent t) {
+                Platform.runLater(() -> {
+                    MainPageMenu.mp_button.stop();
+                    MainPageMenu.mp_button.play();
+                    if (finalA.requirednumber <= gm.getNumStars()) {
 
-                    long to_set = gm.getNumStars() - finalA.requirednumber;
-                    gm.setNumStars(to_set);
+                        long to_set = gm.getNumStars() - finalA.requirednumber;
+                        gm.setNumStars(to_set);
 //                    gm.numStars-= finalA.requirednumber;
 //                    finalA.Unlock=true;
-                    finalA.setUnlock(true);
-                    help_page_group.getChildren().remove(finalA.getLocked());  help_page_group.getChildren().add(finalA.getUnlocked());
-                    totalstars.setText("Your Stars:"+main_page_obj.AssociatedMain.getGm().getNumStars());
-                }
-                else{
-                    alert.show();
-                }
-
+                        finalA.setUnlock(true);
+                        help_page_group.getChildren().remove(finalA.getLocked());
+                        help_page_group.getChildren().add(finalA.getUnlocked());
+                        totalstars.setText("Your Stars:" + main_page_obj.AssociatedMain.getGm().getNumStars());
+                        whichtrail.get(1).setDisable(false);
+                    } else {
+                        alert.show();
+                    }
+                });
             }
         });
                 OwnedTrails.put(1, a);a.text.setPrefColumnCount(30);
@@ -119,26 +183,34 @@ public class ShopPage extends Application{
         {
             @Override
             public void handle(MouseEvent t) {
-                MainPageMenu.mp_button.stop();MainPageMenu.mp_button.play();
-                gm.setCurrentTrail(new Firetrail());
+                Platform.runLater(() -> {
+                    whichtrail.get(2).fire();
+                    MainPageMenu.mp_button.stop();
+                    MainPageMenu.mp_button.play();
+                    gm.setCurrentTrail(new Firetrail());
+                });
             }
         });
         a.getLocked().setOnMouseClicked(new EventHandler<MouseEvent>()
         {
             @Override
             public void handle(MouseEvent t) {
-                MainPageMenu.mp_button.stop();MainPageMenu.mp_button.play();
-                if(finalA1.requirednumber<=gm.getNumStars()){
-                    long to_set = gm.getNumStars() - finalA1.requirednumber;
-                    gm.setNumStars(to_set);
+                Platform.runLater(() -> {
+                    MainPageMenu.mp_button.stop();
+                    MainPageMenu.mp_button.play();
+                    if (finalA1.requirednumber <= gm.getNumStars()) {
+                        long to_set = gm.getNumStars() - finalA1.requirednumber;
+                        gm.setNumStars(to_set);
 //                    gm.numStars-= finalA1.requirednumber;
-                    finalA1.setUnlock(true);
-                    help_page_group.getChildren().remove(finalA1.getLocked());  help_page_group.getChildren().add(finalA1.getUnlocked());
-                    totalstars.setText("Your Stars:"+main_page_obj.AssociatedMain.getGm().getNumStars());
-                }
-                else{
-                    alert.show();
-                }
+                        finalA1.setUnlock(true);
+                        help_page_group.getChildren().remove(finalA1.getLocked());
+                        help_page_group.getChildren().add(finalA1.getUnlocked());
+                        totalstars.setText("Your Stars:" + main_page_obj.AssociatedMain.getGm().getNumStars());
+                        whichtrail.get(2).setDisable(false);
+                    } else {
+                        alert.show();
+                    }
+                });
 
             }
         });
@@ -155,26 +227,35 @@ public class ShopPage extends Application{
         {
             @Override
             public void handle(MouseEvent t) {
-                MainPageMenu.mp_button.stop();MainPageMenu.mp_button.play();
-                gm.setCurrentTrail(new Neontrail());
+                Platform.runLater(() -> {
+                    whichtrail.get(3).fire();
+                    MainPageMenu.mp_button.stop();
+                    MainPageMenu.mp_button.play();
+                    gm.setCurrentTrail(new Neontrail());
+                });
             }
         });
         a.getLocked().setOnMouseClicked(new EventHandler<MouseEvent>()
         {
             @Override
             public void handle(MouseEvent t) {
-                MainPageMenu.mp_button.stop();MainPageMenu.mp_button.play();
-                if(finalA2.requirednumber<=gm.getNumStars()){
-                    long to_set = gm.getNumStars() - finalA2.requirednumber;
-                    gm.setNumStars(to_set);
+                Platform.runLater(() -> {
+                    MainPageMenu.mp_button.stop();
+                    MainPageMenu.mp_button.play();
+                    if (finalA2.requirednumber <= gm.getNumStars()) {
+                        long to_set = gm.getNumStars() - finalA2.requirednumber;
+                        gm.setNumStars(to_set);
 //                    gm.numStars-= finalA2.requirednumber;
-                    finalA2.setUnlock(true);
-                    help_page_group.getChildren().remove(finalA2.getLocked());  help_page_group.getChildren().add(finalA2.getUnlocked());
-                    totalstars.setText("Your Stars:"+main_page_obj.AssociatedMain.getGm().getNumStars());
+                        finalA2.setUnlock(true);
+                        help_page_group.getChildren().remove(finalA2.getLocked());
+                        help_page_group.getChildren().add(finalA2.getUnlocked());
+                        totalstars.setText("Your Stars:" + main_page_obj.AssociatedMain.getGm().getNumStars());
+                        whichtrail.get(3).setDisable(false);
 
-                } else{
-                    alert.show();
-                }
+                    } else {
+                        alert.show();
+                    }
+                });
 
             }
         });
@@ -238,10 +319,16 @@ public class ShopPage extends Application{
         int i=0;
         for(Map.Entry<Integer,Achievement> t:  OwnedTrails.entrySet()) {
 
-            if(t.getValue().getUnlock())
-                tmp=t.getValue().getUnlocked();
-            else
-                tmp=t.getValue().getLocked();
+            if(t.getValue().getUnlock()) {
+                tmp = t.getValue().getUnlocked();
+                whichtrail.get(i).setDisable(false);
+            }
+            else {
+                tmp = t.getValue().getLocked();
+                whichtrail.get(i).setDisable(true);
+            }
+            whichtrail.get(i).setLayoutX(  t.getValue().getUnlocked().getLayoutX()-20);
+            whichtrail.get(i).setLayoutY(400+(i*tmp.getHeight()));
             t.getValue().getUnlocked().setLayoutY(380+(i*tmp.getHeight()));
             t.getValue().getLocked().setLayoutY(380+(i*tmp.getHeight()));
 //            System.out.println("get:"+tmp.getHeight());
@@ -252,6 +339,9 @@ public class ShopPage extends Application{
             i+=1;
         }
 //        help_page_group.getChildren().add(text);
+        for(int j=0;j<whichtrail.size();j++){
+            help_page_group.getChildren().add(whichtrail.get(j));
+        }
         help_page_group.getChildren().addAll(imageView,home_button,totalstars,astronaut,dragonball);
 //        help_page_group.getChildren().add();
 
@@ -265,7 +355,10 @@ public class ShopPage extends Application{
             {
                 System.out.println("BUTTON 1 PRESSED");
                 try {
-                    MainPageMenu.mp_button.stop();MainPageMenu.mp_button.play();
+                    Platform.runLater(() -> {
+                                MainPageMenu.mp_button.stop();
+                                MainPageMenu.mp_button.play();
+                            });
                     backToHome();
 //                    m.start(stage);
 //                    this.newGame();

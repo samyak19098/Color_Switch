@@ -15,16 +15,18 @@ import java.util.ArrayList;
 
 public class TangentialObstacle extends Obstacle implements Serializable {
 
+
+
     private double radius;  //radius of inner ring ; R_outer = R_inner + width + 5;
     private double width;
     private ArrayList<RingObstacle> rings = new ArrayList<RingObstacle>();      // rings[0] = left ring, rings[1] = right ring;
-    private boolean directionClockwise; // direction of left ring(T = clockwise, F = anti)
+    // direction of left ring(T = clockwise, F = anti)
     private double angleRing1; //angle by which left right are rotated
     private double angleRing2; //angle by which left right are rotated
     private double saved_angle_left;
     private double saved_angle_right;
 
-    TangentialObstacle(String type, double speed, int orientation, double radius, double width,double centre_x, double centre_y, boolean directionClockwise, double angle1, double angle2) {
+    public TangentialObstacle(String type, double speed, int orientation, double radius, double width,double centre_x, double centre_y, boolean directionClockwise, double angle1, double angle2) {
         super(type, speed, orientation);
         this.setPosition(new Position(centre_x, centre_y)); // centre_x,centre_Y position of the point at which both rings meet tangentially side by side
         this.radius = radius;
@@ -53,7 +55,7 @@ public class TangentialObstacle extends Obstacle implements Serializable {
     }
 
     @Override
-    protected void WayOfMovement() {
+    public void WayOfMovement() {
         for(int i = 0 ; i < rings.get(0).getTimelines().size(); i++){
             rings.get(0).getTimelines().get(i).setCycleCount(Animation.INDEFINITE);
             rings.get(1).getTimelines().get(i).setCycleCount(Animation.INDEFINITE);
@@ -88,8 +90,8 @@ public class TangentialObstacle extends Obstacle implements Serializable {
     public void draw() {
 
         Position pos = this.getPosition();
-        RingObstacle ring1 = new RingObstacle("Ring", this.getObstacleSpeed(), this.getOrientation(), radius, width, pos.get_x() - width - radius, pos.get_y(), directionClockwise);
-        RingObstacle ring2 = new RingObstacle("Ring", this.getObstacleSpeed(), this.getOrientation(), radius, width, pos.get_x() + width + radius, pos.get_y(), (!directionClockwise));
+        RingObstacle ring1 = new RingObstacle("Ring", this.getObstacleSpeed(),(int) this.getOrientation(), radius, width, pos.get_x() - width - radius, pos.get_y(), directionClockwise);
+        RingObstacle ring2 = new RingObstacle("Ring", this.getObstacleSpeed(), (int)this.getOrientation(), radius, width, pos.get_x() + width + radius, pos.get_y(), (!directionClockwise));
         ring1.draw();   ring2.draw();
         for(int i = 0 ;i < 4; i++) {
             ring1.getRotate_list().get(i).setAngle(angleRing1);
@@ -109,15 +111,9 @@ public class TangentialObstacle extends Obstacle implements Serializable {
     public boolean collisionCheck(Ball b) {
         //returns true  if collision occurs
         //otherwise false
-//        if(true)
-//            return false;
+
         int i = -1;
-        //System.out.println("will do");
-//        System.out.println("b.getShape().getTranslateX():" + b.getBallShape().getTranslateX());
-//        System.out.println("b.getShape().getTranslateY():" + b.getBallShape().getTranslateY());
-//        System.out.println("b.getPosition().get_x():" + b.getPosition().get_x());
-//        System.out.println("b.getPosition().get_y():" + b.getPosition().get_y());
-//        System.out.println("b.getPosition().getRadius():" + b.getRadius());
+
 
         //matching color
         for (i = 0; i < 4; i++) {
@@ -125,10 +121,9 @@ public class TangentialObstacle extends Obstacle implements Serializable {
                 break;
             }
         }
-//        System.out.println("i:" + i);
-//        System.out.println(b.getColor() == quarters.get(i).getFill());
+
         double ang = rings.get(0).getRotate_list().get(i).getAngle();//left ring
-//        System.out.println("ang:" + ang);
+
         //cal=distance b/w centers
         double cal = b.getPosition().get_y() + b.getBallShape().getTranslateY() - position.get_y() - rings.get(0).getQuarters().get(i).getTranslateY();
 //        System.out.println("quarters.get(i).getTranslateY():" + quarters.get(i).getTranslateY());
@@ -138,14 +133,6 @@ public class TangentialObstacle extends Obstacle implements Serializable {
         //So that angle is b/w 0 and 360
         ang = adjust(ang);
 
-//        System.out.println("ang3:" + ang);
-
-//            System.out.println("(radius - b.getRadius()) <= (cal):" +( (radius - b.getRadius()) <= (cal)));
-//            System.out.println("(radius + b.getRadius()) >= (cal):" +( (radius + b.getRadius()) >= (cal)));
-//            System.out.println("1:" + ((radius - b.getRadius()) <= (cal)));
-//            System.out.println("2:" + (cal <= (radius + b.getRadius()+width)));
-//            System.out.println("2.1:" +cal);
-//                    System.out.println("2.2:" +(radius + b.getRadius()+width));
         double theta1= Math.acos((radius+width)/(b.getRadius()+radius+width));
 
         if(cal>0){//when ball is near bottom of obstacle
@@ -218,5 +205,19 @@ public class TangentialObstacle extends Obstacle implements Serializable {
     public double getSaved_angle_right() {
         return saved_angle_right;
     }
+    public void setRadius(double r) {
+        this.radius = r;
+    }
 
+    public void setWidth(double w) {
+        this.width = w;
+    }
+
+    public void setAngleRing1(double ar1) {
+        this.angleRing1 = ar1;
+    }
+
+    public void setAngleRing2(double ar2) {
+        this.angleRing2 = ar2;
+    }
 }

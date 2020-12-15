@@ -15,11 +15,12 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.util.Map;
 
 public class AchievementsPage extends Application{
-    protected static  double screenheight=800;
+    private static  double screenheight=800;
     private static double screenwidth = 1200;
     private MainPageMenu main_page_obj;
     private GameMain gm;
@@ -31,6 +32,19 @@ public class AchievementsPage extends Application{
 
         this.achievement_page_stage = AchievementStage;
         Group achievement_page_group = new Group();
+        ImageView gif1=new ImageView();
+        gif1.setImage(  new Image(new File("source3.gif").toURI().toString()));
+        gif1.setX(screenwidth*0.05);
+        gif1.setY(screenheight*0.1);
+        gif1.setFitHeight(230);
+        gif1.setFitWidth(290);
+
+        ImageView gif2=new ImageView();
+        gif2.setImage(  new Image(new File("source4.gif").toURI().toString()));
+        gif2.setX(screenwidth*0.75);
+        gif2.setY(screenheight*0.1);
+        gif2.setFitHeight(230);
+        gif2.setFitWidth(290);
 
         Image how_to_play_image = new Image(new FileInputStream("achievements.png"));
         ImageView imageView = new ImageView(how_to_play_image);
@@ -45,7 +59,7 @@ public class AchievementsPage extends Application{
         redball.setY(screenheight*0.75);
 //        imageView.setFitHeight(180);
 //        imageView.setFitWidth(230);
-        imageView.setPreserveRatio(true);
+
 
 
         ConcentricObstacle conc = new ConcentricObstacle("concentric", 6000, 0, 130, 15, 600, 185, true, 45);
@@ -88,7 +102,7 @@ public class AchievementsPage extends Application{
             i+=1;
         }
 //        help_page_group.getChildren().add(text);
-        achievement_page_group.getChildren().addAll(imageView,home_button,redball);
+        achievement_page_group.getChildren().addAll(imageView,home_button,redball,gif1,gif2);
 //        help_page_group.getChildren().add(home_button);
 
         Scene scene = new Scene(achievement_page_group,1200,800, Color.BLACK);

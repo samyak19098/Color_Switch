@@ -19,7 +19,7 @@ public class VerTanObstacle extends Obstacle implements Serializable {
     private double radius;  //radius of inner ring ; R_outer = R_inner + width + 5;
     private double width;
     private ArrayList<RingObstacle> rings = new ArrayList<RingObstacle>();      // rings[0] = inner ring, rings[1] = outer ring;
-    private boolean directionClockwise; // direction of inner ring(T = clockwise, F = anti)
+    // direction of inner ring(T = clockwise, F = anti)
     private double angleRing; //angle by which rings are rotated ( generally 45)
     private double saved_angle_left;
     private double saved_angle_right;
@@ -39,7 +39,7 @@ public class VerTanObstacle extends Obstacle implements Serializable {
     }
 
     @Override
-    protected void save_attributes(){
+    public void save_attributes(){
         rings.get(0).save_attributes(); rings.get(1).save_attributes();
     }
 
@@ -49,7 +49,7 @@ public class VerTanObstacle extends Obstacle implements Serializable {
     }
 
     @Override
-    protected void WayOfMovement() {
+    public void WayOfMovement() {
         for(int i = 0 ; i < rings.get(0).getTimelines().size(); i++){
             rings.get(0).getTimelines().get(i).setCycleCount(Animation.INDEFINITE);
             rings.get(1).getTimelines().get(i).setCycleCount(Animation.INDEFINITE);

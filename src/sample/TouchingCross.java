@@ -12,11 +12,11 @@ public class TouchingCross extends Obstacle implements Serializable {
     private double length;
     private double thickness;
     private   ArrayList<CrossObstacle> crosses = new ArrayList<CrossObstacle>();
-    private boolean directionClockwise; // direction of left cross(T = clockwise, F = anti)
+    // direction of left cross(T = clockwise, F = anti)
     private double saved_angle_left;
     private double saved_angle_right;
 
-    TouchingCross(String type, double speed, int orientation, double length,double thickness, double centre_x, double centre_y, boolean direction){
+    public TouchingCross(String type, double speed, int orientation, double length,double thickness, double centre_x, double centre_y, boolean direction){
         super(type, speed, orientation);
         this.setPosition(new Position(centre_x,centre_y));
         this.length = length;
@@ -31,7 +31,7 @@ public class TouchingCross extends Obstacle implements Serializable {
     }
 
     @Override
-    protected void WayOfMovement() {
+    public void WayOfMovement() {
         crosses.get(0).WayOfMovement();
         crosses.get(1).WayOfMovement();
     }

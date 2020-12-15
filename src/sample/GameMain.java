@@ -36,6 +36,8 @@ public class GameMain extends TimerTask  implements Serializable {
 
     private GameDetails gameDetails;
     private long numStars;
+
+    private long MaxLevel;
     private int whichtrail;
     private Trail currentTrail;
 
@@ -45,6 +47,9 @@ public class GameMain extends TimerTask  implements Serializable {
     private Stage GameMainStage;
     private Main AssociatedMain;
 
+
+
+    private HashMap<Integer,GameState> PreviousGameState;
     // FLAGS :
     //lock : used to stop detection of arrow keys b/w time of start of splitting of ball and time of appearance of game over menu
     //collided_flag: is true when run() should not execute,otherwise false
@@ -67,11 +72,13 @@ public class GameMain extends TimerTask  implements Serializable {
     private final int movedistance = 100;//distance moved in one move
     private final int movtime = 250;
     private Timer timer,trailtimer;
-    private Database db = new Database();
+
 //    Media ballup,button;
 
-    AudioClip mp_ballup,mp_button,mp_GameOver;
+    private AudioClip mp_ballup,mp_button,mp_GameOver;
+    public GameMain() {
 
+    }
     public GameMain(Group root, Main m) {
 
         mp_ballup = new AudioClip( "file:jump.wav" );
@@ -84,11 +91,12 @@ public class GameMain extends TimerTask  implements Serializable {
             GameAchievements.put(i,new StarAchievement(((i+1)*5)));
         }
 //        gameDetails=new GameDetails();
+        numStars=0;
         deserializeGameDetails();
 
         load=false;
         whichtrail=0;
-        numStars=0;
+//        numStars=0;
         this.root = new Group();
         this.AssociatedMain = m;
         timer = new Timer();
@@ -187,8 +195,8 @@ public class GameMain extends TimerTask  implements Serializable {
         }
         CurrentGameState.shownOnScreen(root);
         trailtimer = new Timer();
-        if(CurrentGameState.BallTrail!=null)
-        trailtimer.schedule(this.getCurrentGameState().BallTrail, 500, 200);
+        if(CurrentGameState.getBallTrail()!=null)
+        trailtimer.schedule(this.getCurrentGameState().getBallTrail(), 500, 200);
 
         //timer checks collions after every 1s
         // to stop the timer ,use down arrow key
@@ -230,8 +238,8 @@ public class GameMain extends TimerTask  implements Serializable {
                             CurrentGameState.getCurrentBall().MoveBall(root);
                         else {
                             CurrentGameState.getCurrentBall().getTranslateTransition().stop();
-                            if(CurrentGameState.BallTrail!=null)
-                            CurrentGameState.BallTrail.atend = true;
+                            if(CurrentGameState.getBallTrail()!=null)
+                            CurrentGameState.getBallTrail().atend = true;
 //                            for(int i=0;i< (gm.getCurrentGameState().getCurrentBall().n-1);i++){
 //                                gm.getCurrentGameState().getCurrentBall().t2.get(i).stop();
 //
@@ -248,7 +256,7 @@ public class GameMain extends TimerTask  implements Serializable {
                             }
                             for (Star o : CurrentGameState.getSceneStars()) {
                                 fl = true;
-                                o.movedown(CurrentGameState.getCurrentBall(), CurrentGameState.BallTrail);
+                                o.movedown(CurrentGameState.getCurrentBall(), CurrentGameState.getBallTrail());
                             }
                             for (ColorSwitcher o : CurrentGameState.getSceneColorSwitcher()) {
                                 fl = true;
@@ -261,66 +269,6 @@ public class GameMain extends TimerTask  implements Serializable {
                             //g.CurrentBall.translateTransition.play();
                         }
                         removehand();
-
-
-                        break;
-
-                    case W:
-
-                        System.out.println("circle.getTranslateX():" + CurrentGameState.getCurrentBall().getBallShape().getTranslateX());
-                        System.out.println("circle.getTranslateY():" + CurrentGameState.getCurrentBall().getBallShape().getTranslateY());
-                        CurrentGameState.getCurrentBall().getTranslateTransition().stop();
-                        CurrentGameState.getCurrentBall().getTranslateTransition().setToY(Double.NaN);
-                        CurrentGameState.getCurrentBall().getTranslateTransition().setToX(Double.NaN);
-                        CurrentGameState.getCurrentBall().getTranslateTransition().setByX(0);
-                        CurrentGameState.getCurrentBall().getTranslateTransition().setByY(-movedistance);
-
-                        //Setting the cycle count for the transition
-                        CurrentGameState.getCurrentBall().getTranslateTransition().setCycleCount(1);
-                        CurrentGameState.getCurrentBall().getTranslateTransition().setDuration(Duration.millis(movtime));
-                        CurrentGameState.getCurrentBall().getTranslateTransition().setOnFinished(null);
-                        CurrentGameState.getCurrentBall().getTranslateTransition().play();
-                        break;
-
-
-                    case D:
-                        System.out.println("circle.getTranslateX():" + CurrentGameState.getCurrentBall().getBallShape().getTranslateX());
-                        System.out.println("circle.getTranslateY():" + CurrentGameState.getCurrentBall().getBallShape().getTranslateY());
-                        CurrentGameState.getCurrentBall().getTranslateTransition().stop();
-                        CurrentGameState.getCurrentBall().getTranslateTransition().setToX(Double.NaN);
-                        CurrentGameState.getCurrentBall().getTranslateTransition().setToY(Double.NaN);
-                        CurrentGameState.getCurrentBall().getTranslateTransition().setByY(0);
-                        CurrentGameState.getCurrentBall().getTranslateTransition().setByX(movedistance);
-
-                        //Setting the cycle count for the transition
-                        CurrentGameState.getCurrentBall().getTranslateTransition().setCycleCount(1);
-                        CurrentGameState.getCurrentBall().getTranslateTransition().setDuration(Duration.millis(movtime));
-                        CurrentGameState.getCurrentBall().getTranslateTransition().setOnFinished(null);
-                        CurrentGameState.getCurrentBall().getTranslateTransition().play();
-                        break;
-                    case P://pause
-//                        Platform.runLater(() -> {
-//                                    mp_button.stop();
-//                                    mp_button.play();
-//                                });
-//                        gm.getCurrentGameState().getSceneObstacles().get(1).Pause();
-//                        timer.cancel();
-//                        trailtimer.cancel();
-                        Pause();
-                        break;
-
-
-                    case R://continue
-//                        Platform.runLater(() -> {
-//                            mp_button.stop();
-//                            mp_button.play();
-//                        });
-//                        gm.getCurrentGameState().getSceneObstacles().get(1).Resume();
-//                        timer = new Timer();
-//                        trailtimer = new Timer();
-//                        timer.schedule(gm, 500, 100);
-//                        trailtimer.schedule(gm.getCurrentGameState().BallTrail, 500, 150);
-                        continueGame();
                         break;
                     default:
                         System.out.println("defaultkey");
@@ -394,7 +342,7 @@ public class GameMain extends TimerTask  implements Serializable {
                     this.lock=true;//
                     this.collided_flag = true;
 //                    this.pause_var = true;
-                    this.getCurrentGameState().coll_flag = true;
+                    this.getCurrentGameState().setcoll_flag(true);
     //                Platform.runLater(() -> {
                         ObstacleHitMenu obm = new ObstacleHitMenu();
                         obm.game_main = this;
@@ -446,8 +394,8 @@ public class GameMain extends TimerTask  implements Serializable {
             s.Pause();
         }
         CurrentGameState.getCurrentBall().Pause();
-        if(CurrentGameState.BallTrail!=null)
-        CurrentGameState.BallTrail.Pause();
+        if(CurrentGameState.getBallTrail()!=null)
+        CurrentGameState.getBallTrail().Pause();
         this.collided_flag = true;
 //        this.pause_var=true;
 
@@ -466,8 +414,8 @@ public class GameMain extends TimerTask  implements Serializable {
             s.Resume();
         }
         CurrentGameState.getCurrentBall().Resume();
-        if(CurrentGameState.BallTrail!=null)
-        CurrentGameState.BallTrail.Resume();
+        if(CurrentGameState.getBallTrail()!=null)
+        CurrentGameState.getBallTrail().Resume();
     }
 
     public void savegame(int slot_num) throws IOException {
@@ -483,12 +431,12 @@ public class GameMain extends TimerTask  implements Serializable {
         }
         CurrentGameState.getCurrentBall().save_ball();
 
-        db.serialize(CurrentGameState, slot_num);
+        Database.getInstance().serialize(CurrentGameState, slot_num);
 
     }
 
     public void loadgame(Stage primaryStage, int slot_num) throws IOException, ClassNotFoundException {
-        this.CurrentGameState = db.deserialize(slot_num);
+        this.CurrentGameState =  Database.getInstance().deserialize(slot_num);
         for(Obstacle s : CurrentGameState.getSceneObstacles()){
             s.load_attributes();
         }
@@ -501,7 +449,7 @@ public class GameMain extends TimerTask  implements Serializable {
         CurrentGameState.getCurrentBall().load_attributes();
 
             CurrentGameState.setHand(new  Hand(screenwidth/2,600+20+100));
-        if(CurrentGameState.removed)
+        if(CurrentGameState.getRemoved())
             removehand();
         CurrentGameState.load_attributes();
         load=true;
@@ -531,7 +479,9 @@ public class GameMain extends TimerTask  implements Serializable {
         ObjectOutputStream out = null;
         try {
             out = new ObjectOutputStream(new FileOutputStream(saving_file));
+            System.out.println("Serializing details2");
             out.writeObject(gameDetails);
+            System.out.println("Serializing details3");
 
         }
         catch(FileNotFoundException e){
@@ -551,6 +501,7 @@ public class GameMain extends TimerTask  implements Serializable {
             if (out != null) {
                 try {
                     out.close();
+                    System.out.println("Serializing details4");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -624,9 +575,18 @@ public class GameMain extends TimerTask  implements Serializable {
 
     public void removehand() {
         CurrentGameState.getHand().removeself(root);
-        CurrentGameState.removed=true;
+        CurrentGameState.setRemoved(true);
     }
 
+
+
+    public void exitgame(){}
+    public void RunApplication(){
+        startGame(new Stage(), "newGame");
+    }
+    public void DisplayMenu(Menu m){
+        m.showMenu();
+    }
     //Getters and Setters :
 
     public HashMap<Integer, Achievement> getGameAchievements() {
@@ -650,8 +610,8 @@ public class GameMain extends TimerTask  implements Serializable {
         return numStars;
     }
 
-    public void setNumStars(long numStars) {
-        this.numStars = numStars;
+    public void setNumStars(long stars) {
+        this.numStars = stars;
     }
 
     public Trail getCurrentTrail() {
@@ -708,5 +668,20 @@ public class GameMain extends TimerTask  implements Serializable {
         CurrentGameState = currentGameState;
     }
 
+    public HashMap<Integer, GameState> getPreviousGameState() {
+        return PreviousGameState;
+    }
+    public long getMaxLevel() {
+        return MaxLevel;
+    }
+    public GameState getPreviousGameState(GameState g) {
+        return PreviousGameState.get(0);
+    }
+    public void setMaxLevel(long level) {
+        MaxLevel = level;
+    }
+    public void setPreviousGameState() {
+         PreviousGameState=new HashMap<>();
+    }
 
 }

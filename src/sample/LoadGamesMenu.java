@@ -24,14 +24,14 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.Optional;
 
-public class LoadGamesMenu extends Application{
+public class LoadGamesMenu extends Menu{
     protected static  double screenheight=800;
     private static double screenwidth = 1200;
-    MainPageMenu main_page_obj;
-    GameMain gm;
-    Stage loading_page_stage;
-    Stage mp_stage;
-    ListView games_list;
+    protected MainPageMenu main_page_obj;
+    protected GameMain gm;
+    protected Stage loading_page_stage;
+    protected Stage mp_stage;
+    protected ListView games_list;
 
     LoadGamesMenu(ArrayList<String> names){
         games_list = new ListView();
@@ -214,12 +214,17 @@ public class LoadGamesMenu extends Application{
 //        if (result.get() == ButtonType.OK){
         System.out.println(games_list.getItems().get(slot));
         if(((String)games_list.getItems().get(slot)).equals("Empty Slot")){
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Information");
-            alert.setHeaderText(null);
-            alert.setContentText("No saved game present at the slot");
-            alert.initStyle(StageStyle.UNDECORATED);
-            alert.showAndWait();
+            try{
+                throw new GameStateException();
+            }
+            catch(GameStateException e) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Information");
+                alert.setHeaderText(null);
+                alert.setContentText("No saved game present at the slot");
+                alert.initStyle(StageStyle.UNDECORATED);
+                alert.showAndWait();
+            }
         }
         else{
             this.gm.loadgame(this.main_page_obj.main_page_stage, slot + 1);
@@ -237,6 +242,14 @@ public class LoadGamesMenu extends Application{
     }
     public static void main(String[] args) {
         launch(args);
+    }
+    @Override
+    public void showMenu(){
+        try {
+            start(new Stage());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
 

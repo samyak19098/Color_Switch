@@ -104,16 +104,12 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
 
-//        primaryStage.initStyle(StageStyle.UNDECORATED);
+        primaryStage.initStyle(StageStyle.UNDECORATED);
         this.MainStage = primaryStage;
         new LoadingPage().start(primaryStage);
-//        Media ballup = new Media(new File("ballup.mp3").toURI().toString());
-//        MediaPlayer mp_ballup = new MediaPlayer(ballup);
-//        Media button = new Media(new File("button.wav").toURI().toString());
-//        MediaPlayer mp_button = new MediaPlayer(button);
 
-        //===========https://stackoverflow.com/questions/31784698/javafx-background-thread-task-should-play-music-in-a-loop-as-background-thread
-//        TimeUnit.SECONDS.sleep(5);
+
+
         Timeline wait=new Timeline();
         wait.getKeyFrames().add(   new KeyFrame(Duration.millis(1000), new   EventHandler<ActionEvent>() {
 
@@ -121,7 +117,7 @@ public class Main extends Application {
             public void handle(ActionEvent event) {
 //                System.out.println("this is called every 5 seconds on UI thread");
                 try {
-                    main_page.start(primaryStage);
+                    main_page.start(MainStage);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

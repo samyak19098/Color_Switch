@@ -22,18 +22,24 @@ import java.util.IllegalFormatCodePointException;
 
 public class CrossObstacle extends Obstacle implements Serializable {
 
-    private double length;
+    private double lineLength;
     private double thickness;
     private transient ArrayList<Path> bars = new ArrayList<Path>();
     private transient ArrayList<Timeline> timelines = new ArrayList<Timeline>();
     private transient ArrayList<Rotate> rotate_list = new ArrayList<Rotate>();
-    private boolean directionClockwise;
+
     private double saved_angle;
 
-    CrossObstacle(String type, double speed, int orientation, double length,double thickness, double centre_x, double centre_y, boolean direction){
+    public CrossObstacle(String type, double speed, int orientation, double length,double thickness, double centre_x, double centre_y, boolean direction){
         super(type, speed, orientation);
         this.setPosition(new Position(centre_x,centre_y));
-        this.length = length;
+        this.lineLength = length;
+        this.thickness = thickness;
+        this.directionClockwise = direction;
+    }
+    public CrossObstacle(String type, double speed, int orientation,double centre_x, double centre_y, boolean direction){
+        super(type, speed, orientation);
+        this.setPosition(new Position(centre_x,centre_y));
         this.thickness = thickness;
         this.directionClockwise = direction;
     }
@@ -67,7 +73,7 @@ public class CrossObstacle extends Obstacle implements Serializable {
     }
 
     @Override
-    protected void save_attributes() {
+    public void save_attributes() {
 
             this.saved_angle = rotate_list.get(0).getAngle();
         savedposition.set_x(bars.get(0).getTranslateX());
@@ -97,7 +103,7 @@ public class CrossObstacle extends Obstacle implements Serializable {
 
 
     @Override
-    protected void WayOfMovement() {
+    public void WayOfMovement() {
         for(int i = 0 ; i < timelines.size(); i++){
             timelines.get(i).setCycleCount(Animation.INDEFINITE);
             double angle_to_cover;
@@ -160,7 +166,7 @@ public class CrossObstacle extends Obstacle implements Serializable {
         if(rect_number == 1){
             startX = obstacleCentre.get_x() - change_in_coordinates;
             startY = obstacleCentre.get_y() - change_in_coordinates;
-            VLine1 = obstacleCentre.get_y() - change_in_coordinates - length;
+            VLine1 = obstacleCentre.get_y() - change_in_coordinates - lineLength;
             HLine2 = obstacleCentre.get_x() + change_in_coordinates;
             VLine3 = obstacleCentre.get_y() - change_in_coordinates;
             HLine4 = obstacleCentre.get_x() - change_in_coordinates;
@@ -171,7 +177,7 @@ public class CrossObstacle extends Obstacle implements Serializable {
             startX = obstacleCentre.get_x() + change_in_coordinates;
             startY = obstacleCentre.get_y() - change_in_coordinates;
             VLine1 = obstacleCentre.get_y() + change_in_coordinates;
-            HLine2 = obstacleCentre.get_x() + change_in_coordinates + length;
+            HLine2 = obstacleCentre.get_x() + change_in_coordinates + lineLength;
             VLine3 = obstacleCentre.get_y() - change_in_coordinates;
             HLine4 = obstacleCentre.get_x() + change_in_coordinates;
             c = Color.YELLOW;
@@ -180,7 +186,7 @@ public class CrossObstacle extends Obstacle implements Serializable {
         else if(rect_number == 3){
             startX = obstacleCentre.get_x() + change_in_coordinates;
             startY = obstacleCentre.get_y() + change_in_coordinates;
-            VLine1 = obstacleCentre.get_y() + change_in_coordinates + length;
+            VLine1 = obstacleCentre.get_y() + change_in_coordinates + lineLength;
             HLine2 = obstacleCentre.get_x() - change_in_coordinates;
             VLine3 = obstacleCentre.get_y() + change_in_coordinates;
             HLine4 = obstacleCentre.get_x() + change_in_coordinates;
@@ -191,7 +197,7 @@ public class CrossObstacle extends Obstacle implements Serializable {
             startX = obstacleCentre.get_x() - change_in_coordinates;
             startY = obstacleCentre.get_y() - change_in_coordinates;
             VLine1 = obstacleCentre.get_y() + change_in_coordinates;
-            HLine2 = obstacleCentre.get_x() - change_in_coordinates - length;
+            HLine2 = obstacleCentre.get_x() - change_in_coordinates - lineLength;
             VLine3 = obstacleCentre.get_y() - change_in_coordinates;
             HLine4 = obstacleCentre.get_x() - change_in_coordinates;
             c = Color.DEEPPINK;
@@ -225,10 +231,7 @@ public class CrossObstacle extends Obstacle implements Serializable {
                 timelines.get(i).pause();
                 tlist.get(i).pause();
             }
-//            for (int i = 0; i < rotate_list.size(); i++) {
-//                System.out.println("angle of ring " + (i));
-//                System.out.println(":" + rotate_list.get(i).getAngle());
-//            }
+
         });
 
     }
@@ -237,65 +240,43 @@ public class CrossObstacle extends Obstacle implements Serializable {
         //returns true  if collision occurs
         //otherwise false
         int i = -1;
-        //System.out.println("will do");
-//        System.out.println("b.getShape().getTranslateX():" + b.getBallShape().getTranslateX());
-//        System.out.println("b.getShape().getTranslateY():" + b.getBallShape().getTranslateY());
-//        System.out.println("b.getPosition().get_x():" + b.getPosition().get_x());
-//        System.out.println("b.getPosition().get_y():" + b.getPosition().get_y());
-//        System.out.println("b.getPosition().getRadius():" + b.getRadius());
-
         //matching color
         for (i = 0; i < 4; i++) {
             if (b.getColor() == bars.get(i).getFill()) {
                 break;
             }
         }
-//        System.out.println("i:" + i);
-//        System.out.println(b.getColor() == quarters.get(i).getFill());
+
         double ang = rotate_list.get(i).getAngle();
-//        System.out.println("ang:" + ang);
+
         //cal=distance b/w centers
         double cal = b.getPosition().get_y() + b.getBallShape().getTranslateY() - position.get_y() - bars.get(i).getTranslateY();
         double calx=Math.abs(position.get_x()-b.getPosition().get_x());
-        //        System.out.println("quarters.get(i).getTranslateY():" + quarters.get(i).getTranslateY());
-//        System.out.println("cal:" + cal);
+
         ang += (i * 90);
         ang = adjust(ang);
         double ang2=ang%90;
-//        double ang3=ang%90;
-//        System.out.println("cal:" + cal);
-//        System.out.println("ang2:" + ang2);
-//        System.out.println("Math.atan(calx/cal):" + Math.atan(calx/cal));
-//        System.out.println("Math.asin(b.getRadius()/(calx)):" + Math.asin(b.getRadius()/(calx)));
+
         if (cal > 0){//ball is at bottom{
 
-                if (   Math.abs(Math.atan(calx/cal)-Math.toRadians(ang2))<=Math.asin(b.getRadius()/(calx)) && (((cal*cal) + (calx*calx))<=(length*length) ) ){
+                if (   Math.abs(Math.atan(calx/cal)-Math.toRadians(ang2))<=Math.asin(b.getRadius()/(calx)) && (((cal*cal) + (calx*calx))<=(lineLength*lineLength) ) ){
                     if(180<=ang && ang<=270) {
                         return false;
                     }
                     else
                         return true;
                 }
-
             }
         else{
             cal=-cal;
-            if (   Math.abs(Math.atan(calx/cal)-Math.toRadians(90-ang2))<=Math.asin(b.getRadius()/(calx)) && (((cal*cal) + (calx*calx))<=(length*length) ) ){
+            if (   Math.abs(Math.atan(calx/cal)-Math.toRadians(90-ang2))<=Math.asin(b.getRadius()/(calx)) && (((cal*cal) + (calx*calx))<=(lineLength*lineLength) ) ){
                 if(270<=ang && ang<=360) {
                     return false;
                 }
                 else
                     return true;
             }
-
-
-
         }
-
-
-
-
-
         return false;
     }
     public double effectiveside(double ang,double sidel){
@@ -315,13 +296,21 @@ public class CrossObstacle extends Obstacle implements Serializable {
     }
     @Override
     public boolean outofBounds(){
-        if((position.get_y()+bars.get(0).getTranslateY()-length)>screenheight)
+        if((position.get_y()+bars.get(0).getTranslateY()-lineLength)>screenheight)
             return true;
         return false;
     }
 
-    public double getLength() {
-        return length;
+    public void setLineLength(double d) {
+        this.lineLength = d;
+    }
+
+    public void setThickness(double d) {
+        this.thickness = d;
+    }
+
+    public double getLineLength() {
+        return lineLength;
     }
 
     public double getThickness() {

@@ -12,13 +12,24 @@ import java.io.*;
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Random;
 
 public class Database implements Serializable {
 
 
 
-//    private final String saving_file = "game_save.ser";
 
+    private int count;
+    private static Database gen = null;
+    private Database(){
+
+    }
+    public static Database getInstance(){
+        if(gen==null){
+            gen=new Database();
+        }
+        return gen;
+    }
     public void serialize(GameState gs, int slot_num) throws IOException {
 
         String saving_file = "save_file" + slot_num +".ser";
@@ -59,7 +70,7 @@ public class Database implements Serializable {
             in = new ObjectInputStream(new FileInputStream(saving_file));
             loaded = (GameState) in.readObject();
         }
-        
+
         catch(FileNotFoundException e){
 //            try {
 //                File myfile = new File(saving_file);
@@ -71,7 +82,7 @@ public class Database implements Serializable {
 
             e.printStackTrace();
         }
-        
+
         finally {
             if(in == null) {
                 System.out.println("in is nulll");
@@ -81,6 +92,18 @@ public class Database implements Serializable {
             }
         }
         return loaded;
+    }
+    public void serialize(GameState gs ){
+
+    }
+    public GameState deserialize( ){
+        return null;
+    }
+    public int getCount() {
+        return count;
+    }
+    public void incCount() {
+         count+=1;
     }
 
 }

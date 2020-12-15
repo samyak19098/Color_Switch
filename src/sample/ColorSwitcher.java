@@ -17,8 +17,8 @@ public class ColorSwitcher extends GameObject implements SpecialObject, Serializ
 
     protected transient Circle circle;
 
-    static transient HashMap<Integer,Color> map=new HashMap<Integer,Color>();
-    static transient HashMap<Color,Integer> getcolormap=new HashMap<Color,Integer>();
+    protected static transient HashMap<Integer,Color> map=new HashMap<Integer,Color>();
+    protected static transient HashMap<Color,Integer> getcolormap=new HashMap<Color,Integer>();
     private double radius;
     static {
         map.put(0,Color.PURPLE);
@@ -34,7 +34,7 @@ public class ColorSwitcher extends GameObject implements SpecialObject, Serializ
         getcolormap.put(Color.WHITE,4);
         getcolormap.put(Color.GREY,5);
     }
-    public ColorSwitcher(int x){
+    public ColorSwitcher( ){
 
     }
     public ColorSwitcher( double x,double y,double radius) {

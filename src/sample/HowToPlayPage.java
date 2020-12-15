@@ -17,11 +17,11 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import java.io.FileInputStream;
 
-public class HowToPlayPage extends Application{
+public class HowToPlayPage extends Menu{
 
-    MainPageMenu main_page_obj;
-    Stage help_page_stage;
-    Stage mp_stage;
+    protected  MainPageMenu main_page_obj;
+    protected  Stage help_page_stage;
+    protected  Stage mp_stage;
 
     @Override
     public void start(Stage HelpStage) throws Exception {
@@ -45,7 +45,7 @@ public class HowToPlayPage extends Application{
         conc.shownOnScreen(help_page_group);
 
         TextArea text = new TextArea();
-        text.setText("You play as a small circle, which is 1 of 4 colours: blue, purple, orange, or pink.The goal is to tap the screen, which will make the circle move up. Ahead of you are obstacles that move, rotate, and change in challenging ways that are coloured the same. Your goal is to move through the obstacles, but you are only able to pass through the colour that your circle resembles. After you pass one obstacle, your colour will change. As you progress, the challenges will become more difficult and diverse. It’s difficult to even get to 10 points.");
+        text.setText("You play as a small circle, which is 1 of 4 colours: blue, purple, orange, or pink.The goal is to tap the screen, which will make the circle move up. Ahead of you are obstacles that move, rotate, and change in challenging ways that are coloured the same. Your goal is to move through the obstacles, but you are only able to pass through the colour that your circle resembles. After you pass one obstacle, your colour will change. As you progress, the challenges will become more difficult and diverse. It’s difficult to even get to 10 points. On game over, the Game can be continued from that point by spending 2 stars. Super color obtained via SuperColorswitcher will protect the ball from obstacles");
 //        text.setStyle("text-area-background : #000000;");
         text.setWrapText(true);
         text.setLayoutX(350);
@@ -112,6 +112,14 @@ public class HowToPlayPage extends Application{
     }
     public static void main(String[] args) {
         launch(args);
+    }
+    @Override
+    public void showMenu(){
+        try {
+            start(new Stage());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
 

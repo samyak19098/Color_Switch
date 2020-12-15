@@ -9,7 +9,11 @@ public abstract class Obstacle extends GameObject implements Serializable {
 
     protected String ObstacleType;
     protected double ObstacleSpeed;
-    protected int Orientation;
+    protected double Orientation;
+
+
+
+    protected boolean directionClockwise;
     protected transient ArrayList<TranslateTransition> tlist;
 //    protected double saved_angle;
 
@@ -17,7 +21,7 @@ public abstract class Obstacle extends GameObject implements Serializable {
     Obstacle(String type, double speed, int orientation){
         this.ObstacleType = type;
         this.ObstacleSpeed = speed;
-        this.Orientation = orientation;
+        this.Orientation =   orientation;
         this.tlist=new ArrayList<TranslateTransition>();
         for(int i=0;i<4;i++){
             tlist.add(new TranslateTransition());
@@ -48,24 +52,24 @@ public abstract class Obstacle extends GameObject implements Serializable {
         return this.ObstacleType;
     }
 
-    public void setObstacleType(String obstacleType) {
-        this.ObstacleType = obstacleType;
+    public void setObstacleType(String r) {
+        this.ObstacleType = r;
     }
 
     public double getObstacleSpeed() {
         return this.ObstacleSpeed;
     }
 
-    public void setObstacleSpeed(double obstacleSpeed) {
-        this.ObstacleSpeed = obstacleSpeed;
+    public void setObstacleSpeed(double r) {
+        this.ObstacleSpeed = r;
     }
 
-    public int getOrientation() {
+    public double getOrientation() {
         return this.Orientation;
     }
 
-    public void setOrientation(int orientation) {
-        this.Orientation = orientation;
+    public void setOrientation(double r) {
+        this.Orientation = r;
     }
 
 
@@ -83,7 +87,9 @@ public abstract class Obstacle extends GameObject implements Serializable {
 
 
     }
-
+    public void setDirectionClockwise(boolean r) {
+        this.directionClockwise = r;
+    }
 
 
 }
