@@ -21,12 +21,15 @@ import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
 import javafx.util.Duration;
 import java.awt.Desktop;
+import java.io.File;
 import java.net.URI;
 
 import java.io.FileInputStream;
 import java.util.Optional;
 
 import static javafx.scene.media.AudioClip.INDEFINITE;
+import static sample.GameObject.screenwidth;
+import static sample.ShopPage.screenheight;
 
 public class MainPageMenu extends Menu {
 
@@ -35,7 +38,9 @@ public class MainPageMenu extends Menu {
     protected AchievementsPage achievement_page_obj = new AchievementsPage();
     protected ShopPage shop_page_obj;
     protected LoadGamesMenu load_page;
-//    InGameMenu in_game_obj = new InGameMenu();
+    protected SpinWheelPage spin_page = new SpinWheelPage();
+
+    //    InGameMenu in_game_obj = new InGameMenu();
     protected Main AssociatedMain;
     protected static AudioClip mp_button,mp_bgmusic;
     protected Stage main_page_stage;
@@ -60,6 +65,10 @@ public class MainPageMenu extends Menu {
         this.load_page.main_page_obj = this;
         this.load_page.gm = m.getGm();
 
+        this.spin_page.setMain_page_obj(this);
+        this.spin_page.setGame_main(m.getGm());
+
+
 //        this.in_game_obj.main_page_obj = this;
 
     }
@@ -72,8 +81,37 @@ public class MainPageMenu extends Menu {
         this.achievement_page_obj.setMp_stage(stage);
         this.shop_page_obj.mp_stage = stage;
         this.load_page.mp_stage = stage;
+        this.spin_page.setMp_stage(stage);
 
         Group main_page_group = new Group();
+        ImageView gif1=new ImageView();
+        gif1.setImage(  new Image(new File("mainstar.gif").toURI().toString()));
+        gif1.setX(screenwidth*0.05);
+        gif1.setY(screenheight*0.1);
+        gif1.setFitHeight(230);
+        gif1.setFitWidth(290);
+
+        ImageView gif2=new ImageView();
+        gif2.setImage(  new Image(new File("mainstar.gif").toURI().toString()));
+        gif2.setX(screenwidth*0.75);
+        gif2.setY(screenheight*0.1);
+        gif2.setFitHeight(230);
+        gif2.setFitWidth(290);
+
+        ImageView gif3=new ImageView();
+        gif3.setImage(  new Image(new File("mainstar3.gif").toURI().toString()));
+        gif3.setX(screenwidth*0.05);
+        gif3.setY(screenheight*0.8);
+        gif3.setFitHeight(200);
+        gif3.setFitWidth(290);
+
+        ImageView gif4=new ImageView();
+        gif4.setImage(  new Image(new File("mainstar3.gif").toURI().toString()));
+        gif4.setX(screenwidth*0.75);
+        gif4.setY(screenheight*0.8);
+        gif4.setFitHeight(200);
+        gif4.setFitWidth(290);
+
 
         Image image = new Image(new FileInputStream("logo.png"));
         ImageView imageView = new ImageView(image);
@@ -82,6 +120,11 @@ public class MainPageMenu extends Menu {
         imageView.setFitHeight(180);
         imageView.setFitWidth(230);
         imageView.setPreserveRatio(true);
+//############css styles borrowed from http://fxexperience.com/2011/12/styling-fx-buttons-with-css/
+        String original = " -fx-background-color: #ecebe9, rgba(0,0,0,0.05), linear-gradient(#dcca8a, #c7a740), linear-gradient(#f9f2d6 0%, #f4e5bc 20%, #e6c75d 80%, #e2c045 100%), linear-gradient(#f6ebbe, #e6c34d); -fx-background-insets: 0,9 9 8 9,9,10,11; -fx-background-radius: 50; -fx-padding: 15 30 15 30; -fx-font-family: Arial; -fx-font-size: 18px; -fx-text-fill: #311c09; -fx-effect: innershadow( three-pass-box , rgba(0,0,0,0.1) , 2, 0.0 , 0 , 1);";
+        String entered =  " -fx-background-color: darkslateblue, rgba(0,0,0,0.05), linear-gradient(#dcca8a, #c7a740), linear-gradient(#f9f2d6 0%, #f4e5bc 20%, #e6c75d 80%, #e2c045 100%), linear-gradient(#f6ebbe, #e6c34d); -fx-background-insets: 0,9 9 8 9,9,10,11; -fx-background-radius: 50; -fx-padding: 15 30 15 30; -fx-font-family: Arial; -fx-font-size: 18px; -fx-text-fill: #311c09; -fx-effect: innershadow( three-pass-box , rgba(0,0,0,0.1) , 2, 0.0 , 0 , 1);";
+        String exited =   " -fx-background-color: #ecebe9, rgba(0,0,0,0.05), linear-gradient(#dcca8a, #c7a740), linear-gradient(#f9f2d6 0%, #f4e5bc 20%, #e6c75d 80%, #e2c045 100%), linear-gradient(#f6ebbe, #e6c34d); -fx-background-insets: 0,9 9 8 9,9,10,11; -fx-background-radius: 50; -fx-padding: 15 30 15 30; -fx-font-family: Arial; -fx-font-size: 18px; -fx-text-fill: #311c09; -fx-effect: innershadow( three-pass-box , rgba(0,0,0,0.1) , 2, 0.0 , 0 , 1);";
+//#############
 
         ConcentricObstacle conc = new ConcentricObstacle("concentric", 6000, 0, 140, 15, 600, 185, true, 45);
         conc.draw();
@@ -92,43 +135,79 @@ public class MainPageMenu extends Menu {
         Button new_game_button = new Button("NEW GAME");
         new_game_button.setPrefSize(200,50);
         new_game_button.setLayoutX(500);
-        new_game_button.setLayoutY(370);
+        new_game_button.setLayoutY(390);
+        new_game_button.setStyle(original);
+        new_game_button.setOnMouseEntered(e -> new_game_button.setStyle(entered));
+        new_game_button.setOnMouseExited(e -> new_game_button.setStyle(exited));
 
         Button resume_game_button = new Button("RESUME GAME");
         resume_game_button.setPrefSize(200,50);
         resume_game_button.setLayoutX(500);
-        resume_game_button.setLayoutY(450);
+        resume_game_button.setLayoutY(470);
+        resume_game_button.setStyle(original);
+        resume_game_button.setOnMouseEntered(e -> resume_game_button.setStyle(entered));
+        resume_game_button.setOnMouseExited(e -> resume_game_button.setStyle(exited));
 
         Button how_to_play_button = new Button("HOW TO PLAY");
         how_to_play_button.setPrefSize(200,50);
         how_to_play_button.setLayoutX(500);
-        how_to_play_button.setLayoutY(530);
+        how_to_play_button.setLayoutY(550);
+        how_to_play_button.setStyle(original);
+        how_to_play_button.setOnMouseEntered(e -> how_to_play_button.setStyle(entered));
+        how_to_play_button.setOnMouseExited(e -> how_to_play_button.setStyle(exited));
 
-        Button display_developer_button = new Button("DISPLAY DEVELOPERS");
-        display_developer_button.setPrefSize(200,50);
-        display_developer_button.setLayoutX(500);
-        display_developer_button.setLayoutY(610);
+        Button lucky_spin_button = new Button("LUCKY SPIN");
+        lucky_spin_button.setPrefSize(200,50);
+        lucky_spin_button.setLayoutX(270);
+        lucky_spin_button.setLayoutY(510);
+        lucky_spin_button.setStyle(original);
+        lucky_spin_button.setOnMouseEntered(e -> lucky_spin_button.setStyle(entered));
+        lucky_spin_button.setOnMouseExited(e -> lucky_spin_button.setStyle(exited));
 
         Button exit_game_button = new Button("EXIT GAME");
         exit_game_button.setPrefSize(200,50);
         exit_game_button.setLayoutX(500);
-        exit_game_button.setLayoutY(690);
+        exit_game_button.setLayoutY(630);
+        exit_game_button.setStyle(original);
+        exit_game_button.setOnMouseEntered(e -> exit_game_button.setStyle(entered));
+        exit_game_button.setOnMouseExited(e -> exit_game_button.setStyle(exited));
 
         Button achievements_button = new Button("ACHIEVEMENTS");
         achievements_button.setPrefSize(200,50);
-        achievements_button.setLayoutX(710);
-        achievements_button.setLayoutY(370);
+        achievements_button.setLayoutX(730);
+        achievements_button.setLayoutY(420);
+        achievements_button.setWrapText(true);
+        achievements_button.setStyle(original);
+        achievements_button.setOnMouseEntered(e -> achievements_button.setStyle(entered));
+        achievements_button.setOnMouseExited(e -> achievements_button.setStyle(exited));
         Button feedback_button = new Button("FEEDBACK");
         feedback_button.setPrefSize(200,50);
-        feedback_button.setLayoutX(710);
-        feedback_button.setLayoutY(450);
+        feedback_button.setLayoutX(730);
+        feedback_button.setLayoutY(510);
+        feedback_button.setStyle(original);
+        feedback_button.setOnMouseEntered(e -> feedback_button.setStyle(entered));
+        feedback_button.setOnMouseExited(e -> feedback_button.setStyle(exited));
+//        shop_button.setStyle(   " -fx-background-color: #ecebe9, rgba(0,0,0,0.05), linear-gradient(#dcca8a, #c7a740), linear-gradient(#f9f2d6 0%, #f4e5bc 20%, #e6c75d 80%, #e2c045 100%), linear-gradient(#f6ebbe, #e6c34d); -fx-background-insets: 0,9 9 8 9,9,10,11; -fx-background-radius: 50; -fx-padding: 15 30 15 30; -fx-font-family: Arial; -fx-font-size: 18px; -fx-text-fill: #311c09; -fx-effect: innershadow( three-pass-box , rgba(0,0,0,0.1) , 2, 0.0 , 0 , 1);");
+//        shop_button.setOnMouseEntered(e ->         shop_button.setStyle(   " -fx-background-color: darkslateblue, rgba(0,0,0,0.05), linear-gradient(#dcca8a, #c7a740), linear-gradient(#f9f2d6 0%, #f4e5bc 20%, #e6c75d 80%, #e2c045 100%), linear-gradient(#f6ebbe, #e6c34d) ;-fx-background-insets: 0,9 9 8 9,9,10,11; -fx-background-radius: 50; -fx-padding: 15 30 15 30; -fx-font-family: Arial; -fx-font-size: 18px; -fx-text-fill: #311c09; -fx-effect: innershadow( three-pass-box , rgba(0,0,0,0.1) , 2, 0.0 , 0 , 1);"));
+//        shop_button.setOnMouseExited(e ->  shop_button.setStyle(   " -fx-background-color: #ecebe9, rgba(0,0,0,0.05), linear-gradient(#dcca8a, #c7a740), linear-gradient(#f9f2d6 0%, #f4e5bc 20%, #e6c75d 80%, #e2c045 100%), linear-gradient(#f6ebbe, #e6c34d); -fx-background-insets: 0,9 9 8 9,9,10,11; -fx-background-radius: 50; -fx-padding: 15 30 15 30; -fx-font-family: Arial; -fx-font-size: 18px; -fx-text-fill: #311c09; -fx-effect: innershadow( three-pass-box , rgba(0,0,0,0.1) , 2, 0.0 , 0 , 1);"));
+
         Button shop_button = new Button("SHOP");
         shop_button.setPrefSize(200,50);
-        shop_button.setLayoutX(710);
-        shop_button.setLayoutY(530);
+        shop_button.setLayoutX(270);
+        shop_button.setLayoutY(420);
+        shop_button.setTextFill(Color.WHITESMOKE);
+        shop_button.setStyle(original);
+        shop_button.setOnMouseEntered(e -> shop_button.setStyle(entered));
+        shop_button.setOnMouseExited(e -> shop_button.setStyle(exited));
 
-
-        main_page_group.getChildren().addAll(imageView,new_game_button, resume_game_button, how_to_play_button, display_developer_button, exit_game_button,achievements_button,feedback_button,shop_button);
+//        shop_button.setStyle("-fx-background-color: darkslateblue, rgba(0,0,0,0.05), linear-gradient(#dcca8a, #c7a740), linear-gradient(#f9f2d6 0%, #f4e5bc 20%, #e6c75d 80%, #e2c045 100%), linear-gradient(#f6ebbe, #e6c34d); -fx-background-radius: 50; -fx-text-fill: black; -fx-effect: innershadow( three-pass-box , rgba(0,0,0,0.1) , 2, 0.0 , 0 , 1); -fx-padding: 15 30 15 30; -fx-background-insets: 0,9 9 8 9,9,10,11;");
+//        shop_button.setOnMouseEntered(e->shop_button.setStyle("-fx-background-color: orange, rgba(0,0,0,0.05), linear-gradient(#dcca8a, #c7a740), linear-gradient(#f9f2d6 0%, #f4e5bc 20%, #e6c75d 80%, #e2c045 100%), linear-gradient(#f6ebbe, #e6c34d); -fx-background-radius: 50; -fx-effect: innershadow( three-pass-box , rgba(0,0,0,0.1) , 2, 0.0 , 0 , 1); -fx-padding: 15 30 15 30; -fx-background-insets: 0,9 9 8 9,9,10,11; "));
+//        shop_button.setOnMouseExited(e->shop_button.setStyle("-fx-background-color: darkslateblue, rgba(0,0,0,0.05), linear-gradient(#dcca8a, #c7a740), linear-gradient(#f9f2d6 0%, #f4e5bc 20%, #e6c75d 80%, #e2c045 100%), linear-gradient(#f6ebbe, #e6c34d);  -fx-background-radius: 50; -fx-text-fill: black; -fx-effect: innershadow( three-pass-box , rgba(0,0,0,0.1) , 2, 0.0 , 0 , 1);  -fx-padding: 15 30 15 30; -fx-background-insets: 0,9 9 8 9,9,10,11;"));
+//        shop_button.setStyle(   " -fx-background-color: #ecebe9, rgba(0,0,0,0.05), linear-gradient(#dcca8a, #c7a740), linear-gradient(#f9f2d6 0%, #f4e5bc 20%, #e6c75d 80%, #e2c045 100%), linear-gradient(#f6ebbe, #e6c34d); -fx-background-insets: 0,9 9 8 9,9,10,11; -fx-background-radius: 50; -fx-padding: 15 30 15 30; -fx-font-family: Arial; -fx-font-size: 18px; -fx-text-fill: #311c09; -fx-effect: innershadow( three-pass-box , rgba(0,0,0,0.1) , 2, 0.0 , 0 , 1);");
+//        shop_button.setOnMouseEntered(e ->         shop_button.setStyle(   " -fx-background-color: darkslateblue, rgba(0,0,0,0.05), linear-gradient(#dcca8a, #c7a740), linear-gradient(#f9f2d6 0%, #f4e5bc 20%, #e6c75d 80%, #e2c045 100%), linear-gradient(#f6ebbe, #e6c34d) ;-fx-background-insets: 0,9 9 8 9,9,10,11; -fx-background-radius: 50; -fx-padding: 15 30 15 30; -fx-font-family: Arial; -fx-font-size: 18px; -fx-text-fill: #311c09; -fx-effect: innershadow( three-pass-box , rgba(0,0,0,0.1) , 2, 0.0 , 0 , 1);"));
+//        shop_button.setOnMouseExited(e ->  shop_button.setStyle(   " -fx-background-color: #ecebe9, rgba(0,0,0,0.05), linear-gradient(#dcca8a, #c7a740), linear-gradient(#f9f2d6 0%, #f4e5bc 20%, #e6c75d 80%, #e2c045 100%), linear-gradient(#f6ebbe, #e6c34d); -fx-background-insets: 0,9 9 8 9,9,10,11; -fx-background-radius: 50; -fx-padding: 15 30 15 30; -fx-font-family: Arial; -fx-font-size: 18px; -fx-text-fill: #311c09; -fx-effect: innershadow( three-pass-box , rgba(0,0,0,0.1) , 2, 0.0 , 0 , 1);"));
+//        shop_button.setStyle("-fx-background-color: #72f542; -fx-background-radius: 50;  -fx-font-family: Snell Roundhand; -fx-font-size: 25px;-fx-font-weight: 900");
+        main_page_group.getChildren().addAll(imageView,new_game_button, resume_game_button, how_to_play_button, lucky_spin_button, exit_game_button,achievements_button,feedback_button,shop_button,gif1,gif2,gif3,gif4);
 //        main_page_group.getChildren().add(new_game_button);
         Scene scene = new Scene(main_page_group,1200,800, Color.BLACK);
         stage.setScene(scene);
@@ -140,7 +219,7 @@ public class MainPageMenu extends Menu {
             {
                 mp_button.stop();
                 mp_button.play();
-                System.out.println("BUTTON 1 PRESSED");
+                System.out.println("BUTTON NEW GAME PRESSED");
 
                 try {
                     newGame();
@@ -156,7 +235,7 @@ public class MainPageMenu extends Menu {
             {
                 mp_button.stop();
                 mp_button.play();
-                System.out.println("BUTTON 2 PRESSED");
+                System.out.println("BUTTON LOAD GAME PRESSED");
                 try {
                     resumeGame();
                 } catch (Exception ex) {
@@ -170,7 +249,7 @@ public class MainPageMenu extends Menu {
             {
                 mp_button.stop();
                 mp_button.play();
-                System.out.println("BUTTON 3 PRESSED");
+                System.out.println("BUTTON HOW TO PLAY PRESSED");
                 try {
                     HowToPlay();
                 } catch (Exception ex) {
@@ -180,14 +259,14 @@ public class MainPageMenu extends Menu {
             }
         };
 
-        EventHandler<ActionEvent> event_display_developers = new EventHandler<ActionEvent>() {
+        EventHandler<ActionEvent> event_spin_wheel = new EventHandler<ActionEvent>() {
             public void handle(ActionEvent e)
             {
                 mp_button.stop();
                 mp_button.play();
-                System.out.println("BUTTON 4 PRESSED");
+                System.out.println("BUTTON Lucky Spin PRESSED");
                 try {
-                    displayDeveloper();
+                    LuckySpin();
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
@@ -199,7 +278,7 @@ public class MainPageMenu extends Menu {
             {
                 mp_button.stop();
                 mp_button.play();
-                System.out.println("BUTTON 5 PRESSED");
+                System.out.println("BUTTON Exit Game PRESSED");
                 try {
                     exitGame();
                 } catch (Exception ex) {
@@ -213,7 +292,7 @@ public class MainPageMenu extends Menu {
             {
                 mp_button.stop();
                 mp_button.play();
-                System.out.println("BUTTON 6 PRESSED");
+                System.out.println("BUTTON Achievements PRESSED");
                 try {
                     MainPageMenu.mp_button.stop();MainPageMenu.mp_button.play();
                     Achieve();
@@ -228,7 +307,7 @@ public class MainPageMenu extends Menu {
             {
                 mp_button.stop();
                 mp_button.play();
-                System.out.println("BUTTON 7 PRESSED");
+                System.out.println("BUTTON Feedback PRESSED");
                 try {//===========https://stackoverflow.com/questions/37926495/desktop-and-desktop-browse-are-supported-but-browse-still-hangs
                     if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
                         Desktop.getDesktop().browse(new URI("https://docs.google.com/forms/d/e/1FAIpQLSeOVoNOlZNfHiGfusyXL1aTqCRjpRcf46kuARrMvLID1WJWbA/viewform?usp=sf_link"));
@@ -245,7 +324,7 @@ public class MainPageMenu extends Menu {
             {
                 mp_button.stop();
                 mp_button.play();
-                System.out.println("BUTTON 8 PRESSED");
+                System.out.println("BUTTON Shop PRESSED");
                 try {
                     shop();
                 } catch (Exception ex) {
@@ -256,7 +335,7 @@ public class MainPageMenu extends Menu {
         };
 
         new_game_button.setOnAction(event_new_game);
-        display_developer_button.setOnAction(event_display_developers);
+        lucky_spin_button.setOnAction(event_spin_wheel);
         resume_game_button.setOnAction(event_resume_game);
         how_to_play_button.setOnAction(event_how_to_play);
         exit_game_button.setOnAction(event_exit_game);
@@ -315,8 +394,9 @@ public class MainPageMenu extends Menu {
         load_page.start((this.main_page_stage));
     }
 
-    public void displayDeveloper() throws Exception{
-        System.out.println("DISPLAY DEVELOPERS");
+    public void LuckySpin() throws Exception{
+//        System.out.println("DISPLAY DEVELOPERS");
+        spin_page.start((this.main_page_stage));
     }
 
     public void HowToPlay() throws Exception {

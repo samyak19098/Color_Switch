@@ -18,7 +18,7 @@ import javafx.stage.WindowEvent;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.Map;
-
+// 5 stars mean that in any single game , player should get 5 stars
 public class AchievementsPage extends Application{
     private static  double screenheight=800;
     private static double screenwidth = 1200;

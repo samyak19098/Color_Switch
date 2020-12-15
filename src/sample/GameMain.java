@@ -37,9 +37,6 @@ public class GameMain extends TimerTask  implements Serializable {
     private GameDetails gameDetails;
     private long numStars;
 
-
-
-
     private long MaxLevel;
     private int whichtrail;
     private Trail currentTrail;
@@ -94,11 +91,12 @@ public class GameMain extends TimerTask  implements Serializable {
             GameAchievements.put(i,new StarAchievement(((i+1)*5)));
         }
 //        gameDetails=new GameDetails();
+        numStars=0;
         deserializeGameDetails();
 
         load=false;
         whichtrail=0;
-        numStars=0;
+//        numStars=0;
         this.root = new Group();
         this.AssociatedMain = m;
         timer = new Timer();
