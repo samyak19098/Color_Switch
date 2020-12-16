@@ -85,9 +85,10 @@ public class CrossObstacle extends Obstacle implements Serializable {
         bars = new ArrayList<Path>();
          timelines = new ArrayList<Timeline>();
          rotate_list = new ArrayList<Rotate>();
+        super.load_attributes();
        draw();
        WayOfMovement();
-        super.load_attributes();
+
         for(int i=0;i<4;i++) {
             tlist.get(i).setToX(savedposition.get_x());
             tlist.get(i).setToY(savedposition.get_y());

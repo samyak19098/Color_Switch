@@ -88,7 +88,7 @@ public class GameMain extends TimerTask  implements Serializable {
 
         GameAchievements = new  HashMap<>();
         for(int i=0;i<3;i++){
-            GameAchievements.put(i,new StarAchievement(((i+1)*5)));
+            GameAchievements.put(i,new StarAchievement(((i+1)*2)));
         }
 //        gameDetails=new GameDetails();
         numStars=0;

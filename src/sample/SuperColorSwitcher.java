@@ -17,4 +17,10 @@ public class SuperColorSwitcher extends ColorSwitcher{
 
         b.setColor(Color.WHITE);
     }
+    @Override
+    public void load_attributes() {
+        super.load_attributes();
+        Image im = new Image("file:supercolorswitcher.jpg",false);
+        circle.setFill(new ImagePattern(im));
+    }
 }

@@ -117,7 +117,7 @@ public class SpinWheelPage extends Application {
         jackpot.setFont(Font.font ("Verdana", FontWeight.BOLD, FontPosture.ITALIC, 40));
         jackpot.setFill(Color.PURPLE);
 
-        Image button_img = new Image(new FileInputStream(" spin_button.png"));
+        Image button_img = new Image(new FileInputStream("spin_button.png"));
         ImageView spin_button_img = new ImageView(button_img);
         spin_button_img.setX(950);
         spin_button_img.setY(300);
