@@ -46,6 +46,8 @@ public class VerTanObstacle extends Obstacle implements Serializable {
     @Override
     public void load_attributes(){
         rings.get(0).load_attributes(); rings.get(1).load_attributes();
+        rings.get(1).getQuarters().get(0).setFill(Color.CYAN);   rings.get(1).getQuarters().get(2).setFill(Color.PURPLE);
+        rings.get(1).getQuarters().get(1).setFill(Color.YELLOW);   rings.get(1).getQuarters().get(3).setFill(Color.DEEPPINK);
     }
 
     @Override
@@ -56,11 +58,11 @@ public class VerTanObstacle extends Obstacle implements Serializable {
             int angle_to_cover_inner, angle_to_cover_outer;
             if(directionClockwise == true){
                 angle_to_cover_inner = (int) (360 + angleRing);
-                angle_to_cover_outer = (int) (-360 + angleRing);
+                angle_to_cover_outer = (int) (360 + angleRing);
             }
             else{
                 angle_to_cover_inner = (int) (-360 + angleRing);
-                angle_to_cover_outer = (int) (360 + angleRing);
+                angle_to_cover_outer = (int) (-360 + angleRing);
             }
             rings.get(0).getTimelines().get(i).getKeyFrames().add(new KeyFrame(Duration.millis((this.getObstacleSpeed())), new KeyValue(rings.get(0).getRotate_list().get(i).angleProperty(), angle_to_cover_inner)));
             rings.get(1).getTimelines().get(i).getKeyFrames().add(new KeyFrame(Duration.millis((this.getObstacleSpeed())), new KeyValue(rings.get(1).getRotate_list().get(i).angleProperty(), angle_to_cover_outer)));
@@ -95,6 +97,7 @@ public class VerTanObstacle extends Obstacle implements Serializable {
 
         }
         ring2.getQuarters().get(1).setFill(Color.YELLOW);   ring2.getQuarters().get(3).setFill(Color.DEEPPINK);
+        ring2.getQuarters().get(0).setFill(Color.CYAN);   ring2.getQuarters().get(2).setFill(Color.PURPLE);
         rings.add(ring1);
         rings.add(ring2);
     }

@@ -55,6 +55,7 @@ public class TouchingCross extends Obstacle implements Serializable {
     @Override
     public void load_attributes(){
         crosses.get(0).load_attributes();   crosses.get(1).load_attributes();
+        crosses.get(1).getBars().get(3).setFill(Color.YELLOW);  crosses.get(1).getBars().get(1).setFill(Color.DEEPPINK);
     }
 
 
