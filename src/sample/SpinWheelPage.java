@@ -117,25 +117,31 @@ public class SpinWheelPage extends Application {
         jackpot.setFont(Font.font ("Verdana", FontWeight.BOLD, FontPosture.ITALIC, 40));
         jackpot.setFill(Color.PURPLE);
 
-        Image button_img = new Image(new FileInputStream("spin_button.png"));
-        ImageView spin_button_img = new ImageView(button_img);
-        spin_button_img.setX(950);
-        spin_button_img.setY(300);
-        spin_button_img.setFitHeight(200);
-        spin_button_img.setFitWidth(200);
-        spin_button_img.setPreserveRatio(true);
+//        Image button_img = new Image(new FileInputStream("spin_button.png"));
+//        ImageView spin_button_img = new ImageView(button_img);
+//        spin_button_img.setX(950);
+//        spin_button_img.setY(300);
+//        spin_button_img.setFitHeight(200);
+//        spin_button_img.setFitWidth(200);
+//        spin_button_img.setPreserveRatio(true);
 
-        Text click_text = new Text();
-        click_text.setText("Click to Spin");
-        click_text.setLayoutX(980);
-        click_text.setLayoutY(390);
-        click_text.setFont(Font.font ("Verdana", FontWeight.BOLD, FontPosture.ITALIC, 20));
-        click_text.setFill(Color.WHITE);
+        Button spin_wheel_button = new Button("CLICK TO SPIN");
+        spin_wheel_button.setPrefSize(200, 100);
+        spin_wheel_button.setLayoutY(350);
+        spin_wheel_button.setLayoutX(950);
+        spin_wheel_button.setWrapText(true);
+        spin_wheel_button.setFont(Font.font ("Verdana", FontWeight.BOLD, FontPosture.ITALIC, 20));
+//        Text click_text = new Text();
+//        click_text.setText("Click to Spin");
+//        click_text.setLayoutX(980);
+//        click_text.setLayoutY(390);
+//        click_text.setFont(Font.font ("Verdana", FontWeight.BOLD, FontPosture.ITALIC, 20));
+//        click_text.setFill(Color.WHITE);
 
         AtomicBoolean spin_done = new AtomicBoolean(false);
-        spin_button_img.setOnMouseClicked(mouseEvent -> {
+//        spin_button_img.setOnMouseClicked(mouseEvent -> {
 
-            if(spin_done.get() == false) {
+//            if(spin_done.get() == false) {
 //                System.out.println("TO ANGLE init" + p.rotateProperty());
 //                rot1.setOnFinished(new EventHandler<ActionEvent>() {
 //                    @Override
@@ -143,36 +149,36 @@ public class SpinWheelPage extends Application {
 //
 //                    }
 //                });
-                System.out.println("TO ANGLE " + rot1.getByAngle());
-                System.out.println("TO ANGLE " + ( ((int)((rot1.getByAngle() - 1800) / 90)) % 4));
-                int quarter_stopped = (((int)((rot1.getByAngle() - 1800) / 90)) % 4);
-                updatePrize(quarter_stopped + 1);
-                int stars_won = get_prize_val(quarter_stopped + 1);
-                spin_done.set(true);
-                rot1.setOnFinished(new EventHandler<ActionEvent>() {
-                    @Override
-                    public void handle(ActionEvent actionEvent) {
-                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                        alert.setTitle("CONGRATULATIONS");
-                        alert.setHeaderText(null);
-                        String prize_str = "Congratulations ! You won " + stars_won + " stars.";
-                        alert.setContentText(prize_str);
-                        alert.show();
-
-                    }
-                });
-                rot1.play();
-
-            }
-            else{
-
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("NO SPIN");
-                alert.setHeaderText(null);
-                alert.setContentText("SORRY :( !! You have no spins left.");
-                alert.showAndWait();
-            }
-        });
+//                System.out.println("TO ANGLE " + rot1.getByAngle());
+//                System.out.println("TO ANGLE " + ( ((int)((rot1.getByAngle() - 1800) / 90)) % 4));
+//                int quarter_stopped = (((int)((rot1.getByAngle() - 1800) / 90)) % 4);
+//                updatePrize(quarter_stopped + 1);
+//                int stars_won = get_prize_val(quarter_stopped + 1);
+//                spin_done.set(true);
+//                rot1.setOnFinished(new EventHandler<ActionEvent>() {
+//                    @Override
+//                    public void handle(ActionEvent actionEvent) {
+//                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+//                        alert.setTitle("CONGRATULATIONS");
+//                        alert.setHeaderText(null);
+//                        String prize_str = "Congratulations ! You won " + stars_won + " stars.";
+//                        alert.setContentText(prize_str);
+//                        alert.show();
+//
+//                    }
+//                });
+//                rot1.play();
+//
+//            }
+//            else{
+//
+//                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+//                alert.setTitle("NO SPIN");
+//                alert.setHeaderText(null);
+//                alert.setContentText("SORRY :( !! You have no spins left.");
+//                alert.showAndWait();
+//            }
+//        });
 
         FileInputStream input = new FileInputStream("home_button.png");
         Image image = new Image(input);
@@ -203,13 +209,56 @@ public class SpinWheelPage extends Application {
 
             }
         };
+        EventHandler<ActionEvent> spin_it = new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent e)
+            {
+                if(spin_done.get() == false) {
+//                System.out.println("TO ANGLE init" + p.rotateProperty());
+//                rot1.setOnFinished(new EventHandler<ActionEvent>() {
+//                    @Override
+//                    public void handle(ActionEvent actionEvent) {
+//
+//                    }
+//                });
+                    System.out.println("TO ANGLE " + rot1.getByAngle());
+                    System.out.println("TO ANGLE " + ( ((int)((rot1.getByAngle() - 1800) / 90)) % 4));
+                    int quarter_stopped = (((int)((rot1.getByAngle() - 1800) / 90)) % 4);
+                    updatePrize(quarter_stopped + 1);
+                    int stars_won = get_prize_val(quarter_stopped + 1);
+                    spin_done.set(true);
+                    rot1.setOnFinished(new EventHandler<ActionEvent>() {
+                        @Override
+                        public void handle(ActionEvent actionEvent) {
+                            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                            alert.setTitle("CONGRATULATIONS");
+                            alert.setHeaderText(null);
+                            String prize_str = "Congratulations ! You won " + stars_won + " stars.";
+                            alert.setContentText(prize_str);
+                            alert.show();
 
+                        }
+                    });
+                    rot1.play();
+
+                }
+                else{
+
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("NO SPIN");
+                    alert.setHeaderText(null);
+                    alert.setContentText("SORRY :( !! You have no spins left.");
+                    alert.showAndWait();
+                }
+
+            }
+        };
         home_button.setOnAction(event_back_to_home);
-
+        spin_wheel_button.setOnAction(spin_it);
 
         spin_wheel_group.getChildren().add(wheel);
         spin_wheel_group.getChildren().addAll(p,five_stars,ten_stars,fifteen_stars,jackpot);
-        spin_wheel_group.getChildren().addAll(spin_button_img, click_text, game_over_text, home_button);
+//        spin_wheel_group.getChildren().addAll(spin_button_img, click_text, game_over_text, home_button);
+        spin_wheel_group.getChildren().addAll( spin_wheel_button, game_over_text, home_button);
 //        spin_wheel_group.getChildren().add(imageView);
         Scene scene = new Scene(spin_wheel_group,1200,800, Color.BLACK);
         WheelStage.setScene(scene);

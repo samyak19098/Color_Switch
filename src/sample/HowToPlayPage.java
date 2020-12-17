@@ -45,13 +45,16 @@ public class HowToPlayPage extends Menu{
         conc.shownOnScreen(help_page_group);
 
         TextArea text = new TextArea();
-        text.setText("You play as a small circle, which is 1 of 4 colours: blue, purple, orange, or pink.The goal is to tap the screen, which will make the circle move up. Ahead of you are obstacles that move, rotate, and change in challenging ways that are coloured the same. Your goal is to move through the obstacles, but you are only able to pass through the colour that your circle resembles. After you pass one obstacle, your colour will change. As you progress, the challenges will become more difficult and diverse. It’s difficult to even get to 10 points. On game over, the Game can be continued from that point by spending 2 stars. Super color obtained via SuperColorswitcher will protect the ball from obstacles");
+        text.setText("You play as a small circle, which is 1 of 4 colours: blue, purple, yellow, or pink.The goal is to press UP key, which will make the circle move up. Ahead of you are obstacles that move, rotate, and change in challenging ways that are coloured the same. Your goal is to move through the obstacles, but you are only able to pass through the colour that your circle resembles. After you obtain a colorSwitcher, your colour will change. As you progress, the challenges will become more difficult and diverse. It’s difficult to even get to 10 points. On game over, the Game can be continued from that point by spending 2 stars. Super color obtained via SuperColorswitcher will protect the ball from obstacles");
 //        text.setStyle("text-area-background : #000000;");
+        text.setPrefSize(500,200);
         text.setWrapText(true);
         text.setLayoutX(350);
         text.setLayoutY(430);
+        text.setDisable(true);
 
-        text.setStyle("-fx-control-inner-background:#000000; -fx-font-family: Consolas; -fx-highlight-fill: #00ff00; -fx-highlight-text-fill: #000000; -fx-text-fill: #ffffff; ");
+
+//        text.setStyle("-fx-text-fill:#F8F8FF;-fx-control-inner-background:#000000; -fx-font-family: Consolas; -fx-highlight-fill: #00ff00; -fx-highlight-text-fill: #000000; -fx-text-fill: #ffffff; ");
 
 //        help_page_group.getChildren().add(text);
 //        help_page_group.getChildren().add(imageView);

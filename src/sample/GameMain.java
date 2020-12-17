@@ -29,6 +29,11 @@ import javax.xml.crypto.Data;
 
 import static javafx.scene.media.AudioClip.INDEFINITE;
 //lock : used to stop detection of arrow keys b/w time of start of splitting of ball and time of appearance of game over menu
+import java.awt.Robot;
+import java.awt.Toolkit;
+import java.awt.image.BufferedImage;
+import java.awt.AWTException;
+import javax.imageio.ImageIO;
 //collided_flag: is true when run() should not execute,otherwise false
 //pause_var: If true, then after first upkey press , the game will start.No where used
 //Trail: it is not meant to be saved. It is to be chosen from shop.
@@ -146,34 +151,7 @@ public class GameMain extends TimerTask  implements Serializable {
         };
         pause_button.setOnAction(event_pause_game);
 
-//        /* ------------------------------------------------------------------------------------------------
-  //      SAVE GAME BUTTON ON GAMEPLAY SCREEN ISSUE
 
-        Button save_button = new Button("SAVE GAME");
-        save_button.setPrefSize(100, 50);
-        save_button.setLayoutX(20);
-        save_button.setLayoutY(120);
-        save_button.setWrapText(true);
-        root.getChildren().add(save_button);
-
-        EventHandler<ActionEvent> event_save_game = new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent e) {
-
-//                InGameMenu igm = new InGameMenu();
-                try {
-//                    igm.start(primaryStage);
-//                    Pause();
-                        save_button_handle_function();
-//                    audio[0].stop();
-
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-                System.out.println("SAVE BUTTON PRESSED");
-            }
-        };
-        save_button.setOnAction(event_save_game);
-//        ------------------------------------------------------------------------------------------------*/
 
         Scene scene = new Scene(root, screenwidth, screenheight);//, Color.BLACK);
         gm_scene = scene;
@@ -269,6 +247,21 @@ public class GameMain extends TimerTask  implements Serializable {
                             //g.CurrentBall.translateTransition.play();
                         }
                         removehand();
+                        break;
+                    case X://screenshot
+                        try {
+                            Robot robot = new Robot();
+                            String format = "jpg";
+                            String fileName = "FullScreenshot." + format;
+
+                            java.awt.Rectangle screenRect = new java.awt.Rectangle((int)primaryStage.getX()+3,(int)primaryStage.getY()+30,(int)screenwidth,(int)screenheight-50);//Toolkit.getDefaultToolkit().getScreenSize());
+                            BufferedImage screenFullImage = robot.createScreenCapture(screenRect);
+                            ImageIO.write(screenFullImage, format, new File(fileName));
+
+                            System.out.println("A full screenshot saved!");
+                        } catch (AWTException | IOException ex) {
+                            System.err.println(ex);
+                        }
                         break;
                     default:
                         System.out.println("defaultkey");

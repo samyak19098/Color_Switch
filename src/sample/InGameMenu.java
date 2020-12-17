@@ -47,14 +47,21 @@ public class InGameMenu extends Menu {
         game_paused_text.setFill(Color.WHITE);
         game_paused_text.setX(300);
         game_paused_text.setLayoutY(100);
+        RingObstacle save_ring = new RingObstacle("Ring", 6000, 0, 110, 15, 270, 410, true);
+        Button save_game_button = new Button("SAVE GAME");
+        save_game_button.setPrefSize(150,50);
+        save_game_button.setLayoutX(195);
+        save_game_button.setLayoutY(385);
+        save_ring.draw();
+        save_ring.WayOfMovement();
+        save_ring.rotateRing();
+        save_ring.shownOnScreen(in_game_group);
 
 
-
-
-        RingObstacle continue_ring = new RingObstacle("Ring", 6000, 0, 110, 15, 430, 410, true);
+        RingObstacle continue_ring = new RingObstacle("Ring", 6000, 0, 110, 15, 580, 410, true);
         Button continue_game_button = new Button("CONTINUE GAME");
         continue_game_button.setPrefSize(150,50);
-        continue_game_button.setLayoutX(355);
+        continue_game_button.setLayoutX(505);
         continue_game_button.setLayoutY(385);
         continue_ring.draw();
         continue_ring.WayOfMovement();
@@ -62,10 +69,10 @@ public class InGameMenu extends Menu {
         continue_ring.shownOnScreen(in_game_group);
 
 
-        RingObstacle exit_to_main_ring = new RingObstacle("Ring", 6000, 0, 110, 15, 740, 410, true);
+        RingObstacle exit_to_main_ring = new RingObstacle("Ring", 6000, 0, 110, 15, 890, 410, true);
         Button exit_to_main_button = new Button("EXIT TO MAIN MENU");
         exit_to_main_button.setPrefSize(150,50);
-        exit_to_main_button.setLayoutX(665);
+        exit_to_main_button.setLayoutX(815);
         exit_to_main_button.setLayoutY(385);
         exit_to_main_ring.draw();
         exit_to_main_ring.WayOfMovement();
@@ -73,19 +80,30 @@ public class InGameMenu extends Menu {
         exit_to_main_ring.shownOnScreen(in_game_group);
 
 
-//
-//        EventHandler<ActionEvent> event_save_game = new EventHandler<ActionEvent>() {
-//            public void handle(ActionEvent e)
-//            {
-//                System.out.println("BUTTON SAVE GAME PRESSED");
-//                try {
-//                    saveGame();
-//                } catch (Exception ex) {
-//                    ex.printStackTrace();
-//                }
-//
-//            }
-//        };
+
+
+
+
+
+
+        EventHandler<ActionEvent> event_save_game = new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent e) {
+
+//                InGameMenu igm = new InGameMenu();
+                try {
+//                    igm.start(primaryStage);
+//                    Pause();
+                    save_button_handle_function();
+//                    audio[0].stop();
+
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+                System.out.println("SAVE BUTTON PRESSED");
+            }
+        };
+        save_game_button.setOnAction(event_save_game);
+
 
         EventHandler<ActionEvent> event_continue_game = new EventHandler<ActionEvent>() {
             public void handle(ActionEvent e)
@@ -113,13 +131,13 @@ public class InGameMenu extends Menu {
             }
         };
 
-//        save_game_button.setOnAction(event_save_game);
+        save_game_button.setOnAction(event_save_game);
         continue_game_button.setOnAction(event_continue_game);
         exit_to_main_button.setOnAction(event_exit_to_main);
 
 
 
-        in_game_group.getChildren().addAll(game_paused_text,continue_game_button, exit_to_main_button);
+        in_game_group.getChildren().addAll(game_paused_text,continue_game_button, exit_to_main_button,save_game_button);
 
         Scene scene = new Scene(in_game_group,1200,800, Color.BLACK);
         InGameStage.setScene(scene);
@@ -161,6 +179,14 @@ public class InGameMenu extends Menu {
 //        }
         main_page_obj.AssociatedMain.getGm().setCurrentGameState(null);
         main_page_obj.start(main_page_obj.main_page_stage);
+    }
+    public void save_button_handle_function()throws Exception{
+//        public void saveGame() throws Exception {
+        System.out.println("GAME WILL BE SAVED !!");
+//        game_main.savegame();
+        game_main.Pause();
+        game_main.getAssociatedMain().getMain_page().load_page.start(game_main.getAssociatedMain().getMain_page().main_page_stage);
+
     }
 
     public MainPageMenu getMain_page_obj() {
